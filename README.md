@@ -1,0 +1,2 @@
+# DynamicWallpaper
+使用ChatGPT生成的自动更换壁纸的小程序
