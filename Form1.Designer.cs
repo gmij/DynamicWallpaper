@@ -1,6 +1,6 @@
 ﻿namespace DynamicWallpaper
 {
-    partial class Form1
+    partial class SettingForm
     {
         /// <summary>
         ///  Required designer variable.

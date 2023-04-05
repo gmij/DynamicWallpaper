@@ -1,8 +1,8 @@
 namespace DynamicWallpaper
 {
-    public partial class Form1 : Form
+    public partial class SettingForm : Form
     {
-        public Form1()
+        public SettingForm()
         {
             InitializeComponent();
         }
