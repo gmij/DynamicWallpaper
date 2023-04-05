@@ -1,12 +1,11 @@
-using System.Configuration;
-using System.Diagnostics;
-using System.Threading;
 using DynamicWallpaper.Impl;
 using IDesktopWallpaperWrapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Toolkit.Uwp.Notifications;
 using NLog.Extensions.Logging;
+using System.Diagnostics;
 
 namespace DynamicWallpaper
 {
@@ -40,11 +39,16 @@ namespace DynamicWallpaper
             _sp = services.BuildServiceProvider();
 
             _manager = _sp.GetRequiredService<WallpaperManager>();
+            _manager.WallpaperPoolEmpty += WhenWallpaperPoolEmpty;
             _manager.Start();
 
             CreateNotifyIcon();
 
-            
+
+            ToastNotificationManagerCompat.OnActivated += toastArgs =>
+            {
+                ShowSetting();
+            };
 
             Application.Run();
 
@@ -52,6 +56,15 @@ namespace DynamicWallpaper
             _notifyIcon.Dispose();
             _mutex.ReleaseMutex();
 
+        }
+
+        private static void WhenWallpaperPoolEmpty(object? sender, EventArgs e)
+        {
+            new ToastContentBuilder()
+                .AddHeader("DynamicWallpaper", "消息通知", "")
+                .AddText("壁纸池空啦")
+                .AddText("我要去许愿，获取新壁纸~~")
+                .Show();
         }
 
         private static void ConfigureServices(ServiceCollection services)
@@ -79,14 +92,20 @@ namespace DynamicWallpaper
 
         private static void ShowSetting()
         {
-            if (_settingForm != null)
+            if (_settingForm != null && _settingForm.Visible)
             {
-                _settingForm.Show();
+                _settingForm.Activate();
+                return;
+            }
+
+            if (_settingForm != null && !_settingForm.IsDisposed)
+            {
+                _settingForm.ShowDialog();
             }
             else
             {
                 _settingForm = new SettingForm();
-                _settingForm.Show();
+                _settingForm.ShowDialog();
             }
         }
 
@@ -105,8 +124,8 @@ namespace DynamicWallpaper
             // 5. 托盘菜单
             _notifyIcon.ContextMenuStrip = new ContextMenuStrip();
 
-            
-            
+
+
             _notifyIcon.ContextMenuStrip.Items.Add("退出", null, (s, e) =>
             {
                 // 退出程序

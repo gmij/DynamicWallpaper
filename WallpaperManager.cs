@@ -19,6 +19,9 @@ namespace DynamicWallpaper
             _refreshTime = setting.RefreshTime;
         }
 
+        public event EventHandler WallpaperChanged;
+        public event EventHandler WallpaperPoolEmpty;
+
 
         internal void Start()
         {
@@ -45,6 +48,15 @@ namespace DynamicWallpaper
 
         private void ChangeWallpaper()
         {
+            if (_wallPaperPool.IsEmpty)
+            {
+                _logger.LogDebug("壁纸池为空");
+                if (WallpaperPoolEmpty != null)
+                {
+                    WallpaperPoolEmpty.Invoke(null, null);
+                }
+                return;
+            }
             var monitorIds = _desktopWallpaper.GetAllMonitorIDs();
             _logger.LogDebug("当前共{0}显示器", monitorIds.Length);
             foreach (var monitorId in monitorIds)

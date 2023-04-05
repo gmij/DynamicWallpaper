@@ -8,5 +8,8 @@
         /// <param name="excludePath">排除当前的壁纸</param>
         /// <returns></returns>
         string Renew(string excludePath);
+
+
+        bool IsEmpty { get; }
     }
 }
