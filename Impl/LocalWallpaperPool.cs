@@ -17,11 +17,12 @@
                 Directory.CreateDirectory(_cachePath);
             }
         }
-        
+
+        public bool IsEmpty => _wallPaperList.Length == 0;
 
         public string Renew(string excludePath)
         {
-            if (_wallPaperList.Length >0)
+            if (!IsEmpty)
             {
                 var list = _wallPaperList.Where(p => p != excludePath).ToArray();
                 var poolSize = list.Count();
