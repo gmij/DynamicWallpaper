@@ -83,7 +83,9 @@ namespace DynamicWallpaper
                 builder.AddNLog(config);
             });
 
+            services.AddSingleton<ResourcesHelper>();
             services.AddSingleton<DesktopWallpaper>();
+            services.AddSingleton<SettingForm>();
             services.AddSingleton<WallpaperManager>();
             services.AddSingleton<WallpaperSetting>();
             services.AddSingleton<IWallPaperPool, LocalWallpaperPool>();
@@ -104,7 +106,7 @@ namespace DynamicWallpaper
             }
             else
             {
-                _settingForm = new SettingForm();
+                _settingForm = _sp.GetService<SettingForm>();
                 _settingForm.ShowDialog();
             }
         }
@@ -124,9 +126,9 @@ namespace DynamicWallpaper
             // 5. 托盘菜单
             _notifyIcon.ContextMenuStrip = new ContextMenuStrip();
 
+            var rh = _sp.GetService<ResourcesHelper>();
 
-
-            _notifyIcon.ContextMenuStrip.Items.Add("退出", null, (s, e) =>
+            _notifyIcon.ContextMenuStrip.Items.Add("退出", rh?.ExitImg, (s, e) =>
             {
                 // 退出程序
                 Application.Exit();
@@ -136,11 +138,10 @@ namespace DynamicWallpaper
             _notifyIcon.DoubleClick += (s, e) => ShowSetting();
 
             // 托盘图标右键菜单中，添加一个设置菜单，下面的代码为Coplit自动生成
-            _notifyIcon.ContextMenuStrip.Items.Add("设置", null, (s, e) => ShowSetting());
-
+            _notifyIcon.ContextMenuStrip.Items.Add("设置", rh?.SettingImg, (s, e) => ShowSetting());
 
             //  托盘图标右键菜单中，添加一个刷新菜单，
-            _notifyIcon.ContextMenuStrip.Items.Add("刷新", null, (s, e) => Refresh());
+            _notifyIcon.ContextMenuStrip.Items.Add("刷新", rh?.RefreshImg, (s, e) => Refresh());
         }
 
         private static void Refresh()

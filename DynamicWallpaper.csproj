@@ -6,12 +6,29 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <StartupObject>DynamicWallpaper.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="libs\**" />
     <EmbeddedResource Remove="libs\**" />
     <None Remove="libs\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ico\exit.ico" />
+    <None Remove="ico\refresh.ico" />
+    <None Remove="ico\screen.ico" />
+    <None Remove="ico\setting.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="ico\exit.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ico\refresh.ico" />
+    <EmbeddedResource Include="ico\screen.ico" />
+    <EmbeddedResource Include="ico\setting.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,9 +46,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="exit.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="nlog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -1,6 +1,6 @@
 ﻿namespace DynamicWallpaper
 {
-    internal interface IWallPaperPool
+    public interface IWallPaperPool
     {
         /// <summary>
         /// 换一个新壁纸
@@ -9,7 +9,12 @@
         /// <returns></returns>
         string Renew(string excludePath);
 
-
+        /// <summary>
+        /// 壁纸池是否为空
+        /// </summary>
         bool IsEmpty { get; }
+
+        //  获取所有本地图片的预览图
+        List<WallpaperPreview> GetLocalWallpaperPreviews();
     }
 }
