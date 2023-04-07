@@ -19,8 +19,8 @@ namespace DynamicWallpaper
             _refreshTime = setting.RefreshTime;
         }
 
-        public event EventHandler WallpaperChanged;
-        public event EventHandler WallpaperPoolEmpty;
+        public event EventHandler? WallpaperChanged;
+        public event EventHandler? WallpaperPoolEmpty;
 
 
         internal void Start()
@@ -53,7 +53,7 @@ namespace DynamicWallpaper
                 _logger.LogDebug("壁纸池为空");
                 if (WallpaperPoolEmpty != null)
                 {
-                    WallpaperPoolEmpty.Invoke(null, null);
+                    WallpaperPoolEmpty.Invoke(null, new EventArgs());
                 }
                 return;
             }

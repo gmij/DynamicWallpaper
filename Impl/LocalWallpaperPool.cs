@@ -11,7 +11,7 @@ namespace DynamicWallpaper.Impl
         public LocalWallpaperPool(WallpaperSetting setting, ILogger<LocalWallpaperPool> logger)
         {
             _cachePath = setting.CachePath;
-
+            _wallPaperList = new string[0];
             ReLoadCacheImage();
             _logger = logger;
         }

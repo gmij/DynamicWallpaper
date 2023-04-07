@@ -10,8 +10,7 @@ namespace DynamicWallpaper
         /// </summary>
         private readonly IWallPaperPool _paperPool;
         private readonly ResourcesHelper rh;
-        private bool _mouseEnter = false;
-        private Panel _deletePanel;
+        private Panel? _deletePanel;
 
         public SettingForm(IWallPaperPool paperPool, ResourcesHelper rh)
         {
@@ -79,7 +78,7 @@ namespace DynamicWallpaper
         private void Pic_MouseHover(object? sender, EventArgs e)
         {
             var pic = sender as PictureBox;
-            if (pic != null)
+            if (pic != null && _deletePanel != null)
             {
                 Bitmap bitmap = new Bitmap(pic.Width, pic.Height);
                 using (Graphics g = Graphics.FromImage(bitmap))
@@ -87,6 +86,7 @@ namespace DynamicWallpaper
                     // »æÖÆÍ¸Ã÷ÃÉ°å
                     g.FillRectangle(new SolidBrush(Color.FromArgb(100, Color.Gray)), pic.ClientRectangle);
                     // »æÖÆÉ¾³ýPanel
+                    
                     _deletePanel.Location = new Point((pic.Width - _deletePanel.Width) / 2, (pic.Height - _deletePanel.Height) / 2);
                     pic.Controls.Add(_deletePanel);
                     // Ë¢ÐÂPictureBox

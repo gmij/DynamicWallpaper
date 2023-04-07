@@ -6,22 +6,25 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Toolkit.Uwp.Notifications;
 using NLog.Extensions.Logging;
 using System.Diagnostics;
+using Windows.UI.WebUI;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 
 namespace DynamicWallpaper
 {
     internal static class Program
     {
-        private static Mutex _mutex;
+        private static Mutex? _mutex;
 
-        private static WallpaperManager _manager;
+        private static WallpaperManager? _manager;
 
-        private static NotifyIcon _notifyIcon;
+        private static NotifyIcon? _notifyIcon;
 
-        private static ServiceProvider _sp;
+        private static ServiceProvider? _sp;
 
-        private static SettingForm _settingForm;
+        private static SettingForm? _settingForm;
 
-        internal static WallpaperManager Manager { get => _manager; set => _manager = value; }
+        internal static WallpaperManager? Manager { get => _manager; set => _manager = value; }
 
         /// <summary>
         ///  The main entry point for the application.
@@ -30,6 +33,10 @@ namespace DynamicWallpaper
         static void Main()
         {
             MutexApp();
+
+            StartBlazorServer();
+            
+
 
             //  加入依赖注入特性
             var services = new ServiceCollection();
@@ -53,9 +60,36 @@ namespace DynamicWallpaper
             Application.Run();
 
             // 释放资源，下面的代码为Coplit自动生成
-            _notifyIcon.Dispose();
-            _mutex.ReleaseMutex();
+            _notifyIcon?.Dispose();
+            _mutex?.ReleaseMutex();
 
+        }
+
+        private static void StartBlazorServer()
+        {
+            //var builder = WebApplication.CreateBuilder();
+
+            //// Add services to the container.
+            //builder.Services.AddRazorPages();
+            //builder.Services.AddServerSideBlazor();
+
+            //var app = builder.Build();
+
+            //// Configure the HTTP request pipeline.
+            //if (!app.Environment.IsDevelopment())
+            //{
+            //    app.UseExceptionHandler("/Error");
+            //}
+
+
+            //app.UseStaticFiles();
+
+            //app.UseRouting();
+
+            //app.MapBlazorHub();
+            //app.MapFallbackToPage("/_Host");
+
+            //app.Run();
         }
 
         private static void WhenWallpaperPoolEmpty(object? sender, EventArgs e)
@@ -106,8 +140,11 @@ namespace DynamicWallpaper
             }
             else
             {
-                _settingForm = _sp.GetService<SettingForm>();
-                _settingForm.ShowDialog();
+                //  创建设置窗体
+                //  处理GetService返回空引用
+
+                _settingForm = _sp?.GetService<SettingForm>();
+                _settingForm?.ShowDialog();
             }
         }
 
@@ -126,7 +163,7 @@ namespace DynamicWallpaper
             // 5. 托盘菜单
             _notifyIcon.ContextMenuStrip = new ContextMenuStrip();
 
-            var rh = _sp.GetService<ResourcesHelper>();
+            var rh = _sp?.GetService<ResourcesHelper>();
 
             _notifyIcon.ContextMenuStrip.Items.Add("退出", rh?.ExitImg, (s, e) =>
             {
@@ -146,7 +183,7 @@ namespace DynamicWallpaper
 
         private static void Refresh()
         {
-            _manager.Refresh();
+            _manager?.Refresh();
         }
 
         private static void MutexApp()

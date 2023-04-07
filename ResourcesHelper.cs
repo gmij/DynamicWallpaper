@@ -21,7 +21,13 @@ namespace DynamicWallpaper
         private Stream GetResource(string path)
         {
             if (_assembly != null) {
-                return _assembly.GetManifestResourceStream(path);
+                var stream = _assembly.GetManifestResourceStream(path);
+                if (stream != null)
+                {
+                    return stream;
+                }
+                else
+                    throw new ArgumentOutOfRangeException("path", "不存在的资源");
             }
             throw new ArgumentNullException("path");
         }
