@@ -7,8 +7,6 @@ using Microsoft.Toolkit.Uwp.Notifications;
 using NLog.Extensions.Logging;
 using System.Diagnostics;
 using Windows.UI.WebUI;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 
 namespace DynamicWallpaper
 {
@@ -34,8 +32,6 @@ namespace DynamicWallpaper
         {
             MutexApp();
 
-            StartBlazorServer();
-            
 
 
             //  加入依赖注入特性
@@ -48,7 +44,7 @@ namespace DynamicWallpaper
             _manager = _sp.GetRequiredService<WallpaperManager>();
             _manager.WallpaperPoolEmpty += WhenWallpaperPoolEmpty;
             _manager.Start();
-
+            
             CreateNotifyIcon();
 
 
@@ -65,32 +61,6 @@ namespace DynamicWallpaper
 
         }
 
-        private static void StartBlazorServer()
-        {
-            //var builder = WebApplication.CreateBuilder();
-
-            //// Add services to the container.
-            //builder.Services.AddRazorPages();
-            //builder.Services.AddServerSideBlazor();
-
-            //var app = builder.Build();
-
-            //// Configure the HTTP request pipeline.
-            //if (!app.Environment.IsDevelopment())
-            //{
-            //    app.UseExceptionHandler("/Error");
-            //}
-
-
-            //app.UseStaticFiles();
-
-            //app.UseRouting();
-
-            //app.MapBlazorHub();
-            //app.MapFallbackToPage("/_Host");
-
-            //app.Run();
-        }
 
         private static void WhenWallpaperPoolEmpty(object? sender, EventArgs e)
         {
@@ -123,7 +93,7 @@ namespace DynamicWallpaper
             services.AddSingleton<WallpaperManager>();
             services.AddSingleton<WallpaperSetting>();
             services.AddSingleton<IWallPaperPool, LocalWallpaperPool>();
-
+            services.AddSingleton<INetworkPaperProvider, PixabayWallpaperPool>();
         }
 
         private static void ShowSetting()
@@ -137,6 +107,7 @@ namespace DynamicWallpaper
             if (_settingForm != null && !_settingForm.IsDisposed)
             {
                 _settingForm.ShowDialog();
+                
             }
             else
             {

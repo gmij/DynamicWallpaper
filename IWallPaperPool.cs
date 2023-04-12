@@ -15,6 +15,14 @@
         bool IsEmpty { get; }
 
         //  获取所有本地图片的预览图
-        List<WallpaperPreview> GetLocalWallpaperPreviews();
+        List<WallpaperPreview> GetWallpaperPreviews();
+    }
+
+    public interface INetworkPaperProvider
+    {
+        Task<bool> DownLoadWallPaper(int num);
+
+        string ProviderName { get; }
+        
     }
 }

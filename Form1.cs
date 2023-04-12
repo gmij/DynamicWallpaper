@@ -1,41 +1,98 @@
-using System.Reflection;
 using System.Windows.Forms;
 
 namespace DynamicWallpaper
 {
-    public partial class SettingForm : Form
+    internal partial class SettingForm : Form
     {
+
+        /// <summary>
+        ///  开启Panel的双缓冲
+        /// </summary>
+        public class DoubleBufferPanel: Panel
+        {
+            public DoubleBufferPanel()
+            {
+                DoubleBuffered = true;
+            }
+        }
+
         /// <summary>
         /// 壁纸池
         /// </summary>
-        private readonly IWallPaperPool _paperPool;
+        private readonly WallpaperManager _paperManager;
         private readonly ResourcesHelper rh;
-        private Panel? _deletePanel;
+        private DoubleBufferPanel? _deletePanel;
 
-        public SettingForm(IWallPaperPool paperPool, ResourcesHelper rh)
+        private Size _imageSize;
+
+        private string _currentPaper;
+
+        public SettingForm(WallpaperManager paperManager, ResourcesHelper rh)
         {
             InitializeComponent();
-            _paperPool = paperPool;
+
+            CheckForIllegalCrossThreadCalls = false;
+
+            _imageSize = new Size(220, 180);
+            _paperManager = paperManager;
+            _paperManager.WallpaperChanged += WhenWallpaperChanged;
             this.rh = rh;
+            BindControls();
+            InitDownLoadWallpaper();
             InitPreviewImages();
             InitializeDeletePanel();
+        }
+
+        private void WhenWallpaperChanged(object? sender, EventArgs e)
+        {
+            InitPreviewImages();
+        }
+
+        private void InitDownLoadWallpaper()
+        {
+            var img = new PictureBox() { Image = rh.RefreshImg, Size = _imageSize };
+            img.Click += DownWallpaper;
+            flowLayoutPanel1.Controls.Add(img) ;
+        }
+
+        private void DownWallpaper(object? sender, EventArgs e)
+        {
+            _paperManager.GetInternetWallpaper();
+        }
+
+        private void BindControls()
+        {
+            //  以下代码为Coplit生成
+            this.cmbMonitor.Items.Clear();
+            cmbMonitor.DataSource = _paperManager.Monitors.ToList();
+            cmbMonitor.DisplayMember = "Key";
+            cmbMonitor.ValueMember = "Value";
+            cmbMonitor.SelectedIndex = 0;
+
+            this.cmbProvider.Items.Clear();
+            cmbProvider.DataSource = _paperManager.Providers.ToList();
+            cmbProvider.DisplayMember = "Key";
+            cmbProvider.ValueMember = "Value";
+            cmbProvider.SelectedIndex = 0;
         }
 
         private void InitializeDeletePanel()
         {
             // 创建删除Panel
-            _deletePanel = new Panel();
-            _deletePanel.Size = new Size(30, 30);
-            _deletePanel.BackColor = Color.Transparent;
+            _deletePanel = new DoubleBufferPanel();
+            //_deletePanel.Dock = DockStyle.Fill;
+            _deletePanel.BackColor = Color.FromArgb(60, Color.Gray);
             // 添加删除图标
             PictureBox deleteIcon = new PictureBox();
+            deleteIcon.BackColor = Color.Transparent;
             deleteIcon.Image = rh.ScreenImg;
             deleteIcon.SizeMode = PictureBoxSizeMode.Zoom;
-            deleteIcon.Dock = DockStyle.Fill;
+            deleteIcon.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
+            deleteIcon.Margin = new Padding(10,5,10,5);
             // 添加删除事件,删除图片，以下为Coplit生成
             deleteIcon.Click += (s, e) =>
             {
-                var pic = (s as PictureBox)?.Parent as PictureBox;
+                var pic = (s as PictureBox)?.Parent?.Parent as PictureBox;
                 var path = (pic?.Tag as WallpaperPreview)?.Path;
                 if (File.Exists(path))
                 {
@@ -43,23 +100,32 @@ namespace DynamicWallpaper
                     flowLayoutPanel1.Controls.Remove(pic);
                 }
             };
-
             _deletePanel.Controls.Add(deleteIcon);
+        }
+
+        private void SetPanelSize(Control parent)
+        {
+            if (_deletePanel != null)
+            {
+                _deletePanel.Parent = parent;
+                _deletePanel.Size = new Size(parent.Width, parent.Height / 2);
+                _deletePanel.Top = (parent.Height - _deletePanel.Height) / 2;
+            }
         }
 
         //  从壁纸池中获取所有本地图片的预览信息，并在界面上显示出来
         private void InitPreviewImages()
         {
-            if (_paperPool != null)
+            if (_paperManager != null)
             {
-                var previews = _paperPool.GetLocalWallpaperPreviews();
+                var previews = _paperManager.GetWallpaperPreviews();
                 // 把预览图加载到flowLayoutPanel1中
                 foreach (var preview in previews)
                 {
                     var pic = new PictureBox
                     {
                         Image = preview.Image,
-                        Size = new Size(220, 180),
+                        Size = _imageSize,
                         BorderStyle = BorderStyle.FixedSingle,
                         WaitOnLoad = false,
                         SizeMode = PictureBoxSizeMode.Zoom,
@@ -68,8 +134,7 @@ namespace DynamicWallpaper
 
                     pic.MouseEnter += Pic_MouseHover;
                     pic.MouseLeave += Pic_MouseLeave;
-                    
-                    
+
                     flowLayoutPanel1.Controls.Add(pic);
                 }
             }
@@ -78,22 +143,8 @@ namespace DynamicWallpaper
         private void Pic_MouseHover(object? sender, EventArgs e)
         {
             var pic = sender as PictureBox;
-            if (pic != null && _deletePanel != null)
-            {
-                Bitmap bitmap = new Bitmap(pic.Width, pic.Height);
-                using (Graphics g = Graphics.FromImage(bitmap))
-                {
-                    // 绘制透明蒙板
-                    g.FillRectangle(new SolidBrush(Color.FromArgb(100, Color.Gray)), pic.ClientRectangle);
-                    // 绘制删除Panel
-                    
-                    _deletePanel.Location = new Point((pic.Width - _deletePanel.Width) / 2, (pic.Height - _deletePanel.Height) / 2);
-                    pic.Controls.Add(_deletePanel);
-                    // 刷新PictureBox
-                    pic.Image = bitmap;
-                    pic.Refresh();
-                }
-            }
+            SetPanelSize(pic);
+            _currentPaper = (pic.Tag as WallpaperPreview)?.Path ?? string.Empty;
         }
 
         private void Pic_MouseLeave(object? sender, EventArgs e)
@@ -102,6 +153,13 @@ namespace DynamicWallpaper
             var pic = sender as PictureBox;
             if (pic != null)
             {
+
+                var path = (pic.Tag as WallpaperPreview).Path;
+                if (path == _currentPaper)
+                {
+                    return;
+                }
+
                 pic.Controls.Remove(_deletePanel);
                 pic.Image = (pic.Tag as WallpaperPreview)?.Image;
                 pic.Refresh();

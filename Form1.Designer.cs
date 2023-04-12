@@ -1,4 +1,6 @@
-﻿namespace DynamicWallpaper
+﻿using Microsoft.Web.WebView2.WinForms;
+
+namespace DynamicWallpaper
 {
     partial class SettingForm
     {
@@ -32,8 +34,13 @@
             tabPage1 = new TabPage();
             flowLayoutPanel1 = new FlowLayoutPanel();
             tabPage2 = new TabPage();
+            label2 = new Label();
+            cmbMonitor = new ComboBox();
+            cmbProvider = new ComboBox();
+            label1 = new Label();
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
+            tabPage2.SuspendLayout();
             SuspendLayout();
             // 
             // tabControl1
@@ -71,13 +78,50 @@
             // 
             // tabPage2
             // 
+            tabPage2.Controls.Add(label2);
+            tabPage2.Controls.Add(cmbMonitor);
+            tabPage2.Controls.Add(cmbProvider);
+            tabPage2.Controls.Add(label1);
             tabPage2.Location = new Point(4, 26);
             tabPage2.Name = "tabPage2";
-            tabPage2.Padding = new Padding(3);
             tabPage2.Size = new Size(716, 381);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "设置";
             tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(48, 64);
+            label2.Name = "label2";
+            label2.Size = new Size(60, 17);
+            label2.TabIndex = 4;
+            label2.Text = " 壁纸来源";
+            // 
+            // cmbMonitor
+            // 
+            cmbMonitor.FormattingEnabled = true;
+            cmbMonitor.Location = new Point(123, 19);
+            cmbMonitor.Name = "cmbMonitor";
+            cmbMonitor.Size = new Size(121, 25);
+            cmbMonitor.TabIndex = 3;
+            // 
+            // cmbProvider
+            // 
+            cmbProvider.FormattingEnabled = true;
+            cmbProvider.Location = new Point(123, 61);
+            cmbProvider.Name = "cmbProvider";
+            cmbProvider.Size = new Size(121, 25);
+            cmbProvider.TabIndex = 3;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(24, 22);
+            label1.Name = "label1";
+            label1.Size = new Size(84, 17);
+            label1.TabIndex = 0;
+            label1.Text = " 壁纸应用范围";
             // 
             // SettingForm
             // 
@@ -94,6 +138,8 @@
             tabControl1.ResumeLayout(false);
             tabPage1.ResumeLayout(false);
             tabPage1.PerformLayout();
+            tabPage2.ResumeLayout(false);
+            tabPage2.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -101,7 +147,11 @@
 
         private TabControl tabControl1;
         private TabPage tabPage1;
-        private TabPage tabPage2;
         private FlowLayoutPanel flowLayoutPanel1;
+        private TabPage tabPage2;
+        private Label label2;
+        private ComboBox cmbProvider;
+        private Label label1;
+        private ComboBox cmbMonitor;
     }
 }

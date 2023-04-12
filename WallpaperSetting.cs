@@ -10,5 +10,7 @@
         //刷新时间(间隔几分钟更换壁纸)
         public int RefreshTime { get; set; } = 60;
 
+        public string Today => DateTime.Now.ToString("yyyyMMdd");
+
     }
 }
