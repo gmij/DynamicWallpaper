@@ -38,13 +38,14 @@ namespace DynamicWallpaper
             _paperManager.WallpaperChanged += WhenWallpaperChanged;
             this.rh = rh;
             BindControls();
-            InitDownLoadWallpaper();
+            //InitDownLoadWallpaper();
             InitPreviewImages();
             InitializeDeletePanel();
         }
 
         private void WhenWallpaperChanged(object? sender, EventArgs e)
         {
+            Thread.Sleep(2000);
             InitPreviewImages();
         }
 
@@ -81,7 +82,7 @@ namespace DynamicWallpaper
             // 创建删除Panel
             _deletePanel = new DoubleBufferPanel();
             //_deletePanel.Dock = DockStyle.Fill;
-            _deletePanel.BackColor = Color.FromArgb(60, Color.Gray);
+            _deletePanel.BackColor = Color.FromArgb(40, Color.Gray);
             // 添加删除图标
             PictureBox deleteIcon = new PictureBox();
             deleteIcon.BackColor = Color.Transparent;
@@ -108,8 +109,10 @@ namespace DynamicWallpaper
             if (_deletePanel != null)
             {
                 _deletePanel.Parent = parent;
+                //_deletePanel.Dock = DockStyle.Fill;
                 _deletePanel.Size = new Size(parent.Width, parent.Height / 2);
                 _deletePanel.Top = (parent.Height - _deletePanel.Height) / 2;
+                _deletePanel.Focus();
             }
         }
 
@@ -119,6 +122,10 @@ namespace DynamicWallpaper
             if (_paperManager != null)
             {
                 var previews = _paperManager.GetWallpaperPreviews();
+                
+                flowLayoutPanel1.Controls.Clear();
+                InitDownLoadWallpaper();
+
                 // 把预览图加载到flowLayoutPanel1中
                 foreach (var preview in previews)
                 {
@@ -133,9 +140,19 @@ namespace DynamicWallpaper
                     };
 
                     pic.MouseEnter += Pic_MouseHover;
-                    pic.MouseLeave += Pic_MouseLeave;
-
-                    flowLayoutPanel1.Controls.Add(pic);
+                    //pic.MouseLeave += Pic_MouseLeave;
+                    //  以下为Coplit生成, 用于处理跨线程访问控件的问题
+                    if (this.InvokeRequired)
+                    {
+                        this.Invoke(() => {
+                            flowLayoutPanel1.Controls.Add(pic);
+                        });
+                    }
+                    else
+                    {
+                        flowLayoutPanel1.Controls.Add(pic);
+                    }
+                    
                 }
             }
         }
@@ -144,26 +161,8 @@ namespace DynamicWallpaper
         {
             var pic = sender as PictureBox;
             SetPanelSize(pic);
-            _currentPaper = (pic.Tag as WallpaperPreview)?.Path ?? string.Empty;
+            //_currentPaper = (pic.Tag as WallpaperPreview)?.Path ?? string.Empty;
         }
 
-        private void Pic_MouseLeave(object? sender, EventArgs e)
-        {
-            // 鼠标离开时移除蒙板和删除Panel
-            var pic = sender as PictureBox;
-            if (pic != null)
-            {
-
-                var path = (pic.Tag as WallpaperPreview).Path;
-                if (path == _currentPaper)
-                {
-                    return;
-                }
-
-                pic.Controls.Remove(_deletePanel);
-                pic.Image = (pic.Tag as WallpaperPreview)?.Image;
-                pic.Refresh();
-            }
-        }
     }
 }

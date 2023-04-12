@@ -63,16 +63,14 @@ namespace DynamicWallpaper
 
         internal void GetInternetWallpaper()
         {
-            Task.Run(async () => {
+            var task = Task.Run(async () => {
                 foreach (var provider in paperProviders)
                 {
-                    var result = await provider.DownLoadWallPaper(3);
-                    if (result)
-                    {
-                        WallpaperChanged?.Invoke(null, new EventArgs());
-                    }
+                    await provider.DownLoadWallPaper(3);
                 }
             });
+            Task.WaitAll(task);
+            WallpaperChanged?.Invoke(null, new EventArgs());
         }
 
 
