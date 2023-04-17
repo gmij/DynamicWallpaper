@@ -8,7 +8,7 @@ namespace DynamicWallpaper
         /// <summary>
         ///  开启Panel的双缓冲
         /// </summary>
-        public class DoubleBufferPanel: Panel
+        public class DoubleBufferPanel : Panel
         {
             public DoubleBufferPanel()
             {
@@ -53,7 +53,7 @@ namespace DynamicWallpaper
         {
             var img = new PictureBox() { Image = rh.RefreshImg, Size = _imageSize };
             img.Click += DownWallpaper;
-            flowLayoutPanel1.Controls.Add(img) ;
+            flowLayoutPanel1.Controls.Add(img);
         }
 
         private void DownWallpaper(object? sender, EventArgs e)
@@ -89,7 +89,7 @@ namespace DynamicWallpaper
             deleteIcon.Image = rh.ScreenImg;
             deleteIcon.SizeMode = PictureBoxSizeMode.Zoom;
             deleteIcon.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
-            deleteIcon.Margin = new Padding(10,5,10,5);
+            deleteIcon.Margin = new Padding(10, 5, 10, 5);
             // 添加删除事件,删除图片，以下为Coplit生成
             deleteIcon.Click += (s, e) =>
             {
@@ -122,7 +122,7 @@ namespace DynamicWallpaper
             if (_paperManager != null)
             {
                 var previews = _paperManager.GetWallpaperPreviews();
-                
+
                 flowLayoutPanel1.Controls.Clear();
                 InitDownLoadWallpaper();
 
@@ -144,7 +144,8 @@ namespace DynamicWallpaper
                     //  以下为Coplit生成, 用于处理跨线程访问控件的问题
                     if (this.InvokeRequired)
                     {
-                        this.Invoke(() => {
+                        this.Invoke(() =>
+                        {
                             flowLayoutPanel1.Controls.Add(pic);
                         });
                     }
@@ -152,7 +153,6 @@ namespace DynamicWallpaper
                     {
                         flowLayoutPanel1.Controls.Add(pic);
                     }
-                    
                 }
             }
         }

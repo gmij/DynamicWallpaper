@@ -2,12 +2,13 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows10.0.17763.0</TargetFramework>
+    <TargetFramework>net7.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <StartupObject>DynamicWallpaper.Program</StartupObject>
   </PropertyGroup>
+
 
   <ItemGroup>
     <Compile Remove="DynamicWallpaper.LocalServices\**" />
@@ -26,19 +27,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="ico\exit.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <EmbeddedResource Include="ico\exit.ico" />
     <EmbeddedResource Include="ico\refresh.ico" />
     <EmbeddedResource Include="ico\screen.ico" />
     <EmbeddedResource Include="ico\setting.ico" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.3" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1661.34" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NLog.Extensions.Logging" Version="5.2.3" />
     <PackageReference Include="System.Management" Version="7.0.1" />

@@ -15,6 +15,8 @@ namespace DynamicWallpaper
 
         private IDictionary<string, string> _monitors;
 
+        private FileSystemWatcher _watcher;
+
         public WallpaperManager(ILogger<WallpaperManager> logger, IWallPaperPool wallPaperPool, IEnumerable<INetworkPaperProvider> paperProviders, DesktopWallpaper wallpaper, WallpaperSetting setting)
         {
             this._logger = logger;
@@ -23,6 +25,13 @@ namespace DynamicWallpaper
             _desktopWallpaper = wallpaper;
             _refreshTime = setting.RefreshTime;
             GetMonitors();
+            _watcher = new FileSystemWatcher(setting.CachePath);
+            _watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName;
+            _watcher.Changed += (s, e) => {
+                _logger.LogInformation("文件发生变化");
+                WallpaperChanged?.Invoke(null, new EventArgs());
+            };
+            _watcher.EnableRaisingEvents = true;
         }
 
         public event EventHandler? WallpaperChanged;

@@ -3,10 +3,8 @@ using IDesktopWallpaperWrapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Toolkit.Uwp.Notifications;
 using NLog.Extensions.Logging;
 using System.Diagnostics;
-using Windows.UI.WebUI;
 
 namespace DynamicWallpaper
 {
@@ -42,16 +40,16 @@ namespace DynamicWallpaper
             _sp = services.BuildServiceProvider();
 
             _manager = _sp.GetRequiredService<WallpaperManager>();
-            _manager.WallpaperPoolEmpty += WhenWallpaperPoolEmpty;
+            //_manager.WallpaperPoolEmpty += WhenWallpaperPoolEmpty;
             _manager.Start();
             
             CreateNotifyIcon();
 
 
-            ToastNotificationManagerCompat.OnActivated += toastArgs =>
-            {
-                ShowSetting();
-            };
+            //ToastNotificationManagerCompat.OnActivated += toastArgs =>
+            //{
+            //    ShowSetting();
+            //};
 
             Application.Run();
 
@@ -62,14 +60,14 @@ namespace DynamicWallpaper
         }
 
 
-        private static void WhenWallpaperPoolEmpty(object? sender, EventArgs e)
-        {
-            new ToastContentBuilder()
-                .AddHeader("DynamicWallpaper", "消息通知", "")
-                .AddText("壁纸池空啦")
-                .AddText("我要去许愿，获取新壁纸~~")
-                .Show();
-        }
+        //private static void WhenWallpaperPoolEmpty(object? sender, EventArgs e)
+        //{
+        //    new ToastContentBuilder()
+        //        .AddHeader("DynamicWallpaper", "消息通知", "")
+        //        .AddText("壁纸池空啦")
+        //        .AddText("我要去许愿，获取新壁纸~~")
+        //        .Show();
+        //}
 
         private static void ConfigureServices(ServiceCollection services)
         {
@@ -94,6 +92,7 @@ namespace DynamicWallpaper
             services.AddSingleton<WallpaperSetting>();
             services.AddSingleton<IWallPaperPool, LocalWallpaperPool>();
             services.AddSingleton<INetworkPaperProvider, PixabayWallpaperPool>();
+            services.AddSingleton<INetworkPaperProvider, BingDailyWallpaper>();
         }
 
         private static void ShowSetting()
