@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -20,17 +20,29 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ico\blue_box.png" />
+    <None Remove="ico\blue_open_box.png" />
+    <None Remove="ico\box.png" />
     <None Remove="ico\exit.ico" />
+    <None Remove="ico\open_box.png" />
     <None Remove="ico\refresh.ico" />
     <None Remove="ico\screen.ico" />
     <None Remove="ico\setting.ico" />
+    <None Remove="ico\yellow_box.png" />
+    <None Remove="ico\yellow_open_box.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="ico\blue_box.png" />
+    <EmbeddedResource Include="ico\blue_open_box.png" />
+    <EmbeddedResource Include="ico\box.png" />
     <EmbeddedResource Include="ico\exit.ico" />
+    <EmbeddedResource Include="ico\open_box.png" />
     <EmbeddedResource Include="ico\refresh.ico" />
     <EmbeddedResource Include="ico\screen.ico" />
     <EmbeddedResource Include="ico\setting.ico" />
+    <EmbeddedResource Include="ico\yellow_box.png" />
+    <EmbeddedResource Include="ico\yellow_open_box.png" />
   </ItemGroup>
 
   <ItemGroup>

@@ -9,6 +9,7 @@ namespace DynamicWallpaper.Impl
 {
     internal class PixabayWallpaperPool : NetworkWallpaperProviderBase
     {
+        private readonly IronBox box;
 
         public class PixabayResponse
         {
@@ -23,13 +24,16 @@ namespace DynamicWallpaper.Impl
             public string? LargeImageURL { get; set; }
         }
 
-        public PixabayWallpaperPool(WallpaperSetting setting):base(setting)
+        public PixabayWallpaperPool(WallpaperSetting setting, IronBox box):base(setting)
         {
+            this.box = box;
         }
 
         public bool IsEmpty { get; private set; } = true;
 
         public override string ProviderName => "Pixabay";
+
+        public override IBox DefaultBox => box;
 
         /// <summary>
         /// 获取图片，以下代码由Coplit 优化
@@ -40,7 +44,7 @@ namespace DynamicWallpaper.Impl
         {
             string apiKey = "35011350-04a87bff3b45e5d929d805228";
             string searchQuery = "nature";
-            string uri = $"https://pixabay.com/api/?key={apiKey}&q={searchQuery}&image_type=photo&per_page={num}";
+            string uri = $"https://pixabay.com/api/?key={apiKey}&q={searchQuery}&image_type=photo&per_page={num}&order=latest&lang=zh";
 
             HttpResponseMessage response = await client.GetAsync(uri);
 
@@ -53,7 +57,7 @@ namespace DynamicWallpaper.Impl
                     throw new Exception("No images found.");
                 }
 
-                images.Hits.ForEach(x => SaveToCache(x.LargeImageURL, x.Id));
+                images.Hits.AsParallel().ForAll(x => SaveToCache(x.LargeImageURL, x.Id));
                 
                 
                 if (images.Hits.Count > 0)

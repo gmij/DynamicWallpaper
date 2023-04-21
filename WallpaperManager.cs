@@ -10,28 +10,33 @@ namespace DynamicWallpaper
         private readonly DesktopWallpaper _desktopWallpaper;
         private readonly IWallPaperPool _wallPaperPool;
         private readonly IEnumerable<INetworkPaperProvider> paperProviders;
+        private int _localWallpaperCount = 0;
         protected readonly ILogger _logger;
         protected readonly int _refreshTime;
 
         private IDictionary<string, string> _monitors;
 
-        private FileSystemWatcher _watcher;
+        //private FileSystemWatcher _watcher;
 
         public WallpaperManager(ILogger<WallpaperManager> logger, IWallPaperPool wallPaperPool, IEnumerable<INetworkPaperProvider> paperProviders, DesktopWallpaper wallpaper, WallpaperSetting setting)
         {
             this._logger = logger;
             _wallPaperPool = wallPaperPool;
+            _wallPaperPool.WallPaperChanged += (sender, count) =>
+            {
+                _localWallpaperCount = count;
+                WallpaperChanged?.Invoke(null, null);
+            };
             this.paperProviders = paperProviders;
             _desktopWallpaper = wallpaper;
             _refreshTime = setting.RefreshTime;
-            GetMonitors();
-            _watcher = new FileSystemWatcher(setting.CachePath);
-            _watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName;
-            _watcher.Changed += (s, e) => {
-                _logger.LogInformation("文件发生变化");
-                WallpaperChanged?.Invoke(null, new EventArgs());
+
+            _monitors = new Dictionary<string, string>
+            {
+                { "所有屏幕", "all" }
             };
-            _watcher.EnableRaisingEvents = true;
+            GetMonitors();
+            
         }
 
         public event EventHandler? WallpaperChanged;
@@ -70,38 +75,28 @@ namespace DynamicWallpaper
             Task.Run(() => ChangeWallpaper());
         }
 
-        internal void GetInternetWallpaper()
+        internal async void GetInternetWallpaper()
         {
-            var task = Task.Run(async () => {
-                foreach (var provider in paperProviders)
-                {
-                    await provider.DownLoadWallPaper(3);
-                }
-            });
-            Task.WaitAll(task);
-            WallpaperChanged?.Invoke(null, new EventArgs());
+            await Task.WhenAll(paperProviders.Select(provider => provider.DownLoadWallPaper(3)));
         }
 
 
         private void GetMonitors()
         {
-            _monitors = new Dictionary<string, string>
-            {
-                { "所有屏幕", "all" }
-            };
+            
 
             // 创建 WMI 查询语句，查询 Win32_PnPEntity 类型的设备信息
             string query = "SELECT __RELPATH, Description FROM Win32_PnPEntity WHERE (PNPClass = 'Monitor')";
 
             // 创建 ManagementObjectSearcher 对象，传入查询语句
-            ManagementObjectSearcher searcher = new ManagementObjectSearcher(query);
+            using ManagementObjectSearcher searcher = new ManagementObjectSearcher(query);
 
             // 遍历查询结果，获取每一个设备的实例路径和描述信息
             foreach (ManagementObject obj in searcher.Get())
             {
                 // 获取设备实例路径和描述信息
-                string instancePath = obj["__RELPATH"].ToString();
-                string deviceDescription = obj["Description"].ToString();
+                string instancePath = obj["__RELPATH"]?.ToString();
+                string deviceDescription = obj["Description"]?.ToString();
                 if (!string.IsNullOrEmpty(deviceDescription) &&  !string.IsNullOrEmpty(instancePath))
                     _monitors.Add(deviceDescription, instancePath);
             }
@@ -112,9 +107,10 @@ namespace DynamicWallpaper
             if (_wallPaperPool.IsEmpty)
             {
                 _logger.LogDebug("壁纸池为空");
-                if (WallpaperPoolEmpty != null)
+                var handler = WallpaperPoolEmpty;
+                if (handler != null)
                 {
-                    WallpaperPoolEmpty.Invoke(null, new EventArgs());
+                    handler.Invoke(null, new EventArgs());
                 }
                 return;
             }

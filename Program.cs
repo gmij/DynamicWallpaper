@@ -51,6 +51,8 @@ namespace DynamicWallpaper
             //    ShowSetting();
             //};
 
+            Application.ThreadException += Application_ThreadException;
+
             Application.Run();
 
             // 释放资源，下面的代码为Coplit自动生成
@@ -59,15 +61,16 @@ namespace DynamicWallpaper
 
         }
 
+        private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            if (_sp != null)
+            {
+                var log = _sp.GetService<ILogger>();
+                log.LogCritical(e.Exception, "异常退出");
+            }
+            MessageBox.Show(e.ToString());
+        }
 
-        //private static void WhenWallpaperPoolEmpty(object? sender, EventArgs e)
-        //{
-        //    new ToastContentBuilder()
-        //        .AddHeader("DynamicWallpaper", "消息通知", "")
-        //        .AddText("壁纸池空啦")
-        //        .AddText("我要去许愿，获取新壁纸~~")
-        //        .Show();
-        //}
 
         private static void ConfigureServices(ServiceCollection services)
         {
@@ -91,8 +94,11 @@ namespace DynamicWallpaper
             services.AddSingleton<WallpaperManager>();
             services.AddSingleton<WallpaperSetting>();
             services.AddSingleton<IWallPaperPool, LocalWallpaperPool>();
-            services.AddSingleton<INetworkPaperProvider, PixabayWallpaperPool>();
+
+            services.AddSingleton<WoodenBox>();
+            services.AddSingleton<IronBox>();
             services.AddSingleton<INetworkPaperProvider, BingDailyWallpaper>();
+            services.AddSingleton<INetworkPaperProvider, PixabayWallpaperPool>();
         }
 
         private static void ShowSetting()

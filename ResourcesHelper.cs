@@ -32,17 +32,30 @@ namespace DynamicWallpaper
             throw new ArgumentNullException("path");
         }
 
-        private Image GetImage(string path)
+        internal Image GetImage(string path)
         {
-            return new Bitmap(GetResource(path));
+            var rPath = $"{_icoResourcePath}{path}";
+            return new Bitmap(GetResource(rPath));
         }
 
-        public Image ExitImg => GetImage($"{_icoResourcePath}exit.ico");
+        public Image ExitImg => GetImage("exit.ico");
 
-        public Image ScreenImg => GetImage($"{_icoResourcePath}screen.ico");
+        public Image ScreenImg => GetImage("screen.ico");
 
-        public Image SettingImg => GetImage($"{_icoResourcePath}setting.ico");
+        public Image SettingImg => GetImage("setting.ico");
 
-        public Image RefreshImg => GetImage($"{_icoResourcePath}refresh.ico");
+        public Image RefreshImg => GetImage("refresh.ico");
+
+        public Image BoxImg => GetImage("box.png");
+
+        public Image OpenBoxImg => GetImage("open_box.png");
+
+        public Image YellowBoxImg => GetImage("yellow_box.png");
+
+        public Image YellowOpenBoxImg => GetImage("yellow_open_box.png");
+
+        public Image BlueBoxImg => GetImage("blue_box.png");
+
+        public Image BlueOpenBoxImg => GetImage("blue_open_box.png");
     }
 }

@@ -16,13 +16,17 @@
 
         //  获取所有本地图片的预览图
         List<WallpaperPreview> GetWallpaperPreviews();
+
+        EventHandler<int> WallPaperChanged { get; set; }
     }
 
     public interface INetworkPaperProvider
     {
-        Task<bool> DownLoadWallPaper(int num);
+        Task<bool> DownLoadWallPaper(int num = 5);
 
         string ProviderName { get; }
-        
+
+        IBox DefaultBox { get; }
+                
     }
 }

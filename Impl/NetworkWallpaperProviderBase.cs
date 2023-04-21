@@ -13,6 +13,7 @@ namespace DynamicWallpaper.Impl
         protected string CachePath => Path.Combine(setting.CachePath, "Internet");
 
         public abstract string ProviderName { get; }
+        public abstract IBox DefaultBox { get; }
 
         public NetworkWallpaperProviderBase(WallpaperSetting setting) {
             client = new HttpClient();
@@ -29,10 +30,15 @@ namespace DynamicWallpaper.Impl
 
             var fileBytes = await client.GetByteArrayAsync(url);
             var filePath = Path.Combine(cachePath, fileName);
-
+            if (File.Exists(filePath))
+            {
+                filePath += Guid.NewGuid().ToString("D");
+            }
             File.WriteAllBytes(filePath, fileBytes);
         }
 
         public abstract Task<bool> DownLoadWallPaper(int num);
+
+        
     }
 }

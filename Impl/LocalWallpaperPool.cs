@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Timer = System.Threading.Timer;
 
 namespace DynamicWallpaper.Impl
 {
@@ -7,6 +8,19 @@ namespace DynamicWallpaper.Impl
         private readonly string _cachePath;
         private string[] _wallPaperList;
         private readonly ILogger<LocalWallpaperPool> _logger;
+        private FileSystemWatcher _watcher;
+
+        private static object locker = new object();
+        private static DateTime _lastUpdateTime = DateTime.Now;
+
+        private static int _refreshTimeSpan = 2000;
+
+        public bool IsEmpty => _wallPaperList.Length == 0;
+
+        private EventHandler<int> _wallPaperChanged;
+        private Timer _refreshTask;
+
+        public EventHandler<int> WallPaperChanged { get => _wallPaperChanged; set => _wallPaperChanged = value; }
 
         public LocalWallpaperPool(WallpaperSetting setting, ILogger<LocalWallpaperPool> logger)
         {
@@ -14,9 +28,45 @@ namespace DynamicWallpaper.Impl
             _wallPaperList = new string[0];
             ReLoadCacheImage();
             _logger = logger;
+            
+            _watcher = new FileSystemWatcher(_cachePath);
+            InitWatcher();
         }
 
-        public bool IsEmpty => _wallPaperList.Length == 0;
+
+        private void InitWatcher()
+        {
+            _watcher.IncludeSubdirectories = true;
+            _watcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.CreationTime | NotifyFilters.Size;
+
+            _watcher.Created += FileChanged;
+            _watcher.Renamed += FileChanged;
+            _watcher.Deleted += FileChanged;
+
+            _watcher.EnableRaisingEvents = true;
+
+            _refreshTask = new Timer(FireFileChangedEvent, null, Timeout.Infinite, Timeout.Infinite);
+
+        }
+
+        private void FileChanged(object sender, FileSystemEventArgs e)
+        {
+            _logger.LogInformation($"文件发生变化：{e.FullPath}, {e.ChangeType}");
+            ReLoadCacheImage();
+            //_logger.LogInformation($"文件发生变化：刷新缓存");
+
+            //  通过定时器滑动，减少事件的激活次数。
+            _logger.LogInformation($"文件发生变化：定时器滑动");
+            _refreshTask.Change(_refreshTimeSpan, Timeout.Infinite);
+        }
+
+        private void FireFileChangedEvent(object? state)
+        {
+            WallPaperChanged.Invoke(null, _wallPaperList.Length);
+            _refreshTask.Change(Timeout.Infinite, Timeout.Infinite);
+            _logger.LogInformation($"文件发生变化事件已抛出：定时器禁用");
+        }
+
 
         private void ReLoadCacheImage()
         {
@@ -24,8 +74,17 @@ namespace DynamicWallpaper.Impl
             {
                 if (Directory.Exists(_cachePath))
                 {
-                    //  单机程序，不考虑并发锁了。
-                    _wallPaperList = Directory.GetFiles(_cachePath, "*", SearchOption.AllDirectories);
+                    if (DateTime.Now - _lastUpdateTime > TimeSpan.FromSeconds(2))
+                    {
+                        lock (locker)
+                        {
+                            if (DateTime.Now - _lastUpdateTime > TimeSpan.FromSeconds(2))
+                            {
+                                _wallPaperList = Directory.GetFiles(_cachePath, "*", SearchOption.AllDirectories);
+                                _lastUpdateTime = DateTime.Now;
+                            }
+                        }
+                    }
                 }
                 else
                 {
