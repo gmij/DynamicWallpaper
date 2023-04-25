@@ -3,6 +3,7 @@ using IDesktopWallpaperWrapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Win32;
 using NLog.Extensions.Logging;
 using System.Diagnostics;
 
@@ -30,6 +31,11 @@ namespace DynamicWallpaper
         {
             MutexApp();
 
+            //  加入注册表自启动项，以下代码为Copilit生成
+            //  1. 创建一个RegistryKey对象
+            var reg = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+            // 2. 设置自启动项
+            reg?.SetValue("DynamicWallpaper", Application.ExecutablePath);
 
 
             //  加入依赖注入特性
@@ -45,11 +51,6 @@ namespace DynamicWallpaper
             
             CreateNotifyIcon();
 
-
-            //ToastNotificationManagerCompat.OnActivated += toastArgs =>
-            //{
-            //    ShowSetting();
-            //};
 
             Application.ThreadException += Application_ThreadException;
 
