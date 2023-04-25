@@ -26,7 +26,7 @@ namespace DynamicWallpaper.Impl
         {
             _cachePath = setting.CachePath;
             _wallPaperList = new string[0];
-            ReLoadCacheImage();
+            InitPaperPool();
             _logger = logger;
             
             _watcher = new FileSystemWatcher(_cachePath);
@@ -67,6 +67,12 @@ namespace DynamicWallpaper.Impl
             _logger.LogInformation($"文件发生变化事件已抛出：定时器禁用");
         }
 
+        private void InitPaperPool()
+        {
+            _wallPaperList = Directory.GetFiles(_cachePath, "*", SearchOption.AllDirectories);
+            _lastUpdateTime = DateTime.Now;
+        }
+
 
         private void ReLoadCacheImage()
         {
@@ -80,8 +86,7 @@ namespace DynamicWallpaper.Impl
                         {
                             if (DateTime.Now - _lastUpdateTime > TimeSpan.FromSeconds(2))
                             {
-                                _wallPaperList = Directory.GetFiles(_cachePath, "*", SearchOption.AllDirectories);
-                                _lastUpdateTime = DateTime.Now;
+                                InitPaperPool();
                             }
                         }
                     }
