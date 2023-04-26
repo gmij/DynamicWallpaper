@@ -18,6 +18,16 @@ namespace DynamicWallpaper
             _icoResourcePath = "DynamicWallpaper.ico.";
         }
 
+
+        static ResourcesHelper _instance;
+
+        static ResourcesHelper()
+        {
+            _instance = new ResourcesHelper();
+        }
+
+        public static ResourcesHelper Instance => _instance;
+
         private Stream GetResource(string path)
         {
             if (_assembly != null) {
@@ -57,5 +67,11 @@ namespace DynamicWallpaper
         public Image BlueBoxImg => GetImage("blue_box.png");
 
         public Image BlueOpenBoxImg => GetImage("blue_open_box.png");
+
+        public Image LoveImg => GetImage("love.png");
+
+        public Image BrokenImg => GetImage("broken.png");
+
+        public Image MoreImg => GetImage("more.png");
     }
 }
