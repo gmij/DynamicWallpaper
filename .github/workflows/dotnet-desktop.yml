@@ -83,12 +83,12 @@ jobs:
 
     # Restore the application to populate the obj folder with RuntimeIdentifiers
     - name: Restore the application
-      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
+      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration /m
       env:
         Configuration: ${{ matrix.configuration }}
         
     - name: Build the Sln
-      run: msbuild $env:Solution_Name /t:rebuild /p:Configuration=$env:Configuration -m
+      run: msbuild $env:Solution_Name /t:rebuild /p:Configuration=$env:Configuration /m
       env:
         Configuration: ${{ matrix.configuration }}
 
