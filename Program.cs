@@ -75,8 +75,11 @@ namespace DynamicWallpaper
 
         private static void ConfigureServices(ServiceCollection services)
         {
+            var rootPath = Path.GetDirectoryName(Application.ExecutablePath) ?? Environment.CurrentDirectory;
+            //var rootPath = "E:\\";
+
             var config = new ConfigurationBuilder()
-                         .SetBasePath(Directory.GetCurrentDirectory())
+                         .SetBasePath(rootPath)
                          .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                          .Build();
 
