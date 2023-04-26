@@ -3,7 +3,10 @@
     internal class WallpaperSetting
     {
 
-        public string LocalPath => Path.GetDirectoryName(Application.ExecutablePath) ?? Environment.CurrentDirectory;
+        protected static bool AutoStart => Environment.UserInteractive;
+
+
+        public static string LocalPath => AutoStart ?  (Path.GetDirectoryName(Application.ExecutablePath) ?? Environment.CurrentDirectory) : Environment.CurrentDirectory;
 
         public string CachePath => Path.Combine(LocalPath, "Cache");
 
