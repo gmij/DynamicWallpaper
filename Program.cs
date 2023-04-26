@@ -31,12 +31,7 @@ namespace DynamicWallpaper
         {
             MutexApp();
 
-            //  加入注册表自启动项，以下代码为Copilit生成
-            //  1. 创建一个RegistryKey对象
-            var reg = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-            // 2. 设置自启动项
-            reg?.SetValue("DynamicWallpaper", Application.ExecutablePath);
-
+            SetAutoStart();
 
             //  加入依赖注入特性
             var services = new ServiceCollection();
@@ -48,7 +43,7 @@ namespace DynamicWallpaper
             _manager = _sp.GetRequiredService<WallpaperManager>();
             //_manager.WallpaperPoolEmpty += WhenWallpaperPoolEmpty;
             _manager.Start();
-            
+
             CreateNotifyIcon();
 
 
@@ -62,24 +57,33 @@ namespace DynamicWallpaper
 
         }
 
+        private static void SetAutoStart()
+        {
+            //  加入注册表自启动项，以下代码为Copilit生成
+            //  1. 创建一个RegistryKey对象
+            var reg = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+            // 2. 设置自启动项
+            reg?.SetValue("DynamicWallpaper", Application.ExecutablePath);
+        }
+
         private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
         {
             if (_sp != null)
             {
                 var log = _sp.GetService<ILogger>();
-                log.LogCritical(e.Exception, "异常退出");
+                log?.LogCritical(e.Exception, "异常退出");
             }
-            MessageBox.Show(e.ToString());
+            MessageBox.Show($"{e.Exception.Message}\r\n{e.Exception.StackTrace}");
         }
 
 
         private static void ConfigureServices(ServiceCollection services)
         {
-            var rootPath = Path.GetDirectoryName(Application.ExecutablePath) ?? Environment.CurrentDirectory;
+            //var rootPath = Path.GetDirectoryName(Application.ExecutablePath) ?? Environment.CurrentDirectory;
             //var rootPath = "E:\\";
 
             var config = new ConfigurationBuilder()
-                         .SetBasePath(rootPath)
+                         .SetBasePath(WallpaperSetting.LocalPath)
                          .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                          .Build();
 
