@@ -2,21 +2,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DynamicWallpaper
 {
-    public class DoubleBufferPanel : Panel
-    {
-        public DoubleBufferPanel()
-        {
-            DoubleBuffered = true;
-        }
-    }
 
-    public class DoubleBufferFlowPanel : FlowLayoutPanel
-    {
-        public DoubleBufferFlowPanel()
-        {
-            DoubleBuffered = true;
-        }
-    }
 
 
     internal partial class SettingForm : Form
@@ -42,7 +28,14 @@ namespace DynamicWallpaper
             };
             opsPanel.SetWallpaperEvent += (s, e) =>
             {
-                paperManager.ChangeWallpaper(e.FilePath, e.MonitorId);
+                if (e.MonitorId == "all")
+                {
+                    paperManager.ChangeWallpaper(e.FilePath);
+                }
+                else
+                {
+                    paperManager.ChangeWallpaper(e.FilePath, e.MonitorId);
+                }
             };
             this.Controls.Add(opsPanel);
 

@@ -2,6 +2,9 @@
 
 namespace DynamicWallpaper
 {
+    /// <summary>
+    /// 图片预览的操作面板
+    /// </summary>
     internal class OpsPanel: DoubleBufferPanel
     {
         private readonly IDictionary<string, string> monitors;
@@ -28,45 +31,56 @@ namespace DynamicWallpaper
 
         private void InitComponent()
         {
-            var flowPanel = new DoubleBufferFlowPanel()
+            // 加入中间的半透明遮罩面板
+            var flowPanel = new DoubleBufferPanel()
             {
                 Height = 80,
                 Width = this.Width,
                 BackColor = Color.FromArgb(100, Color.Black),
-                FlowDirection = FlowDirection.LeftToRight,
-                //WrapContents = false,
-                //Dock = DockStyle.Bottom,
-                //Padding = new Padding(0, 0, 0, 0),
-                //Margin = new Padding(0, 0, 0, 0),
                 AutoSize = true,
-                //Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
             };
 
             flowPanel.Top = (this.Height - flowPanel.Height) / 2;
 
-            var love = new PictureBox
+            //  加入一个居中面板，用于计算父层的顶部和左部的偏移量
+            var centerPanel = new DoubleBufferFlowPanel()
+            {
+                Height = 40,
+                Width = 100,
+                AutoSize = true,
+                FlowDirection = FlowDirection.LeftToRight,
+                BackColor = Color.Transparent,
+            };
+            
+
+            var love = new DoubleBufferPictureBox
             {
                 Image = ResourcesHelper.Instance.LoveImg,
                 BackColor = Color.Transparent,
             };
-            var broken = new PictureBox
+            var broken = new DoubleBufferPictureBox
             {
                 Image = ResourcesHelper.Instance.BrokenImg,
                 BackColor = Color.Transparent,
             };
 
-            this.MouseLeave += (sender, e) =>
-            {
-                this.Parent = null;
-            };
+            love.Size = broken.Size = new Size(40, 40);
 
-            flowPanel.Controls.Add(love);
-            flowPanel.Controls.Add(broken);
+            centerPanel.Controls.Add(love);
+            centerPanel.Controls.Add(broken);
+            centerPanel.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+
+            flowPanel.Controls.Add(centerPanel);
+
+            //  计算居中偏移量
+            centerPanel.Top = (flowPanel.Height - centerPanel.Height) / 2;
+            centerPanel.Left = (flowPanel.Width - centerPanel.Width) / 2;
+
 
             this.Controls.Add(flowPanel);
 
             // 在控件右上角，显示一个图标
-            moreBtn = new PictureBox
+            moreBtn = new DoubleBufferPictureBox
             {
                 Image = ResourcesHelper.Instance.MoreImg,
                 SizeMode = PictureBoxSizeMode.Zoom,
@@ -77,6 +91,12 @@ namespace DynamicWallpaper
             moreBtn.Location = new Point(this.Width - moreBtn.Width - 5, 5);
 
             this.Controls.Add(moreBtn);
+
+            //  鼠标离开时，把操作层隐藏
+            this.MouseLeave += (sender, e) =>
+            {
+                this.Parent = null;
+            };
         }
 
 

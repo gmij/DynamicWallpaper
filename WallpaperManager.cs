@@ -35,7 +35,6 @@ namespace DynamicWallpaper
                 { "所有屏幕", "all" }
             };
             GetMonitors();
-            
         }
 
 
@@ -94,17 +93,30 @@ namespace DynamicWallpaper
             // 创建 ManagementObjectSearcher 对象，传入查询语句
             using ManagementObjectSearcher searcher = new ManagementObjectSearcher(query);
 
+            var monitorIds = _desktopWallpaper.GetAllMonitorIDs();
+            
             // 遍历查询结果，获取每一个设备的实例路径和描述信息
             foreach (ManagementObject obj in searcher.Get())
             {
                 // 获取设备实例路径和描述信息
                 string instancePath = obj["__RELPATH"]?.ToString();
                 string deviceDescription = obj["Description"]?.ToString();
-                if (!string.IsNullOrEmpty(deviceDescription) &&  !string.IsNullOrEmpty(instancePath))
-                    _monitors.Add(deviceDescription, instancePath);
+                if (!string.IsNullOrEmpty(deviceDescription) && !string.IsNullOrEmpty(instancePath))
+                {
+                    //  把WMIC取得的设备实例路径进行数据处理，并和IDW上的数据进行匹配
+                    instancePath = instancePath.Replace("Win32_PnPEntity.DeviceID=", "");
+                    instancePath = instancePath.Trim('"');
+                    instancePath = instancePath.Replace("\\\\", "#");
+                    var m = monitorIds.FirstOrDefault(m => m.ToUpper().Contains(instancePath));
+                    if (m != null)
+                        _monitors.Add(deviceDescription, m);
+                }
             }
         }
 
+        /// <summary>
+        /// 给所有显示器更换随机壁纸
+        /// </summary>
         private void ChangeWallpaper()
         {
             if (_wallPaperPool.IsEmpty)
@@ -129,12 +141,30 @@ namespace DynamicWallpaper
             }
         }
 
+        /// <summary>
+        /// 给指定的显示器更换壁纸
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="monitorId"></param>
         public void ChangeWallpaper(string filePath, string monitorId)
         {
-            var currPaper = _desktopWallpaper.GetWallpaper(monitorId);
-            var newPaper = _wallPaperPool.Renew(currPaper);
-            _desktopWallpaper.SetWallpaper(monitorId, newPaper);
-            _logger.LogDebug("{0}已更换壁纸{1}", monitorId, newPaper);
+            _desktopWallpaper.SetWallpaper(monitorId, filePath);
+            _logger.LogDebug("{0}已更换壁纸{1}", monitorId, filePath);
+        }
+
+        /// <summary>
+        /// 给所有显示器更换同一壁纸
+        /// </summary>
+        /// <param name="filePath"></param>
+        public void ChangeWallpaper(string filePath)
+        {
+            var monitorIds = _desktopWallpaper.GetAllMonitorIDs();
+            _logger.LogDebug("当前共{0}显示器", monitorIds.Length);
+            foreach (var monitorId in monitorIds)
+            {
+                _desktopWallpaper.SetWallpaper(monitorId, filePath);
+                _logger.LogDebug("{0}已更换壁纸{1}", monitorId, filePath);
+            }
         }
     }
 }
