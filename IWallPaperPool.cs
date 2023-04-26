@@ -18,6 +18,8 @@
         IList<WallpaperPreview> GetWallpaperPreviews();
 
         EventHandler<WallpaperChangedEventArgs> WallPaperChanged { get; set; }
+
+        void Delete(string path);
     }
 
     public class WallpaperChangedEventArgs

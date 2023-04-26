@@ -38,6 +38,12 @@ namespace DynamicWallpaper
             
         }
 
+
+        public void DeleteWallpaper(string path)
+        {
+            _wallPaperPool.Delete(path);
+        }
+
         public event EventHandler<WallpaperChangedEventArgs> WallpaperChanged;
         public event EventHandler? WallpaperPoolEmpty;
 
@@ -111,6 +117,7 @@ namespace DynamicWallpaper
                 }
                 return;
             }
+            
             var monitorIds = _desktopWallpaper.GetAllMonitorIDs();
             _logger.LogDebug("当前共{0}显示器", monitorIds.Length);
             foreach (var monitorId in monitorIds)
@@ -120,6 +127,14 @@ namespace DynamicWallpaper
                 _desktopWallpaper.SetWallpaper(monitorId, newPaper);
                 _logger.LogDebug("{0}已更换壁纸{1}", monitorId, newPaper);
             }
+        }
+
+        public void ChangeWallpaper(string filePath, string monitorId)
+        {
+            var currPaper = _desktopWallpaper.GetWallpaper(monitorId);
+            var newPaper = _wallPaperPool.Renew(currPaper);
+            _desktopWallpaper.SetWallpaper(monitorId, newPaper);
+            _logger.LogDebug("{0}已更换壁纸{1}", monitorId, newPaper);
         }
     }
 }

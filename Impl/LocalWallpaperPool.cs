@@ -156,5 +156,10 @@ namespace DynamicWallpaper.Impl
             }
             return string.Empty;
         }
+
+        public void Delete(string path)
+        {
+            File.Delete(path);
+        }
     }
 }
