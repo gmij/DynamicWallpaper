@@ -3,6 +3,9 @@
     using System;
     using System.Threading;
 
+    /// <summary>
+    /// 宝箱面板
+    /// </summary>
     public class TreasureChestPanel: DoubleBufferPanel
     {
         private readonly IBox box;
