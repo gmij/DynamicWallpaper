@@ -1,5 +1,7 @@
-using DynamicWallpaper.Impl;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace DynamicWallpaper
 {
@@ -11,7 +13,7 @@ namespace DynamicWallpaper
         }
     }
 
-    public class DoubleBufferFlowPanel: FlowLayoutPanel
+    public class DoubleBufferFlowPanel : FlowLayoutPanel
     {
         public DoubleBufferFlowPanel()
         {
@@ -23,39 +25,49 @@ namespace DynamicWallpaper
     internal partial class SettingForm : Form
     {
 
-
-
-
-
         private readonly WallpaperManager _paperManager;
         private readonly ResourcesHelper rh;
+        private readonly ILogger logger;
         private DoubleBufferPanel? _deletePanel;
 
         private Size _imageSize;
 
-
-        public SettingForm(WallpaperManager paperManager, ResourcesHelper rh, IEnumerable<INetworkPaperProvider> paperProviders)
+        public SettingForm(WallpaperManager paperManager, ResourcesHelper rh, IEnumerable<INetworkPaperProvider> paperProviders, ILogger<SettingForm> logger)
         {
             InitializeComponent();
 
+            this.logger = logger;
+            this.rh = rh;
+            
             CheckForIllegalCrossThreadCalls = false;
 
             _imageSize = new Size(220, 180);
             _paperManager = paperManager;
             _paperManager.WallpaperChanged += WhenWallpaperChanged;
-            this.rh = rh;
             InitPreviewImages();
-            InitializeDeletePanel();
-            foreach(var provider in paperProviders)
+            //InitializeDeletePanel();
+            foreach (var provider in paperProviders)
             {
                 flowLayoutPanel2.Controls.Add(new TreasureChestPanel(provider));
             }
         }
 
-        private void WhenWallpaperChanged(object? sender, EventArgs e)
+        private void WhenWallpaperChanged(object? sender, WallpaperChangedEventArgs e)
         {
-            Thread.Sleep(2000);
-            InitPreviewImages();
+            switch (e.Mode)
+            {
+                case WatcherChangeTypes.Created:
+                    AddPic(e.Data);
+                    break;
+                case WatcherChangeTypes.Deleted:
+                    DelPic(e.Data);
+                    break;
+                case WatcherChangeTypes.Changed:
+                case WatcherChangeTypes.Renamed:
+                    InitPreviewImages();
+                    break;
+            }
+
         }
 
         private void DownWallpaper(object? sender, EventArgs e)
@@ -63,19 +75,50 @@ namespace DynamicWallpaper
             _paperManager.GetInternetWallpaper();
         }
 
-        private void AddPic(PictureBox pic)
+        private void DelPic(WallpaperPreview preview)
+        {
+            var pic = flowLayoutPanel1.Controls.Find(preview.Id, false).FirstOrDefault();
+
+            var clist = flowLayoutPanel1.Controls;
+            foreach (WallpaperPreviewPanel control in clist)
+            {
+                if (control.Id == preview.Id)
+                {
+                    ControlInvoke(() => flowLayoutPanel1.Controls.Remove(control));
+                    break;
+                }
+            }
+        }
+
+        private void ControlInvoke(Action action)
         {
             if (this.InvokeRequired)
             {
                 this.Invoke(() =>
                 {
-                    flowLayoutPanel1.Controls.Add(pic);
+                    action();
                 });
             }
             else
             {
-                flowLayoutPanel1.Controls.Add(pic);
+                action();
             }
+        }
+
+        private void AddPic(WallpaperPreview preview)
+        {
+
+            var pic = new WallpaperPreviewPanel(preview);
+            pic.DelWallpaperEvent = (s, e) =>
+            {
+                var path = e.FilePath;
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+            };
+            ControlInvoke(() => flowLayoutPanel1.Controls.Add(pic));
+            
         }
 
 
@@ -125,18 +168,7 @@ namespace DynamicWallpaper
 
                 foreach (var preview in previews)
                 {
-                    var pic = new PictureBox
-                    {
-                        Image = preview.Image,
-                        Size = _imageSize,
-                        BorderStyle = BorderStyle.FixedSingle,
-                        WaitOnLoad = false,
-                        SizeMode = PictureBoxSizeMode.Zoom,
-                        Tag = preview
-                    };
-
-                    pic.MouseEnter += Pic_MouseHover;
-                    AddPic(pic);
+                   AddPic(preview);
                 }
             }
         }

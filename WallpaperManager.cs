@@ -10,11 +10,11 @@ namespace DynamicWallpaper
         private readonly DesktopWallpaper _desktopWallpaper;
         private readonly IWallPaperPool _wallPaperPool;
         private readonly IEnumerable<INetworkPaperProvider> paperProviders;
-        private int _localWallpaperCount = 0;
         protected readonly ILogger _logger;
         protected readonly int _refreshTime;
 
         private IDictionary<string, string> _monitors;
+        //private int _localWallpaperCount;
 
         //private FileSystemWatcher _watcher;
 
@@ -22,10 +22,9 @@ namespace DynamicWallpaper
         {
             this._logger = logger;
             _wallPaperPool = wallPaperPool;
-            _wallPaperPool.WallPaperChanged += (sender, count) =>
+            _wallPaperPool.WallPaperChanged += (sender, args) =>
             {
-                _localWallpaperCount = count;
-                WallpaperChanged?.Invoke(null, null);
+                WallpaperChanged?.Invoke(sender, args);
             };
             this.paperProviders = paperProviders;
             _desktopWallpaper = wallpaper;
@@ -39,7 +38,7 @@ namespace DynamicWallpaper
             
         }
 
-        public event EventHandler? WallpaperChanged;
+        public event EventHandler<WallpaperChangedEventArgs> WallpaperChanged;
         public event EventHandler? WallpaperPoolEmpty;
 
 
@@ -77,14 +76,12 @@ namespace DynamicWallpaper
 
         internal async void GetInternetWallpaper()
         {
-            await Task.WhenAll(paperProviders.Select(provider => provider.DownLoadWallPaper(3)));
+            await Task.WhenAll(paperProviders.Select(provider => provider.DownLoadWallPaper()));
         }
 
 
         private void GetMonitors()
         {
-            
-
             // 创建 WMI 查询语句，查询 Win32_PnPEntity 类型的设备信息
             string query = "SELECT __RELPATH, Description FROM Win32_PnPEntity WHERE (PNPClass = 'Monitor')";
 

@@ -9,6 +9,16 @@
 
         TimeSpan ResetTime { get; }
 
+        /// <summary>
+        /// 当前有几个箱子可以打开
+        /// </summary>
+        int Count { get; set; } 
+
+        /// <summary>
+        /// 每次开出几张图
+        /// </summary>
+        int Num { get; } 
+
     }
 
     public abstract class BaseBox : IBox
@@ -34,18 +44,21 @@
         public Image OpenBox => rh.GetImage(openImgName);
 
         public abstract TimeSpan ResetTime { get; }
+        public int Count { get; set; } = 0;
+        public virtual int Num { get; set; } = 3;
     }
 
 
     public class WoodenBox : BaseBox
     {
         
-
         public WoodenBox(ResourcesHelper rh): base("yellow", rh)
         {
         }
 
         public override TimeSpan ResetTime => TimeSpan.FromSeconds(5);
+
+        public override int Num => 1;
     }
 
     public class IronBox : BaseBox
