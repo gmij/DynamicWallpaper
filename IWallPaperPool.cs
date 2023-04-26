@@ -15,14 +15,34 @@
         bool IsEmpty { get; }
 
         //  获取所有本地图片的预览图
-        List<WallpaperPreview> GetWallpaperPreviews();
+        IList<WallpaperPreview> GetWallpaperPreviews();
 
-        EventHandler<int> WallPaperChanged { get; set; }
+        EventHandler<WallpaperChangedEventArgs> WallPaperChanged { get; set; }
+    }
+
+    public class WallpaperChangedEventArgs
+    {
+        public WallpaperPreview Data { get;  }
+
+        public string Id { get; }
+
+        public WatcherChangeTypes Mode { get; }
+
+        public WallpaperChangedEventArgs(WallpaperPreview? preview, WatcherChangeTypes mode)
+        {
+            if (preview == null) 
+                throw new ArgumentNullException(nameof(preview));
+
+            this.Data = preview;
+            this.Mode = mode;
+            this.Id = preview.Id;
+        }
+
     }
 
     public interface INetworkPaperProvider
     {
-        Task<bool> DownLoadWallPaper(int num = 5);
+        Task<bool> DownLoadWallPaper();
 
         string ProviderName { get; }
 
