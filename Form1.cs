@@ -18,11 +18,12 @@ namespace DynamicWallpaper
             InitializeComponent();
 
             this.logger = logger;
-            
+
+
             CheckForIllegalCrossThreadCalls = false;
 
             opsPanel = new OpsPanel(paperManager.Monitors);
-            opsPanel.DelWallpaperEvent += (s,e) =>
+            opsPanel.DelWallpaperEvent += (s, e) =>
             {
                 paperManager.DeleteWallpaper(e.FilePath);
             };
@@ -109,7 +110,7 @@ namespace DynamicWallpaper
                 pic.ShowMaskPanel(opsPanel);
             };
             ControlInvoke(() => flowLayoutPanel1.Controls.Add(pic));
-            
+
         }
 
 
@@ -123,7 +124,7 @@ namespace DynamicWallpaper
 
                 foreach (var preview in previews)
                 {
-                   AddPic(preview);
+                    AddPic(preview);
                 }
             }
         }

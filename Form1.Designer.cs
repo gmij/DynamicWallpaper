@@ -99,6 +99,8 @@ namespace DynamicWallpaper
             AutoSize = true;
             ClientSize = new Size(724, 411);
             Controls.Add(tabControl1);
+            DoubleBuffered = true;
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "SettingForm";
