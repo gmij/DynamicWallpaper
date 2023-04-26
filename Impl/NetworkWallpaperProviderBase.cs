@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DynamicWallpaper.Impl
+﻿namespace DynamicWallpaper.Impl
 {
     internal abstract class NetworkWallpaperProviderBase : INetworkPaperProvider
     {
@@ -23,21 +17,25 @@ namespace DynamicWallpaper.Impl
         protected async void SaveToCache(string url, string fileName)
         {
             var cachePath = Path.Combine(CachePath, setting.Today);
+            var filePath = Path.Combine(cachePath, fileName);
+            //  当天已经下载过的资源，不重复下载，退出
+            if (File.Exists(filePath))
+            {
+                return;
+            }
+
             if (!Directory.Exists(cachePath))
             {
                 Directory.CreateDirectory(cachePath);
             }
 
             var fileBytes = await client.GetByteArrayAsync(url);
-            var filePath = Path.Combine(cachePath, fileName);
-            if (File.Exists(filePath))
-            {
-                filePath += Guid.NewGuid().ToString("D");
-            }
-            File.WriteAllBytes(filePath, fileBytes);
+            
+            using var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+            await stream.WriteAsync(fileBytes);
         }
 
-        public abstract Task<bool> DownLoadWallPaper(int num);
+        public abstract Task<bool> DownLoadWallPaper();
 
         
     }

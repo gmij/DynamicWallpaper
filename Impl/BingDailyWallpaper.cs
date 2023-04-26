@@ -1,11 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Json;
-using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DynamicWallpaper.Impl
 {
@@ -22,10 +15,10 @@ namespace DynamicWallpaper.Impl
 
         public override IBox DefaultBox => box;
 
-        public override async Task<bool> DownLoadWallPaper(int num)
+        public override async Task<bool> DownLoadWallPaper()
         {
             // 从必应获取图片
-            string url = $"https://global.bing.com/HPImageArchive.aspx?format=js&idx=0&n={num}&pid=hp&FORM=BEHPTB&uhd=1&uhdwidth=3840&uhdheight=2160&setmkt=zh-CN&setlang=en";
+            string url = $"https://global.bing.com/HPImageArchive.aspx?format=js&idx=0&n={box.Num}&pid=hp&FORM=BEHPTB&uhd=1&uhdwidth=3840&uhdheight=2160&setmkt=zh-CN&setlang=en";
 
             var json = await client.GetStringAsync(url);
 
