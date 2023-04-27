@@ -36,5 +36,5 @@ jobs:
         release_name: Release ${{ github.event.release.tag_name }}
         body: |
             ${{ github.event.release.body }}
-        draft: false
-        prerelease: false
+        draft: true
+        prerelease: true
