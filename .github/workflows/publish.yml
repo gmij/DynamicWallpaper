@@ -14,7 +14,7 @@ jobs:
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1.0.2
     - name: Restore NuGet packages
-      run: nuget restore path/to/solution.sln
+      run: nuget restore DynamicWallpaper.sln
     - name: Build solution
       run: msbuild DynamicWallpaper.sln /p:Configuration=Release
     - name: Publish app
