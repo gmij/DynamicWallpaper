@@ -27,3 +27,14 @@ jobs:
       with:
         name: DynamicWallpaper App Release
         path: bin/Release/net6.0-windows/publish/win-x86
+    - name: Create tag
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.event.release.tag_name }}
+        release_name: Release ${{ github.event.release.tag_name }}
+        body: |
+            ${{ github.event.release.body }}
+        draft: false
+        prerelease: false
