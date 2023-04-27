@@ -1,0 +1,26 @@
+name: Publish WinForm App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v1.0.2
+    - name: Restore NuGet packages
+      run: nuget restore path/to/solution.sln
+    - name: Build solution
+      run: msbuild DynamicWallpaper.sln /p:Configuration=Release
+    - name: Publish app
+      run: msbuild DynamicWallpaper.csproj /p:Configuration=Release /p:PublishProfile=FolderProfile
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: WinForm App
+        path: bin/Release/net6.0-windows/publish/win-x86
