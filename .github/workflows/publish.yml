@@ -27,11 +27,15 @@ jobs:
     - name: Zip files
       run: |
         Compress-Archive -Path bin/Release/net6.0-windows/win-x86/* -DestinationPath bin/Release/net6.0-windows/win-x86/DynamicWallpaper.zip
-    - name: Upload zip file
-      uses: actions/upload-artifact@v2
+    - name: Upload release asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        name: DynamicWallpaper App Release Zip
-        path: bin/Release/net6.0-windows/win-x86/DynamicWallpaper.zip
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: bin/Release/net6.0-windows/win-x86/DynamicWallpaper.zip
+        asset_name: DynamicWallpaper.zip
+        asset_content_type: application/zip
     - name: Create tag
       uses: actions/create-release@v1
       env:
