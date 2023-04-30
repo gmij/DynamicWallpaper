@@ -36,14 +36,14 @@ jobs:
         asset_path: bin/Release/net6.0-windows/win-x86/DynamicWallpaper.zip
         asset_name: DynamicWallpaper.zip
         asset_content_type: application/zip
-    - name: Create tag
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: v${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        body: |
-            ${{ github.event.release.body }}
-        draft: false
-        prerelease: false
+#    - name: Create tag
+#      uses: actions/create-release@v1
+#      env:
+#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      with:
+#        tag_name: v${{ github.ref }}
+#        release_name: Release ${{ github.ref }}
+#        body: |
+#            ${{ github.event.release.body }}
+#        draft: false
+#        prerelease: false
