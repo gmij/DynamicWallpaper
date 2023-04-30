@@ -23,7 +23,7 @@ jobs:
     - name: Print current directory
       run: echo $PWD      
     - name: Publish app
-      run: msbuild $env:Project_Name /t:publish /p:Configuration=Release /p:PublishProfile=./Properties/PublishProfiles/FolderProfile.pubxml /m
+      run: msbuild $env:Project_Name /t:publish /p:Configuration=Release /p:PublishProfile=".\Properties\PublishProfiles\FolderProfile.pubxml" /m
     - name: Zip files
       run: |
         Compress-Archive -Path bin/Release/net6.0-windows/win-x86/publish/win-x86/* -DestinationPath bin/Release/net6.0-windows/win-x86/DynamicWallpaper.zip
