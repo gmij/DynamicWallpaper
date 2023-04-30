@@ -21,7 +21,7 @@ jobs:
     - name: Build solution
       run: msbuild $env:Solution_Name /p:Configuration=Release /m
     - name: Publish app
-      run: msbuild $env:Project_Name /p:Configuration=Release /p:PublishProfile=properties/publishprofiles/FolderProfile.pubxml /m
+      run: msbuild $env:Project_Name /t:publish /p:Configuration=Release /p:PublishProfile=properties/publishprofiles/FolderProfile.pubxml /m
     - name: Print current directory
       run: echo $PWD      
     - name: Zip files
