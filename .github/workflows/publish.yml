@@ -24,11 +24,14 @@ jobs:
       run: msbuild $env:Project_Name /p:Configuration=Release /p:PublishProfile=FolderProfile /m
     - name: Print current directory
       run: echo $PWD      
-    - name: Upload artifacts
+    - name: Zip files
+      run: |
+        Compress-Archive -Path bin/Release/net6.0-windows/win-x86/* -DestinationPath bin/Release/net6.0-windows/win-x86/DynamicWallpaper.zip
+    - name: Upload zip file
       uses: actions/upload-artifact@v2
       with:
-        name: DynamicWallpaper App Release
-        path: bin/Release/net6.0-windows/win-x86/
+        name: DynamicWallpaper App Release Zip
+        path: bin/Release/net6.0-windows/win-x86/DynamicWallpaper.zip
     - name: Create tag
       uses: actions/create-release@v1
       env:
