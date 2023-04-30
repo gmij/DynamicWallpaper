@@ -26,7 +26,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: DynamicWallpaper App Release
-        path: bin/Release/net6.0-windows/publish/win-x86
+        path: bin/Release/net6.0-windows/win-x86/
     - name: Create tag
       uses: actions/create-release@v1
       env:
