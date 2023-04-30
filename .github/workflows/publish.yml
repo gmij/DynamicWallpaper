@@ -32,20 +32,12 @@ jobs:
       with:
         name: DynamicWallpaper App Release Zip
         path: bin/Release/net6.0-windows/win-x86/DynamicWallpaper.zip
-    - name: Check if tag exists
-      id: check_tag
-      run: |
-        if [[ $(git tag -l ${{ github.ref }}) ]]; then
-          echo "::set-output name=exists::true"
-        else
-          echo "::set-output name=exists::false"
-        fi        
     - name: Create tag
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ github.ref }}
+        tag_name: v${{ github.ref }}
         release_name: Release ${{ github.ref }}
         body: |
             ${{ github.event.release.body }}
