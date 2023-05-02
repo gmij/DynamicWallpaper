@@ -26,7 +26,7 @@ jobs:
       run: echo $PWD      
     - name: Publish app
       #run: msbuild $env:Project_Name /t:publish /p:Configuration=Release /p:PublishProfile=./Properties/PublishProfiles/FolderProfile.pubxml /m /v:diag 
-      run: dotnet publish ${{ env:Project_Name }} -c Release -r win-x86 -p:PublishReadyToRun=true -p:SelfContained=true -p:PublishSingleFile=true -p:PublishDir=${{ env.publish_dir }}
+      run: dotnet publish $env:Project_Name -c Release -r win-x86 -p:PublishReadyToRun=true -p:SelfContained=true -p:PublishSingleFile=true -p:PublishDir=${{ env.publish_dir }}
     - name: Zip files
       run: |
         Compress-Archive -Path ${{ env.publish_dir }}/* -DestinationPath ${{ env.publish_dir }}/DynamicWallpaper.zip
