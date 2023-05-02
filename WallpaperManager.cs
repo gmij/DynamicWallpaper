@@ -109,7 +109,16 @@ namespace DynamicWallpaper
                     instancePath = instancePath.Replace("\\\\", "#");
                     var m = monitorIds.FirstOrDefault(m => m.ToUpper().Contains(instancePath));
                     if (m != null)
-                        _monitors.Add(deviceDescription, m);
+                    {
+                        // 对可以存在的显示器名称重复进行处理，以下代码由Cursor生成
+                        //  主要出现的场景，显示器未安装驱动，在OS中多显示器均显示为通用显示器之类的，引发的重名
+                        var i = 0;
+                        string newKey = deviceDescription;
+                        while (!_monitors.TryAdd(newKey, m) && i < 10)
+                        {
+                            newKey = $"{deviceDescription} ({++i})";
+                        }
+                    }
                 }
             }
         }
