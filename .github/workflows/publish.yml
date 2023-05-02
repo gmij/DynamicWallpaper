@@ -24,10 +24,10 @@ jobs:
       run: echo $PWD      
     - name: Publish app
       #run: msbuild $env:Project_Name /t:publish /p:Configuration=Release /p:PublishProfile=./Properties/PublishProfiles/FolderProfile.pubxml /m /v:diag 
-      run: dotnet publish $env:Project_Name -c Release -r win-x86 -o bin/Release/net6.0-windows/ -p:PublishReadyToRun=true -p:SelfContained=true -p:PublishSingleFile=true
+      run: dotnet publish $env:Project_Name -c Release -r win-x86 -p:PublishReadyToRun=true -p:SelfContained=true -p:PublishSingleFile=true -p:PublishDir=bin/Release/publish
     - name: Zip files
       run: |
-        Compress-Archive -Path bin/Release/net6.0-windows/* -DestinationPath bin/Release/net6.0-windows/DynamicWallpaper.zip
+        Compress-Archive -Path bin/Release/publish/* -DestinationPath bin/Release/publish/DynamicWallpaper.zip
     - name: Upload release asset
       uses: actions/upload-release-asset@v1
       env:
