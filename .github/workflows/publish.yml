@@ -11,30 +11,42 @@ jobs:
     env:
       Solution_Name: DynamicWallpaper.sln 
       Project_Name: DynamicWallpaper.csproj
+      publish_dir: bin/release/publish
+      
 
     steps:
     - uses: actions/checkout@v2
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1.0.2
-    - name: Restore NuGet packages
-      run: nuget restore $env:Solution_Name
-    - name: Build solution
-      run: msbuild $env:Solution_Name /p:Configuration=Release /m
+#    - name: Restore NuGet packages
+#      run: dotnet restore -r win-x86
+#    - name: Build solution
+#      run: msbuild $env:Solution_Name /p:Configuration=Release /m
+    - name: Print current directory
+      run: echo $PWD      
     - name: Publish app
-      run: msbuild $env:Project_Name /p:Configuration=Release /p:PublishProfile=FolderProfile /m
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: DynamicWallpaper App Release
-        path: bin/Release/net6.0-windows/publish/win-x86
-    - name: Create tag
-      uses: actions/create-release@v1
+      #run: msbuild $env:Project_Name /t:publish /p:Configuration=Release /p:PublishProfile=./Properties/PublishProfiles/FolderProfile.pubxml /m /v:diag 
+      run: dotnet publish $env:Project_Name -c Release -r win-x86 -p:PublishReadyToRun=true -p:SelfContained=true -p:PublishSingleFile=true -p:PublishDir=${{ env.publish_dir }}
+    - name: Zip files
+      run: |
+        Compress-Archive -Path ${{ env.publish_dir }}/* -DestinationPath ${{ env.publish_dir }}/DynamicWallpaper.zip
+    - name: Upload release asset
+      uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ github.event.inputs.tag }}
-        release_name: Release ${{ github.event.inputs.tag }}
-        body: |
-            ${{ github.event.release.body }}
-        draft: false
-        prerelease: false
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ${{ env.publish_dir }}/DynamicWallpaper.zip
+        asset_name: DynamicWallpaper.zip
+        asset_content_type: application/zip
+#    - name: Create tag
+#      uses: actions/create-release@v1
+#      env:
+#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      with:
+#        tag_name: v${{ github.ref }}
+#        release_name: Release ${{ github.ref }}
+#        body: |
+#            ${{ github.event.release.body }}
+#        draft: false
+#        prerelease: false
