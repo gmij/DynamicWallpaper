@@ -20,6 +20,10 @@ namespace DynamicWallpaper.Impl
         public LocalWallpaperPool(WallpaperSetting setting, ILogger<LocalWallpaperPool> logger)
         {
             cachePath = setting.CachePath;
+            if (!Directory.Exists(cachePath))
+            {
+                Directory.CreateDirectory(cachePath);
+            }
             var files = Directory.GetFiles(cachePath, "*", SearchOption.AllDirectories);
             previews = new List<WallpaperPreview>();
             LoadImages(files);

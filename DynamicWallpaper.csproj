@@ -18,10 +18,8 @@
     <EmbeddedResource Remove="libs\**" />
     <None Remove="DynamicWallpaper.LocalServices\**" />
     <None Remove="libs\**" />
-
-
-	  <None Remove="ico\**" />
-	  <EmbeddedResource Include="ico\**" />
+	<None Remove="ico\**" />
+	<EmbeddedResource Include="ico\**" />
   </ItemGroup>
 
 
