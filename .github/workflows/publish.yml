@@ -17,13 +17,13 @@ jobs:
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1.0.2
     - name: Restore NuGet packages
-      run: nuget restore $env:Project_Name
+      run: nuget restore $env:Project_Name -r win-x86
     - name: Build solution
       run: msbuild $env:Solution_Name /p:Configuration=Release /m
     - name: Print current directory
       run: echo $PWD      
     - name: Publish app
-      run: msbuild $env:Project_Name /t:publish /p:Configuration=Release /p:PublishProfile=./Properties/PublishProfiles/FolderProfile.pubxml /m /v:diag
+      run: msbuild $env:Project_Name /t:publish /p:Configuration=Release /p:PublishProfile=./Properties/PublishProfiles/FolderProfile.pubxml /m /v:diag 
     - name: Zip files
       run: |
         Compress-Archive -Path bin/Release/net6.0-windows/win-x86/publish/win-x86/* -DestinationPath bin/Release/net6.0-windows/win-x86/DynamicWallpaper.zip
