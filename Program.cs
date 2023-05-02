@@ -62,8 +62,25 @@ namespace DynamicWallpaper
             //  加入注册表自启动项，以下代码为Copilit生成
             //  1. 创建一个RegistryKey对象
             var reg = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-            // 2. 设置自启动项
-            reg?.SetValue("DynamicWallpaper", Application.ExecutablePath);
+            if (reg != null)
+            {
+                // 2. 设置自启动项
+                reg.SetValue("DynamicWallpaper", Application.ExecutablePath);
+
+                reg.Close();
+            }
+
+            //  对任务管理器中禁用启动项进行处理，以下代码为Copilit生成
+            reg = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\StartupApproved\\Run", true);
+            if (reg != null)
+            {
+                var disableItems = reg.GetValueNames();
+                if (disableItems.Contains("DynamicWallpaper"))
+                {
+                    reg.DeleteValue("DynamicWallpaper");
+                }
+            }
+            reg?.Close();
         }
 
         private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
