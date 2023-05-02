@@ -1,10 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace DynamicWallpaper.Impl
 {
     internal class BingDailyWallpaper : NetworkWallpaperProviderBase
     {
-        public BingDailyWallpaper(WallpaperSetting setting, WoodenBox box) : base(setting)
+        public BingDailyWallpaper(WallpaperSetting setting, WoodenBox box, ILogger<NetworkWallpaperProviderBase> logger) : base(setting, logger)
         {
             this.box = box;
         }

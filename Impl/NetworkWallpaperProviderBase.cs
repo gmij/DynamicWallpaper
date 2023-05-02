@@ -1,17 +1,21 @@
-﻿namespace DynamicWallpaper.Impl
+﻿using Microsoft.Extensions.Logging;
+
+namespace DynamicWallpaper.Impl
 {
     internal abstract class NetworkWallpaperProviderBase : INetworkPaperProvider
     {
         protected readonly WallpaperSetting setting;
+        private readonly ILogger<NetworkWallpaperProviderBase> logger;
         protected HttpClient client;
         protected string CachePath => Path.Combine(setting.CachePath, "Internet");
 
         public abstract string ProviderName { get; }
         public abstract IBox DefaultBox { get; }
 
-        public NetworkWallpaperProviderBase(WallpaperSetting setting) {
+        public NetworkWallpaperProviderBase(WallpaperSetting setting, ILogger<NetworkWallpaperProviderBase> logger) {
             client = new HttpClient();
             this.setting = setting;
+            this.logger = logger;
         }
 
         protected async void SaveToCache(string url, string fileName)
@@ -21,6 +25,7 @@
             //  当天已经下载过的资源，不重复下载，退出
             if (File.Exists(filePath))
             {
+                logger.LogInformation("资源已存在，不重复下载: {0}", filePath);
                 return;
             }
 

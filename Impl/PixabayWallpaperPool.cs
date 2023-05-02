@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace DynamicWallpaper.Impl
 {
@@ -19,7 +20,7 @@ namespace DynamicWallpaper.Impl
             public string LargeImageURL { get; set; }
         }
 
-        public PixabayWallpaperPool(WallpaperSetting setting, IronBox box):base(setting)
+        public PixabayWallpaperPool(WallpaperSetting setting, IronBox box, ILogger<NetworkWallpaperProviderBase> logger):base(setting, logger)
         {
             this.box = box;
         }
@@ -38,7 +39,7 @@ namespace DynamicWallpaper.Impl
         public override async Task<bool> DownLoadWallPaper()
         {
             string apiKey = "35011350-04a87bff3b45e5d929d805228";
-            string searchQuery = "nature";
+            string searchQuery = "";
             string uri = $"https://pixabay.com/api/?key={apiKey}&q={searchQuery}&image_type=photo&per_page={box.Num}&order=latest&lang=zh";
 
             HttpResponseMessage response = await client.GetAsync(uri);
