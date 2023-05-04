@@ -48,7 +48,7 @@ namespace DynamicWallpaper
             tabPage1.Padding = new Padding(3);
             tabPage1.Size = new Size(716, 381);
             tabPage1.TabIndex = 0;
-            tabPage1.Text = "壁纸池";
+            tabPage1.Text = ResourcesHelper.GetString("PaperPool");
             tabPage1.UseVisualStyleBackColor = true;
             // 
             // flowLayoutPanel1
@@ -80,7 +80,7 @@ namespace DynamicWallpaper
             tabPage2.Name = "tabPage2";
             tabPage2.Size = new Size(716, 381);
             tabPage2.TabIndex = 1;
-            tabPage2.Text = "开宝箱";
+            tabPage2.Text = ResourcesHelper.GetString("TreasureChest");
             tabPage2.UseVisualStyleBackColor = true;
             // 
             // flowLayoutPanel2
@@ -104,7 +104,7 @@ namespace DynamicWallpaper
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "SettingForm";
-            Text = "壁纸设置";
+            Text = ResourcesHelper.GetString("SettingFormTitle");
             tabPage1.ResumeLayout(false);
             tabPage1.PerformLayout();
             tabControl1.ResumeLayout(false);

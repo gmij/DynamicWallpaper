@@ -1,15 +1,10 @@
-using DynamicWallpaper.Impl;
-using IDesktopWallpaperWrapper;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+ï»¿using DynamicWallpaper.Tools;
 using Microsoft.Extensions.Logging;
-using Microsoft.Win32;
-using NLog.Extensions.Logging;
 using System.Diagnostics;
 
 namespace DynamicWallpaper
 {
-    internal static class Program
+    internal class Program
     {
         private static Mutex? _mutex;
 
@@ -17,11 +12,11 @@ namespace DynamicWallpaper
 
         private static NotifyIcon? _notifyIcon;
 
-        private static ServiceProvider? _sp;
-
         private static SettingForm? _settingForm;
 
         internal static WallpaperManager? Manager { get => _manager; set => _manager = value; }
+
+        private static readonly string AppName = typeof(Program).Assembly.GetName().Name ?? "DynamicWallpaper";
 
         /// <summary>
         ///  The main entry point for the application.
@@ -29,102 +24,39 @@ namespace DynamicWallpaper
         [STAThread]
         static void Main()
         {
-            MutexApp();
 
-            SetAutoStart();
+            MutexApp(AppName);
 
-            //  ¼ÓÈëÒÀÀµ×¢ÈëÌØĞÔ
-            var services = new ServiceCollection();
+            RegeditHelper.SetAutoStart(AppName);
 
-            ConfigureServices(services);
+            ServiceLocator.Initialize();
 
-            _sp = services.BuildServiceProvider();
-
-            _manager = _sp.GetRequiredService<WallpaperManager>();
-            //_manager.WallpaperPoolEmpty += WhenWallpaperPoolEmpty;
+            _manager = ServiceLocator.GetService<WallpaperManager>();
             _manager.Start();
 
             CreateNotifyIcon();
-
 
             Application.ThreadException += Application_ThreadException;
 
             Application.Run();
 
-            // ÊÍ·Å×ÊÔ´£¬ÏÂÃæµÄ´úÂëÎªCoplit×Ô¶¯Éú³É
+            // é‡Šæ”¾èµ„æºï¼Œä¸‹é¢çš„ä»£ç ä¸ºCoplitè‡ªåŠ¨ç”Ÿæˆ
             _notifyIcon?.Dispose();
             _mutex?.ReleaseMutex();
-
         }
 
-        private static void SetAutoStart()
-        {
-            //  ¼ÓÈë×¢²á±í×ÔÆô¶¯Ïî£¬ÒÔÏÂ´úÂëÎªCopilitÉú³É
-            //  1. ´´½¨Ò»¸öRegistryKey¶ÔÏó
-            var reg = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-            if (reg != null)
-            {
-                // 2. ÉèÖÃ×ÔÆô¶¯Ïî
-                reg.SetValue("DynamicWallpaper", Application.ExecutablePath);
-
-                reg.Close();
-            }
-
-            //  ¶ÔÈÎÎñ¹ÜÀíÆ÷ÖĞ½ûÓÃÆô¶¯Ïî½øĞĞ´¦Àí£¬ÒÔÏÂ´úÂëÎªCopilitÉú³É
-            reg = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\StartupApproved\\Run", true);
-            if (reg != null)
-            {
-                var disableItems = reg.GetValueNames();
-                if (disableItems.Contains("DynamicWallpaper"))
-                {
-                    reg.DeleteValue("DynamicWallpaper");
-                }
-            }
-            reg?.Close();
-        }
+       
 
         private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
         {
-            if (_sp != null)
-            {
-                var log = _sp.GetService<ILogger>();
-                log?.LogCritical(e.Exception, "Òì³£ÍË³ö");
-            }
+
+            var log = ServiceLocator.GetService<ILogger>();
+            log?.LogCritical(e.Exception, "å¼‚å¸¸é€€å‡º");
+
             MessageBox.Show($"{e.Exception.Message}\r\n{e.Exception.StackTrace}");
         }
 
 
-        private static void ConfigureServices(ServiceCollection services)
-        {
-            //var rootPath = Path.GetDirectoryName(Application.ExecutablePath) ?? Environment.CurrentDirectory;
-            //var rootPath = "E:\\";
-
-            var config = new ConfigurationBuilder()
-                         .SetBasePath(WallpaperSetting.LocalPath)
-                         .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                         .Build();
-
-            //  ¿ªÆôÈÕÖ¾
-            services.AddLogging(builder =>
-            {
-                // configure Logging with NLog
-                builder.ClearProviders();
-                builder.SetMinimumLevel(LogLevel.Trace);
-                builder.AddNLog(config);
-            });
-
-            services.AddSingleton<ResourcesHelper>();
-            services.AddSingleton<DesktopWallpaper>();
-            services.AddSingleton<SettingForm>();
-            services.AddSingleton<WallpaperManager>();
-            services.AddSingleton<WallpaperSetting>();
-            services.AddSingleton<IWallPaperPool, LocalWallpaperPool>();
-
-            services.AddSingleton<WoodenBox>();
-            services.AddSingleton<IronBox>();
-            services.AddSingleton<INetworkPaperProvider, BingDailyWallpaper>();
-            services.AddSingleton<INetworkPaperProvider, PixabayWallpaperPool>();
-        }
 
         private static void ShowSetting()
         {
@@ -137,14 +69,13 @@ namespace DynamicWallpaper
             if (_settingForm != null && !_settingForm.IsDisposed)
             {
                 _settingForm.ShowDialog();
-                
+
             }
             else
             {
-                //  ´´½¨ÉèÖÃ´°Ìå
-                //  ´¦ÀíGetService·µ»Ø¿ÕÒıÓÃ
-
-                _settingForm = _sp?.GetService<SettingForm>();
+                //  åˆ›å»ºè®¾ç½®çª—ä½“
+                //  å¤„ç†GetServiceè¿”å›ç©ºå¼•ç”¨
+                _settingForm = ServiceLocator.GetService<SettingForm>();
                 _settingForm?.ShowDialog();
             }
         }
@@ -152,34 +83,35 @@ namespace DynamicWallpaper
         private static void CreateNotifyIcon()
         {
 
-            // ¼ÓÈëÏµÍ³ÍĞÅÌ£¬Ìá¹©Ò»¸öÍË³öÑ¡Ïî£¬ÏÂÃæµÄ´úÂëÎªCoplit×Ô¶¯Éú³É
-            // 1. ´´½¨Ò»¸öNotifyIcon¶ÔÏó  
+            // åŠ å…¥ç³»ç»Ÿæ‰˜ç›˜ï¼Œæä¾›ä¸€ä¸ªé€€å‡ºé€‰é¡¹ï¼Œä¸‹é¢çš„ä»£ç ä¸ºCoplitè‡ªåŠ¨ç”Ÿæˆ
+            // 1. åˆ›å»ºä¸€ä¸ªNotifyIconå¯¹è±¡  
             _notifyIcon = new NotifyIcon();
-            // 2. ÍĞÅÌÍ¼±ê
+            // 2. æ‰˜ç›˜å›¾æ ‡
             _notifyIcon.Icon = new Icon(SystemIcons.Application, 40, 40);
-            // 3. ÍĞÅÌÊó±êĞüÍ£Ê±ÏÔÊ¾µÄÎÄ±¾
-            _notifyIcon.Text = "¶¯Ì¬±ÚÖ½";
-            // 4. ÏÔÊ¾ÍĞÅÌÍ¼±ê
+            // 3. æ‰˜ç›˜é¼ æ ‡æ‚¬åœæ—¶æ˜¾ç¤ºçš„æ–‡æœ¬
+            _notifyIcon.Text = ResourcesHelper.GetString("ApplicationName");
+
+            // 4. æ˜¾ç¤ºæ‰˜ç›˜å›¾æ ‡
             _notifyIcon.Visible = true;
-            // 5. ÍĞÅÌ²Ëµ¥
+            // 5. æ‰˜ç›˜èœå•
             _notifyIcon.ContextMenuStrip = new ContextMenuStrip();
 
-            var rh = _sp?.GetService<ResourcesHelper>();
+            var rh = ServiceLocator.GetService<ResourcesHelper>();
 
-            _notifyIcon.ContextMenuStrip.Items.Add("ÍË³ö", rh?.ExitImg, (s, e) =>
+            _notifyIcon.ContextMenuStrip.Items.Add(ResourcesHelper.GetString("Quit"), rh?.ExitImg, (s, e) =>
             {
-                // ÍË³ö³ÌĞò
+                // é€€å‡ºç¨‹åº
                 Application.Exit();
             });
 
-            // ÍĞÅÌÍ¼±êË«»÷Ê±£¬´ò¿ªÉèÖÃ´°Ìå£¬ÏÂÃæµÄ´úÂëÎªCoplit×Ô¶¯Éú³É
+            // æ‰˜ç›˜å›¾æ ‡åŒå‡»æ—¶ï¼Œæ‰“å¼€è®¾ç½®çª—ä½“ï¼Œä¸‹é¢çš„ä»£ç ä¸ºCoplitè‡ªåŠ¨ç”Ÿæˆ
             _notifyIcon.DoubleClick += (s, e) => ShowSetting();
 
-            // ÍĞÅÌÍ¼±êÓÒ¼ü²Ëµ¥ÖĞ£¬Ìí¼ÓÒ»¸öÉèÖÃ²Ëµ¥£¬ÏÂÃæµÄ´úÂëÎªCoplit×Ô¶¯Éú³É
-            _notifyIcon.ContextMenuStrip.Items.Add("ÉèÖÃ", rh?.SettingImg, (s, e) => ShowSetting());
+            // æ‰˜ç›˜å›¾æ ‡å³é”®èœå•ä¸­ï¼Œæ·»åŠ ä¸€ä¸ªè®¾ç½®èœå•ï¼Œä¸‹é¢çš„ä»£ç ä¸ºCoplitè‡ªåŠ¨ç”Ÿæˆ
+            _notifyIcon.ContextMenuStrip.Items.Add(ResourcesHelper.GetString("Setting"), rh?.SettingImg, (s, e) => ShowSetting());
 
-            //  ÍĞÅÌÍ¼±êÓÒ¼ü²Ëµ¥ÖĞ£¬Ìí¼ÓÒ»¸öË¢ĞÂ²Ëµ¥£¬
-            _notifyIcon.ContextMenuStrip.Items.Add("Ë¢ĞÂ", rh?.RefreshImg, (s, e) => Refresh());
+            //  æ‰˜ç›˜å›¾æ ‡å³é”®èœå•ä¸­ï¼Œæ·»åŠ ä¸€ä¸ªåˆ·æ–°èœå•ï¼Œ
+            _notifyIcon.ContextMenuStrip.Items.Add(ResourcesHelper.GetString("Refresh"), rh?.RefreshImg, (s, e) => Refresh());
         }
 
         private static void Refresh()
@@ -187,16 +119,16 @@ namespace DynamicWallpaper
             _manager?.Refresh();
         }
 
-        private static void MutexApp()
+        private static void MutexApp(string appName)
         {
-            // Ê¹ÓÃMutex£¬¼ÓÈë½ø³Ì¿ØÖÆ£¬Ö»ÄÜÆô¶¯Ò»¸öÓ¦ÓÃ£¬Æô¶¯ĞÂµÄÊ±ºò£¬Ö±½ÓÍË³ö¡£ÏÂÃæµÄ´úÂëÎªCoplit×Ô¶¯Éú³É
-            // 1. ´´½¨Ò»¸öMutex¶ÔÏó
-            _mutex = new Mutex(true, "DynamicWallpaper", out bool createdNew);
-            // 2. Èç¹ûÒÑ¾­´æÔÚÒ»¸ö½ø³Ì£¬ÍË³öµ±Ç°½ø³Ì
+            // ä½¿ç”¨Mutexï¼ŒåŠ å…¥è¿›ç¨‹æ§åˆ¶ï¼Œåªèƒ½å¯åŠ¨ä¸€ä¸ªåº”ç”¨ï¼Œå¯åŠ¨æ–°çš„æ—¶å€™ï¼Œç›´æ¥é€€å‡ºã€‚ä¸‹é¢çš„ä»£ç ä¸ºCoplitè‡ªåŠ¨ç”Ÿæˆ
+            // 1. åˆ›å»ºä¸€ä¸ªMutexå¯¹è±¡
+            _mutex = new Mutex(true, appName, out bool createdNew);
+            // 2. å¦‚æœå·²ç»å­˜åœ¨ä¸€ä¸ªè¿›ç¨‹ï¼Œé€€å‡ºå½“å‰è¿›ç¨‹
             if (!createdNew)
             {
                 MessageBox.Show("app already start...");
-                // ÍË³öµ±Ç°½ø³Ì
+                // é€€å‡ºå½“å‰è¿›ç¨‹
                 Process.GetCurrentProcess().Kill();
                 return;
             }

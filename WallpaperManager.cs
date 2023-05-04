@@ -32,7 +32,7 @@ namespace DynamicWallpaper
 
             _monitors = new Dictionary<string, string>
             {
-                { "所有屏幕", "all" }
+                { ResourcesHelper.GetString("Ops.AllScreen"), "all" }
             };
             GetMonitors();
         }

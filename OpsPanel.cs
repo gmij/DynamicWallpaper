@@ -102,9 +102,11 @@ namespace DynamicWallpaper
 
         private void BuildMoreOptsMenu(Control icon)
         {
+            var delTxt = ResourcesHelper.GetString("Ops.Delete");
+            var applyTxt = ResourcesHelper.GetString("Ops.Apply");
 
             // 创建一个菜单项
-            var deleteItem = new ToolStripMenuItem("删除");
+            var deleteItem = new ToolStripMenuItem(delTxt);
 
             // 为菜单项添加点击事件
             deleteItem.Click += (sender, args) =>
@@ -126,7 +128,7 @@ namespace DynamicWallpaper
 
             foreach (var monitor in monitors)
             {
-                var setItem = new ToolStripMenuItem($"设置到{monitor.Key}");
+                var setItem = new ToolStripMenuItem($"{applyTxt}{monitor.Key}");
                 setItem.Click += (sender, args) =>
                 {
                     var wallpaper = ((WallpaperPreviewPanel)Parent.Parent)?.Wallpaper;

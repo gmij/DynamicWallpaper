@@ -1,32 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
+using System.Globalization;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DynamicWallpaper
 {
     public class ResourcesHelper
     {
-        Assembly _assembly;
-        string _icoResourcePath;
+        private Assembly _assembly;
+        private string _icoResourcePath = "DynamicWallpaper.ico.";
+        private ILogger<ResourcesHelper> logger;
 
-        public ResourcesHelper() {
-
-            _assembly = Assembly.GetExecutingAssembly();
-            _icoResourcePath = "DynamicWallpaper.ico.";
-        }
-
-
-        static ResourcesHelper _instance;
-
-        static ResourcesHelper()
+        public ResourcesHelper(ILogger<ResourcesHelper> logger)
         {
-            _instance = new ResourcesHelper();
+            _assembly = Assembly.GetExecutingAssembly();
+            this.logger = logger;
         }
 
-        public static ResourcesHelper Instance => _instance;
+
+        private static readonly Lazy<ResourcesHelper> _instance = new(() =>
+        {
+            var logger = ServiceLocator.GetService<ILogger<ResourcesHelper>>();
+            return new ResourcesHelper(logger);
+        }, LazyThreadSafetyMode.ExecutionAndPublication);
+
+        public static ResourcesHelper Instance => _instance.Value;
+
+        public static string GetString(string name)
+        {
+            var service = ServiceLocator.GetService<IStringLocalizer<ResourcesHelper>>();
+            return service.GetString($"{name}");
+        }
+
+        public static string GetString<T>(string name)
+        {
+            var service = ServiceLocator.GetService<IStringLocalizer<T>>();
+            return service.GetString($"{name}");
+        }
 
         private Stream GetResource(string path)
         {
@@ -39,7 +49,11 @@ namespace DynamicWallpaper
                 else
                     throw new ArgumentOutOfRangeException("path", "不存在的资源");
             }
-            throw new ArgumentNullException("path");
+            else
+            {
+                logger.LogError($"无效的资源路径:{path}");
+                throw new ArgumentNullException("path");
+            }
         }
 
         internal Image GetImage(string path)
@@ -73,5 +87,9 @@ namespace DynamicWallpaper
         public Image BrokenImg => GetImage("broken.png");
 
         public Image MoreImg => GetImage("more.png");
+
+
+        
+
     }
 }

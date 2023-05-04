@@ -72,7 +72,7 @@
             label = new Label
             {
                 Dock = DockStyle.Right,
-                Text = "双击打开",
+                Text = ResourcesHelper.GetString("Open"),
                 BackColor = Color.Transparent,
                 AutoSize = true,
             };
@@ -90,7 +90,7 @@
             }
             if (label != null)
             {
-                label.Text = "wait~~";
+                label.Text = ResourcesHelper.GetString("Wait");
                 timer?.Change(box.ResetTime.Seconds*1000, Timeout.Infinite);
                 labelTime = box.ResetTime;
                 labelTimer?.Change(1000, 1000);
