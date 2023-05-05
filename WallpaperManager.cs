@@ -22,19 +22,18 @@ namespace DynamicWallpaper
         {
             this._logger = logger;
             _wallPaperPool = wallPaperPool;
-            _wallPaperPool.WallPaperChanged += (sender, args) =>
-            {
-                WallpaperChanged?.Invoke(sender, args);
-            };
+
+
+
             this.paperProviders = paperProviders;
             _desktopWallpaper = wallpaper;
             _refreshTime = setting.RefreshTime;
 
-            _monitors = new Dictionary<string, string>
-            {
-                { ResourcesHelper.GetString("Ops.AllScreen"), "all" }
-            };
+            _monitors = new Dictionary<string, string>();
+
             GetMonitors();
+
+            
         }
 
 
@@ -43,7 +42,7 @@ namespace DynamicWallpaper
             _wallPaperPool.Delete(path);
         }
 
-        public event EventHandler<WallpaperChangedEventArgs> WallpaperChanged;
+        //public event EventHandler<WallpaperChangedEventArgs> WallpaperChanged;
         public event EventHandler? WallpaperPoolEmpty;
 
 
@@ -94,6 +93,10 @@ namespace DynamicWallpaper
             using ManagementObjectSearcher searcher = new ManagementObjectSearcher(query);
 
             var monitorIds = _desktopWallpaper.GetAllMonitorIDs();
+            if (monitorIds.Length > 1)
+            {
+                _monitors.Add(ResourcesHelper.GetString("Ops.AllScreen"), "all");
+            }
             
             // 遍历查询结果，获取每一个设备的实例路径和描述信息
             foreach (ManagementObject obj in searcher.Get())
@@ -121,7 +124,13 @@ namespace DynamicWallpaper
                     }
                 }
             }
+            if (_monitors.Count == 2)
+            {
+                //  实际开机显示器只有1台时，移除所有屏幕的选项
+                _monitors.Remove(ResourcesHelper.GetString("Ops.AllScreen"));
+            }
         }
+
 
         /// <summary>
         /// 给所有显示器更换随机壁纸

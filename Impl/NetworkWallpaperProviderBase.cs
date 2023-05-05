@@ -2,10 +2,18 @@
 
 namespace DynamicWallpaper.Impl
 {
+
+    public class ResourceExistsEventArgs: CustomEventArgs
+    {
+        public ResourceExistsEventArgs() : base()
+        {
+        }
+    }
+
     internal abstract class NetworkWallpaperProviderBase : INetworkPaperProvider
     {
         protected readonly WallpaperSetting setting;
-        private readonly ILogger<NetworkWallpaperProviderBase> logger;
+        protected readonly ILogger<NetworkWallpaperProviderBase> logger;
         protected HttpClient client;
         protected string CachePath => Path.Combine(setting.CachePath, "Internet");
 
@@ -26,6 +34,8 @@ namespace DynamicWallpaper.Impl
             if (File.Exists(filePath))
             {
                 logger.LogInformation("资源已存在，不重复下载: {0}", filePath);
+                //  todo: 要通知外部，把多的等待框去掉.
+                EventBus.Publish("WallPaperChanged", new ResourceExistsEventArgs());
                 return;
             }
 
@@ -33,11 +43,18 @@ namespace DynamicWallpaper.Impl
             {
                 Directory.CreateDirectory(cachePath);
             }
-
-            var fileBytes = await client.GetByteArrayAsync(url);
+            try
+            {
+                var fileBytes = await client.GetByteArrayAsync(url);
+                using var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+                await stream.WriteAsync(fileBytes);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "下载壁纸到磁盘失败");
+            }
             
-            using var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-            await stream.WriteAsync(fileBytes);
+            
         }
 
         public abstract Task<bool> DownLoadWallPaper();

@@ -17,7 +17,7 @@
         //  获取所有本地图片的预览图
         IList<WallpaperPreview> GetWallpaperPreviews();
 
-        EventHandler<WallpaperChangedEventArgs> WallPaperChanged { get; set; }
+        //EventHandler<WallpaperChangedEventArgs> WallPaperChanged { get; set; }
 
         void Delete(string path);
     }

@@ -47,7 +47,7 @@
                 pic.Image = box.CloseBox;
             }
             if (label != null) 
-                label.Text = "双击打开";
+                label.Text = ResourcesHelper.GetString("Open");
             
             labelTimer?.Change(Timeout.Infinite, Timeout.Infinite);
         }
@@ -95,7 +95,7 @@
             if (label != null)
             {
                 label.Text = ResourcesHelper.GetString("Wait");
-                timer?.Change(box.ResetTime.Seconds*1000, Timeout.Infinite);
+                timer?.Change((int)box.ResetTime.TotalSeconds *1000, Timeout.Infinite);
                 labelTime = box.ResetTime;
                 labelTimer?.Change(1000, 1000);
             }

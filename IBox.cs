@@ -68,6 +68,6 @@
         {
         }
 
-        public override TimeSpan ResetTime => TimeSpan.FromSeconds(50);
+        public override TimeSpan ResetTime => TimeSpan.FromMinutes(10);
     }
 }

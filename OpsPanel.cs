@@ -8,9 +8,9 @@ namespace DynamicWallpaper
     internal class OpsPanel: DoubleBufferPanel
     {
         private readonly IDictionary<string, string> monitors;
-        public EventHandler<WallpaperOpsEventArgs> SetWallpaperEvent { get; set; }
+        //public EventHandler<WallpaperOpsEventArgs> SetWallpaperEvent { get; set; }
 
-        public EventHandler<WallpaperOpsEventArgs> DelWallpaperEvent { get; set; }
+        //public EventHandler<WallpaperOpsEventArgs> DelWallpaperEvent { get; set; }
 
         private PictureBox moreBtn;
 
@@ -26,6 +26,9 @@ namespace DynamicWallpaper
             InitComponent();
 
             BuildMoreOptsMenu(moreBtn);
+
+            EventBus.Register("DelWallpaper");
+            EventBus.Register("SetWallpaper");
 
         }
 
@@ -117,7 +120,8 @@ namespace DynamicWallpaper
                     return;
                 }
                 // 在此处添加删除逻辑
-                DelWallpaperEvent?.Invoke(this, new WallpaperOpsEventArgs(wallpaper.Path));
+                //DelWallpaperEvent?.Invoke(this, new WallpaperOpsEventArgs(wallpaper.Path));
+                EventBus.Publish("DelWallpaper", new CustomEventArgs(new WallpaperOpsEventArgs(wallpaper.Path)));
             };
 
             // 创建一个菜单
@@ -137,7 +141,8 @@ namespace DynamicWallpaper
                         return;
                     }
                     // 在此处添加设置逻辑
-                    SetWallpaperEvent?.Invoke(this, new WallpaperOpsEventArgs(wallpaper.Path, monitor.Value));
+                    //SetWallpaperEvent?.Invoke(this, new WallpaperOpsEventArgs(wallpaper.Path, monitor.Value));
+                    EventBus.Publish("SetWallpaper", new CustomEventArgs(new WallpaperOpsEventArgs(wallpaper.Path, monitor.Value)));
                 };
                 menu.Items.Add(setItem);
             }

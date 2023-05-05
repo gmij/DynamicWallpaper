@@ -50,7 +50,7 @@ namespace DynamicWallpaper
         private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
         {
 
-            var log = ServiceLocator.GetService<ILogger>();
+            var log = ServiceLocator.GetService<ILogger<Program>>();
             log?.LogCritical(e.Exception, "异常退出");
 
             MessageBox.Show($"{e.Exception.Message}\r\n{e.Exception.StackTrace}");

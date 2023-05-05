@@ -26,10 +26,12 @@ namespace DynamicWallpaper.Impl
             }
             var files = Directory.GetFiles(cachePath, "*", SearchOption.AllDirectories);
             previews = new List<WallpaperPreview>();
+            EventBus.Register("WallPaperChanged");
             LoadImages(files);
             this.logger = logger;
             watcher = new FileSystemWatcher(cachePath);
             InitWatcher();
+            
         }
 
         private void InitWatcher()
@@ -93,7 +95,10 @@ namespace DynamicWallpaper.Impl
                         break;
                 }
             }
-            WallPaperChanged?.Invoke(this, new WallpaperChangedEventArgs(item, e.ChangeType));
+
+            EventBus.Publish("WallPaperChanged", new CustomEventArgs(new WallpaperChangedEventArgs(item, e.ChangeType)));
+
+            //WallPaperChanged?.Invoke(this, new WallpaperChangedEventArgs(item, e.ChangeType));
         }
 
         private void LoadImages(string[] files)
@@ -114,7 +119,7 @@ namespace DynamicWallpaper.Impl
         private WallpaperPreview LoadImage(string file)
         {
             // 切换一下线程，让之前的写文件句柄得到释放。
-            Thread.Sleep(1);
+            Thread.Sleep(5);
             // 以下代码为Coplit 自动生成，用于解决Image.FromFile的句柄占用问题
             using var stream = new FileStream(file, FileMode.Open, FileAccess.Read);
             var bitmap = new Bitmap(stream);
@@ -131,7 +136,7 @@ namespace DynamicWallpaper.Impl
 
         public bool IsEmpty => !previews.Any();
 
-        public EventHandler<WallpaperChangedEventArgs> WallPaperChanged { get; set; }
+        //public EventHandler<WallpaperChangedEventArgs> WallPaperChanged { get; set; }
 
         public IList<WallpaperPreview> GetWallpaperPreviews()
         {

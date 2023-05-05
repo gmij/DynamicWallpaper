@@ -1,3 +1,4 @@
+using DynamicWallpaper.Impl;
 using Microsoft.Extensions.Logging;
 
 namespace DynamicWallpaper
@@ -19,12 +20,31 @@ namespace DynamicWallpaper
             CheckForIllegalCrossThreadCalls = false;
 
             opsPanel = new OpsPanel(paperManager.Monitors);
-            opsPanel.DelWallpaperEvent += (s, e) =>
+
+            
+
+
+            this.Controls.Add(opsPanel);
+
+            this.paperManager = paperManager;
+
+            EventBus.Subscribe("WallPaperChanged", WhenWallpaperChanged);
+
+            EventBus.Subscribe("WallPaperChanged", args =>
             {
-                paperManager.DeleteWallpaper(e.FilePath);
-            };
-            opsPanel.SetWallpaperEvent += (s, e) =>
+                //  用于版本，下载失败或存在同名资源时，消除Loading图标
+                if (args is ResourceExistsEventArgs)
+                    Remove_PreviewLoading();
+            });
+
+            EventBus.Subscribe("DelWallpaper", e =>
             {
+                paperManager.DeleteWallpaper(e.GetData<WallpaperPreviewPanel.WallpaperOpsEventArgs>().FilePath);
+            });
+
+            EventBus.Subscribe("SetWallpaper", args =>
+            {
+                var e = args.GetData<WallpaperPreviewPanel.WallpaperOpsEventArgs>();
                 if (e.MonitorId == "all")
                 {
                     paperManager.ChangeWallpaper(e.FilePath);
@@ -33,11 +53,11 @@ namespace DynamicWallpaper
                 {
                     paperManager.ChangeWallpaper(e.FilePath, e.MonitorId);
                 }
-            };
-            this.Controls.Add(opsPanel);
+            });
 
-            this.paperManager = paperManager;
-            this.paperManager.WallpaperChanged += WhenWallpaperChanged;
+
+            //this.paperManager.WallpaperChanged += WhenWallpaperChanged;
+
             InitPreviewImages();
             foreach (var provider in paperProviders)
             {
@@ -55,7 +75,7 @@ namespace DynamicWallpaper
 
         private void Remove_PreviewLoading()
         {
-            foreach(var control in flowLayoutPanel1.Controls)
+            foreach (var control in flowLayoutPanel1.Controls)
             {
                 if (control is WallpaperLoadingPanel)
                 {
@@ -65,8 +85,13 @@ namespace DynamicWallpaper
             }
         }
 
-        private void WhenWallpaperChanged(object? sender, WallpaperChangedEventArgs e)
+        private void WhenWallpaperChanged(CustomEventArgs args)
         {
+            var e = args.GetData<WallpaperChangedEventArgs>();
+            if (e == null) 
+            { 
+                return; 
+            }
             switch (e.Mode)
             {
                 case WatcherChangeTypes.Created:

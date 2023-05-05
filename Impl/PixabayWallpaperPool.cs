@@ -55,10 +55,6 @@ namespace DynamicWallpaper.Impl
                 images.Hits.AsParallel().ForAll(x => SaveToCache(x.LargeImageURL, x.Id));
                 
                 
-                if (images.Hits.Count > 0)
-                {
-                    IsEmpty = false;
-                }
                 return true;
             }
             else

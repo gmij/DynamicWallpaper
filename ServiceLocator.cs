@@ -47,6 +47,7 @@ namespace DynamicWallpaper
             services.AddSingleton<IronBox>();
             services.AddSingleton<INetworkPaperProvider, BingDailyWallpaper>();
             services.AddSingleton<INetworkPaperProvider, PixabayWallpaperPool>();
+            services.AddSingleton<INetworkPaperProvider, WallhavenWallpaperPool>();
             _serviceProvider = services.BuildServiceProvider();
         }
 
