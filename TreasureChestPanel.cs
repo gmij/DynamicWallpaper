@@ -16,7 +16,9 @@
         private Timer? labelTimer;
         private TimeSpan labelTime;
 
-        public TreasureChestPanel(INetworkPaperProvider provider)
+        private EventHandler<int> OpenHandler;
+
+        public TreasureChestPanel(INetworkPaperProvider provider, EventHandler<int> openHandler)
         {
 
             this.box = provider.DefaultBox;
@@ -28,6 +30,7 @@
 
             timer = new Timer(ResetBox, null, Timeout.Infinite, Timeout.Infinite);
             labelTimer = new Timer(LabelTimerStart, null, Timeout.Infinite, Timeout.Infinite);
+            OpenHandler = openHandler;
         }
 
         private void LabelTimerStart(object? state)
@@ -86,6 +89,7 @@
             if (pic != null)
             {
                 pic.Image = box.OpenBox;
+                OpenHandler?.Invoke(this, box.Num);
                 pic.MouseDoubleClick -= Box_MouseDoubleClick;
             }
             if (label != null)

@@ -41,7 +41,27 @@ namespace DynamicWallpaper
             InitPreviewImages();
             foreach (var provider in paperProviders)
             {
-                flowLayoutPanel2.Controls.Add(new TreasureChestPanel(provider));
+                flowLayoutPanel2.Controls.Add(new TreasureChestPanel(provider, AddBox_PreviewLoading));
+            }
+        }
+
+        private void AddBox_PreviewLoading(object? sender, int e)
+        {
+            for (int i = 0; i < e; i++)
+            {
+                flowLayoutPanel1.Controls.Add(new WallpaperLoadingPanel());
+            }
+        }
+
+        private void Remove_PreviewLoading()
+        {
+            foreach(var control in flowLayoutPanel1.Controls)
+            {
+                if (control is WallpaperLoadingPanel)
+                {
+                    flowLayoutPanel1.Controls.Remove(control as WallpaperLoadingPanel);
+                    break;
+                }
             }
         }
 
@@ -51,6 +71,7 @@ namespace DynamicWallpaper
             {
                 case WatcherChangeTypes.Created:
                     AddPic(e.Data);
+                    Remove_PreviewLoading();
                     break;
                 case WatcherChangeTypes.Deleted:
                     DelPic(e.Data);
@@ -60,7 +81,6 @@ namespace DynamicWallpaper
                     InitPreviewImages();
                     break;
             }
-
         }
 
 

@@ -70,4 +70,13 @@
             public string MonitorId { get; }
         }
     }
+
+
+    class WallpaperLoadingPanel : WallpaperPreviewPanel
+    {
+        public WallpaperLoadingPanel(): base(new WallpaperLoading() { Image = ResourcesHelper.Instance.LoadingImg})
+        {
+            
+        }
+    }
 }

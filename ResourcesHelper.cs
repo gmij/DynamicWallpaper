@@ -89,7 +89,7 @@ namespace DynamicWallpaper
         public Image MoreImg => GetImage("more.png");
 
 
-        
+        public Image LoadingImg => GetImage("loading.png");
 
     }
 }
