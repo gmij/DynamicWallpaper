@@ -9,16 +9,12 @@ namespace DynamicWallpaper
     {
 
         private readonly WallpaperManager paperManager;
-        private readonly ILogger logger;
         private OpsPanel opsPanel;
 
 
         public SettingForm(WallpaperManager paperManager, ResourcesHelper rh, IEnumerable<INetworkPaperProvider> paperProviders, ILogger<SettingForm> logger)
         {
             InitializeComponent();
-
-            this.logger = logger;
-
 
             CheckForIllegalCrossThreadCalls = false;
 
@@ -65,6 +61,12 @@ namespace DynamicWallpaper
                     break;
             }
 
+        }
+
+
+        internal void Center()
+        {
+            this.CenterToScreen();
         }
 
         private void DownWallpaper(object? sender, EventArgs e)

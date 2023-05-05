@@ -30,6 +30,7 @@ namespace DynamicWallpaper
         /// </summary>
         private void InitializeComponent()
         {
+            StartPosition = FormStartPosition.CenterScreen;
             tabPage1 = new TabPage();
             flowLayoutPanel1 = new DoubleBufferFlowPanel();
             tabControl1 = new TabControl();

@@ -62,6 +62,8 @@ namespace DynamicWallpaper
         {
             if (_settingForm != null && _settingForm.Visible)
             {
+                // 如果对话框不在居中位置时，让他回到居中位置
+                _settingForm.Center();
                 _settingForm.Activate();
                 return;
             }
@@ -69,7 +71,6 @@ namespace DynamicWallpaper
             if (_settingForm != null && !_settingForm.IsDisposed)
             {
                 _settingForm.ShowDialog();
-
             }
             else
             {
