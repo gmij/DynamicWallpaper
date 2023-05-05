@@ -10,7 +10,7 @@ jobs:
 
     env:
       Solution_Name: DynamicWallpaper.sln 
-      Project_Name: DynamicWallpaper.csproj
+      Project_Name: src/DynamicWallpaper.csproj
       publish_dir: bin/release/publish
       
 
@@ -36,7 +36,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ${{ env.publish_dir }}/DynamicWallpaper.zip
+        asset_path: src/${{ env.publish_dir }}/DynamicWallpaper.zip
         asset_name: DynamicWallpaper.zip
         asset_content_type: application/zip
 #    - name: Create tag
