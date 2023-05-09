@@ -12,21 +12,22 @@ jobs:
       Solution_Name: DynamicWallpaper.sln 
       Project_Name: src/DynamicWallpaper.csproj
       publish_dir: bin/release/publish
+      msi_dir: bin/release/msi
       
 
     steps:
     - uses: actions/checkout@v2
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1.0.2
-#    - name: Restore NuGet packages
-#      run: dotnet restore -r win-x86
-#    - name: Build solution
-#      run: msbuild $env:Solution_Name /p:Configuration=Release /m
-    - name: Print current directory
-      run: echo $PWD      
+
+
     - name: Publish app
-      #run: msbuild $env:Project_Name /t:publish /p:Configuration=Release /p:PublishProfile=./Properties/PublishProfiles/FolderProfile.pubxml /m /v:diag 
       run: dotnet publish $env:Project_Name -c Release -r win-x86 -p:PublishReadyToRun=true -p:SelfContained=true -p:PublishSingleFile=true -p:PublishDir=../${{ env.publish_dir }}
+    - name: Create MSI installer
+      run: |
+        choco install wixtoolset
+        candle $env:msi_dir/DynamicWallpaper.wxs
+        light $env:msi_dir/DynamicWallpaper.wixobj -o $env:msi_dir/DynamicWallpaper.msi
     - name: Zip files
       run: |
         Compress-Archive -Path ${{ env.publish_dir }}/* -DestinationPath ${{ env.publish_dir }}/DynamicWallpaper.zip
@@ -39,14 +40,12 @@ jobs:
         asset_path: ${{ env.publish_dir }}/DynamicWallpaper.zip
         asset_name: DynamicWallpaper.zip
         asset_content_type: application/zip
-#    - name: Create tag
-#      uses: actions/create-release@v1
-#      env:
-#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#      with:
-#        tag_name: v${{ github.ref }}
-#        release_name: Release ${{ github.ref }}
-#        body: |
-#            ${{ github.event.release.body }}
-#        draft: false
-#        prerelease: false
+    - name: Upload MSI installer
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ${{ env.msi_dir }}/DynamicWallpaper.msi
+        asset_name: DynamicWallpaper.msi
+        asset_content_type: application/octet-stream
