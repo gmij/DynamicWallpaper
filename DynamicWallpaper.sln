@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamicWallpaper", "src\Dyn
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamicWallpaperTests", "UnitTests\DynamicWallpaperTests.csproj", "{2473F61D-61CA-4637-9E05-9F89866D69F2}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "DynamicWallpaper", "MsiInstaller\MsiInstaller.vdproj", "{A5C29228-6C6F-4F37-AD26-CE8195400825}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "DynamicWallpaper.MSI", "MsiInstaller\MsiInstaller.vdproj", "{A5C29228-6C6F-4F37-AD26-CE8195400825}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
