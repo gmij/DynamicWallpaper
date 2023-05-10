@@ -21,7 +21,7 @@ namespace DynamicWallpaper
 
             opsPanel = new OpsPanel(paperManager.Monitors);
 
-            
+
 
 
             this.Controls.Add(opsPanel);
@@ -34,7 +34,10 @@ namespace DynamicWallpaper
             {
                 //  用于版本，下载失败或存在同名资源时，消除Loading图标
                 if (args is ResourceExistsEventArgs)
+                {
+                    logger.LogInformation("清除无效图标");
                     Remove_PreviewLoading();
+                }
             });
 
             EventBus.Subscribe("DelWallpaper", e =>
@@ -75,22 +78,26 @@ namespace DynamicWallpaper
 
         private void Remove_PreviewLoading()
         {
-            foreach (var control in flowLayoutPanel1.Controls)
+            lock (flowLayoutPanel1.Controls)
             {
-                if (control is WallpaperLoadingPanel)
+                foreach (var control in flowLayoutPanel1.Controls)
                 {
-                    flowLayoutPanel1.Controls.Remove(control as WallpaperLoadingPanel);
-                    break;
+                    if (control is WallpaperLoadingPanel loadingPanel)
+                    {
+                        flowLayoutPanel1.Controls.Remove(loadingPanel);
+                        break;
+                    }
                 }
+
             }
         }
 
         private void WhenWallpaperChanged(CustomEventArgs args)
         {
             var e = args.GetData<WallpaperChangedEventArgs>();
-            if (e == null) 
-            { 
-                return; 
+            if (e == null)
+            {
+                return;
             }
             switch (e.Mode)
             {
@@ -119,7 +126,7 @@ namespace DynamicWallpaper
             paperManager.GetInternetWallpaper();
         }
 
-        private void DelPic(WallpaperPreview preview)
+        private async void DelPic(WallpaperPreview preview)
         {
             var pic = flowLayoutPanel1.Controls.Find(preview.Id, false).FirstOrDefault();
 
@@ -128,27 +135,29 @@ namespace DynamicWallpaper
             {
                 if (control.Id == preview.Id)
                 {
-                    ControlInvoke(() => flowLayoutPanel1.Controls.Remove(control));
+                    await ControlInvokeAsync(() => flowLayoutPanel1.Controls.Remove(control));
                 }
             }
         }
 
-        private void ControlInvoke(Action action)
+        //  以下函数由Cursor进行改进，用于解决界面主线程阻塞问题
+        private async Task ControlInvokeAsync(Action action)
         {
             if (this.InvokeRequired)
             {
-                this.Invoke(() =>
+                await Task.Factory.FromAsync(this.BeginInvoke(new Action(() =>
                 {
                     action();
-                });
+                })), this.EndInvoke);
             }
             else
             {
+                await Task.Yield();
                 action();
             }
         }
 
-        private void AddPic(WallpaperPreview preview)
+        private async void AddPic(WallpaperPreview preview)
         {
 
             var pic = new WallpaperPreviewPanel(preview);
@@ -156,7 +165,7 @@ namespace DynamicWallpaper
             {
                 pic.ShowMaskPanel(opsPanel);
             };
-            ControlInvoke(() => flowLayoutPanel1.Controls.Add(pic));
+            await ControlInvokeAsync(() => flowLayoutPanel1.Controls.Add(pic));
 
         }
 
