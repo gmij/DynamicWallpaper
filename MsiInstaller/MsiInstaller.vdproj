@@ -3,7 +3,7 @@
 "VSVersion" = "3:800"
 "ProjectType" = "8:{978C614F-708E-4E1A-B201-565925725DBA}"
 "IsWebType" = "8:FALSE"
-"ProjectName" = "8:DynamicWallpaper"
+"ProjectName" = "8:DynamicWallpaper.MSI"
 "LanguageId" = "3:2052"
 "CodePage" = "3:936"
 "UILanguageId" = "3:2052"
@@ -194,7 +194,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:DynamicWallpaper"
         "ProductCode" = "8:{DDD3B47B-6EF1-4790-8CF0-252D9C8ACB93}"
-        "PackageCode" = "8:{D06551B4-C93F-497F-AF2E-63D9B7AE9B84}"
+        "PackageCode" = "8:{BF31CDB4-26A0-4501-AD29-48A4051FAF91}"
         "UpgradeCode" = "8:{F2187B35-FF5D-4BF6-9CA4-013A65D69886}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -575,7 +575,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_B0E24CF2B9CF4BE7A27ED41B2BB8C4C0"
             {
-            "SourcePath" = "8:..\\src\\obj\\Debug\\net6.0-windows\\apphost.exe"
+            "SourcePath" = "8:..\\src\\bin\\Release\\publish\\DynamicWallpaper.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_D5651BD1ED6446FEB9F7508C31A4002A"
