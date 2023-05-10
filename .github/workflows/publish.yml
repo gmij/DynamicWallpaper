@@ -23,9 +23,13 @@ jobs:
 
     - name: Publish app
       run: dotnet publish $env:Project_Name -c Release -r win-x86 -p:PublishReadyToRun=true -p:SelfContained=true -p:PublishSingleFile=true -p:PublishDir=../${{ env.publish_dir }}
+    - name: Install wixtoolset
+      run: |
+        Invoke-WebRequest -Uri 'https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/wix311-binaries.zip' -OutFile 'wix311-binaries.zip'
+        Expand-Archive -Path 'wix311-binaries.zip' -DestinationPath 'C:\wixtoolset'
+        $env:Path += ';C:\wixtoolset\bin'
     - name: Create MSI installer
       run: |
-        choco install wixtoolset
         candle $env:msi_dir/DynamicWallpaper.wxs
         light $env:msi_dir/DynamicWallpaper.wixobj -o $env:msi_dir/DynamicWallpaper.msi
     - name: Zip files
