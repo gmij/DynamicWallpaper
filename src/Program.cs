@@ -38,6 +38,8 @@ namespace DynamicWallpaper
 
             Application.ThreadException += Application_ThreadException;
 
+            Application.ApplicationExit += Application_ApplicationExit;
+
             Application.Run();
 
             // 释放资源，下面的代码为Coplit自动生成
@@ -45,7 +47,11 @@ namespace DynamicWallpaper
             _mutex?.ReleaseMutex();
         }
 
-       
+        private static void Application_ApplicationExit(object? sender, EventArgs e)
+        {
+            var log = ServiceLocator.GetService<ILogger<Program>>();
+            log?.LogInformation("程序退出");
+        }
 
         private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
         {
