@@ -3,24 +3,35 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamicWallpaper", ".\src\DynamicWallpaper.csproj", "{C349C90B-2D2B-4BB0-AD9E-A6DED9CA569A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamicWallpaper", "src\DynamicWallpaper.csproj", "{C349C90B-2D2B-4BB0-AD9E-A6DED9CA569A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicWallpaperTests", ".\UnitTests\DynamicWallpaperTests.csproj", "{2473F61D-61CA-4637-9E05-9F89866D69F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamicWallpaperTests", "UnitTests\DynamicWallpaperTests.csproj", "{2473F61D-61CA-4637-9E05-9F89866D69F2}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "DynamicWallpaper", "MsiInstaller\MsiInstaller.vdproj", "{A5C29228-6C6F-4F37-AD26-CE8195400825}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		All|Any CPU = All|Any CPU
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C349C90B-2D2B-4BB0-AD9E-A6DED9CA569A}.All|Any CPU.ActiveCfg = Release|Any CPU
+		{C349C90B-2D2B-4BB0-AD9E-A6DED9CA569A}.All|Any CPU.Build.0 = Release|Any CPU
 		{C349C90B-2D2B-4BB0-AD9E-A6DED9CA569A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C349C90B-2D2B-4BB0-AD9E-A6DED9CA569A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C349C90B-2D2B-4BB0-AD9E-A6DED9CA569A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C349C90B-2D2B-4BB0-AD9E-A6DED9CA569A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2473F61D-61CA-4637-9E05-9F89866D69F2}.All|Any CPU.ActiveCfg = Release|Any CPU
+		{2473F61D-61CA-4637-9E05-9F89866D69F2}.All|Any CPU.Build.0 = Release|Any CPU
 		{2473F61D-61CA-4637-9E05-9F89866D69F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2473F61D-61CA-4637-9E05-9F89866D69F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2473F61D-61CA-4637-9E05-9F89866D69F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2473F61D-61CA-4637-9E05-9F89866D69F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5C29228-6C6F-4F37-AD26-CE8195400825}.All|Any CPU.ActiveCfg = Release
+		{A5C29228-6C6F-4F37-AD26-CE8195400825}.All|Any CPU.Build.0 = Release
+		{A5C29228-6C6F-4F37-AD26-CE8195400825}.Debug|Any CPU.ActiveCfg = Debug
+		{A5C29228-6C6F-4F37-AD26-CE8195400825}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
