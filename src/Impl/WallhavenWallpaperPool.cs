@@ -9,7 +9,7 @@ namespace DynamicWallpaper.Impl
         private readonly string baseUri = "https://wallhaven.cc/api/v1/search";
         private IronBox box;
 
-        public WallhavenWallpaperPool(WallpaperSetting setting, IronBox box, ILogger<NetworkWallpaperProviderBase> logger):base(setting, logger)
+        public WallhavenWallpaperPool(WallpaperSetting setting, IronBox box, ILogger<NetworkWallpaperProviderBase> logger) : base(setting, logger)
         {
             this.box = box;
         }
@@ -25,37 +25,24 @@ namespace DynamicWallpaper.Impl
         /// <exception cref="Exception"></exception>
         public override async Task<bool> DownLoadWallPaper()
         {
-            try
-            {
-                string uri = BuildUri();
-                
-                HttpResponseMessage response = await client.GetAsync(uri);
+            string uri = BuildUri();
 
-                if (response.IsSuccessStatusCode)
-                {
-                    string responseBody = await response.Content.ReadAsStringAsync();
-                    ProcessResponse(responseBody);
-                    
-                    //if (box.Num > 0)
-                    //{
-                    //    IsEmpty = false;
-                    //}
-                    return true;
-                }
-                else
-                {
-                    logger.LogError($"Error: {response.StatusCode}");
-                    throw new Exception($"Request failed with status code {response.StatusCode}");
-                }
-            }
-            catch (Exception ex)
+            var results = await LoadUrl<WallhavenResponse>(uri);
+
+            if (results != null && results.Data != null && results.Data.Count > 0)
             {
-                logger.LogError(ex, "Failed to download wallpaper.");
-                return false;
+                var topImage = results.Data.Take(box.Num);
+                topImage.AsParallel().ForAll(x => SaveToCache(x.Path, x.Id));
+                return true;
             }
+            else
+            {
+                throw new Exception("No images found.");
+            }
+
 
         }
-        
+
         private string BuildUri()
         {
             UriBuilder builder = new UriBuilder(baseUri);
@@ -64,21 +51,7 @@ namespace DynamicWallpaper.Impl
             return builder.Uri.ToString();
         }
 
-        private void ProcessResponse(string responseBody)
-        {
-            var results = JsonConvert.DeserializeObject<WallhavenResponse>(responseBody);
-            
-            if (results != null && results.Data != null && results.Data.Count > 0)
-            {
-                var topImage = results.Data.Take(box.Num);
-                topImage.AsParallel().ForAll(x => SaveToCache(x.Path, x.Id));
-            }
-            else
-            {
-                throw new Exception("No images found.");
-            }
-        }
-        
+
         private class WallhavenResponse
         {
             [JsonProperty("data")]

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace DynamicWallpaper.Impl
 {
@@ -8,6 +9,15 @@ namespace DynamicWallpaper.Impl
         public ResourceExistsEventArgs() : base()
         {
         }
+    }
+
+    public class ResourceDownloadFailEventArgs : CustomEventArgs
+    {
+        public ResourceDownloadFailEventArgs(int num) : base(num)
+        {
+            
+        }
+
     }
 
     internal abstract class NetworkWallpaperProviderBase : INetworkPaperProvider
@@ -22,8 +32,31 @@ namespace DynamicWallpaper.Impl
 
         public NetworkWallpaperProviderBase(WallpaperSetting setting, ILogger<NetworkWallpaperProviderBase> logger) {
             client = new HttpClient();
+            client.Timeout = TimeSpan.FromSeconds(30);
             this.setting = setting;
             this.logger = logger;
+
+            EventBus.Register("DownFail");
+        }
+
+        protected async Task<T> LoadUrl<T>(string url)
+        {
+            try
+            {
+                var response = await client.GetAsync(url);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<T>(responseBody);
+                }
+            }
+            catch(Exception ex)
+            {
+                logger.LogError(ex, "加载壁纸清单失败");
+                EventBus.Publish("DownFail", new ResourceDownloadFailEventArgs(3));
+            }
+            return default;
         }
 
         protected async void SaveToCache(string url, string fileName)
@@ -52,6 +85,7 @@ namespace DynamicWallpaper.Impl
             catch (Exception ex)
             {
                 logger.LogError(ex, "下载壁纸到磁盘失败");
+                EventBus.Publish("DownFail", new ResourceDownloadFailEventArgs(1));
             }
             
             

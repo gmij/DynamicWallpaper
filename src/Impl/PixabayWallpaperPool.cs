@@ -41,28 +41,17 @@ namespace DynamicWallpaper.Impl
             string apiKey = "35011350-04a87bff3b45e5d929d805228";
             string uri = $"https://pixabay.com/api/?key={apiKey}&image_type=photo&per_page={box.Num}&order=latest&lang=zh";
 
-            HttpResponseMessage response = await client.GetAsync(uri);
+            var images = await LoadUrl<PixabayResponse>(uri);
 
-            if (response.IsSuccessStatusCode)
+            if (images == null || images.Hits == null || !images.Hits.Any())
             {
-                string responseBody = await response.Content.ReadAsStringAsync();
-                var images = JsonConvert.DeserializeObject<PixabayResponse>(responseBody);
-                if (images == null || images.Hits == null || !images.Hits.Any())
-                {
-                    throw new Exception("No images found.");
-                }
-
-                images.Hits.AsParallel().ForAll(x => SaveToCache(x.LargeImageURL, x.Id));
-                
-                
-                return true;
-            }
-            else
-            {
-                Console.WriteLine($"Error: {response.StatusCode}");
-                throw new Exception($"Request failed with status code {response.StatusCode}");
+                throw new Exception("No images found.");
             }
 
+            images.Hits.AsParallel().ForAll(x => SaveToCache(x.LargeImageURL, x.Id));
+
+            return true;
+  
         }
     }
 }

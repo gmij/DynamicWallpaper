@@ -40,6 +40,14 @@ namespace DynamicWallpaper
                 }
             });
 
+            EventBus.Subscribe("DownFail", args =>
+            {
+                if (args is ResourceDownloadFailEventArgs arg)
+                {
+                    Remove_PreviewLoading(arg.GetData<int>());
+                }
+            });
+
             EventBus.Subscribe("DelWallpaper", e =>
             {
                 paperManager.DeleteWallpaper(e.GetData<WallpaperPreviewPanel.WallpaperOpsEventArgs>().FilePath);
@@ -76,18 +84,34 @@ namespace DynamicWallpaper
             }
         }
 
-        private void Remove_PreviewLoading()
+        private void Remove_PreviewLoading(int i = 1)
         {
+            var k = 0;
             lock (flowLayoutPanel1.Controls)
             {
-                foreach (var control in flowLayoutPanel1.Controls)
+
+                var count = flowLayoutPanel1.Controls.Count;
+                for(var end = count -1; end> -1; end--)
                 {
-                    if (control is WallpaperLoadingPanel loadingPanel)
+                    if (flowLayoutPanel1.Controls[end] is WallpaperLoadingPanel loadingPanel)
                     {
                         flowLayoutPanel1.Controls.Remove(loadingPanel);
-                        break;
+                        if (++k == i)
+                            break;
                     }
+
                 }
+
+
+                //foreach (var control in flowLayoutPanel1.Controls)
+                //{
+                //    if (control is WallpaperLoadingPanel loadingPanel)
+                //    {
+                //        flowLayoutPanel1.Controls.Remove(loadingPanel);
+                //        if (++k < i)
+                //            break;
+                //    }
+                //}
 
             }
         }
