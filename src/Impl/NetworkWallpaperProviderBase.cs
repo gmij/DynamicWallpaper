@@ -37,12 +37,22 @@ namespace DynamicWallpaper.Impl
             this.logger = logger;
 
             EventBus.Register("DownFail");
+            EventBus.Register("Box.Open");
+            EventBus.Register("Box.Load");
+            EventBus.Register("Box.Success");
+
+
+            EventBus.Register("Box.Fail");
+            EventBus.Register("Box.Lost");
+            EventBus.Register("Box.Exists");
         }
 
         protected async Task<T> LoadUrl<T>(string url)
         {
             try
             {
+                EventBus.Publish("Box.Open", new CustomEventArgs(this));
+
                 var response = await client.GetAsync(url);
 
                 if (response.IsSuccessStatusCode)
@@ -55,6 +65,7 @@ namespace DynamicWallpaper.Impl
             {
                 logger.LogError(ex, "加载壁纸清单失败");
                 EventBus.Publish("DownFail", new ResourceDownloadFailEventArgs(3));
+                EventBus.Publish("Box.Fail", new CustomEventArgs(this));
             }
             return default;
         }
@@ -67,8 +78,8 @@ namespace DynamicWallpaper.Impl
             if (File.Exists(filePath))
             {
                 logger.LogInformation("资源已存在，不重复下载: {0}", filePath);
-                //  todo: 要通知外部，把多的等待框去掉.
                 EventBus.Publish("WallPaperChanged", new ResourceExistsEventArgs());
+                EventBus.Publish("Box.Exists", new CustomEventArgs(this));
                 return;
             }
 
@@ -78,14 +89,17 @@ namespace DynamicWallpaper.Impl
             }
             try
             {
+                EventBus.Publish("Box.Load", new CustomEventArgs(this));
                 var fileBytes = await client.GetByteArrayAsync(url);
                 using var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
                 await stream.WriteAsync(fileBytes);
+                EventBus.Publish("Box.Success", new CustomEventArgs(this));
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "下载壁纸到磁盘失败");
                 EventBus.Publish("DownFail", new ResourceDownloadFailEventArgs(1));
+                EventBus.Publish("Box.Lost", new CustomEventArgs(this));
             }
             
             
