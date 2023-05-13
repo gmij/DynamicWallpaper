@@ -18,15 +18,19 @@ namespace DynamicWallpaper.Impl
 
         public override async Task<bool> DownLoadWallPaper()
         {
+            
             // 从必应获取图片
             string url = $"https://global.bing.com/HPImageArchive.aspx?format=js&idx=0&n={box.Num}&pid=hp&FORM=BEHPTB&uhd=1&uhdwidth=3840&uhdheight=2160&setmkt=zh-CN&setlang=en";
 
-            var json = await client.GetStringAsync(url);
+            var bing = await LoadUrl<Bing>(url);
 
-            // 将 json 数据转换成类模型
-            var bing = JsonConvert.DeserializeObject<Bing>(json);
+            if (bing == null || bing.images == null || !bing.images.Any())
+            {
+                throw new Exception("No images found.");
+            }
 
-            bing?.images?.AsParallel().ForAll(img => SaveToCache($"https://cn.bing.com{img.url}", img.title));
+
+            bing.images.AsParallel().ForAll(img => SaveToCache($"https://cn.bing.com{img.url}", img.title));
             
             return true;
         }
@@ -39,10 +43,10 @@ namespace DynamicWallpaper.Impl
         // 必应的 json 数据转换成类模型
         private class BingImage
         {
-            public string? fullstartdate { get; set; }
-            public string? url { get; set; }
-            public string? urlbase { get; set; }
-            public string? title { get; set; }
+            public string fullstartdate { get; set; } = string.Empty;
+            public string url { get; set; } = string.Empty;
+            public string urlbase { get; set; } = string.Empty;
+            public string title { get; set; } = string.Empty;
         }
     }
 }
