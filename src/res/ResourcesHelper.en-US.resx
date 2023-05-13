@@ -120,6 +120,15 @@
   <data name="ApplicationName" xml:space="preserve">
     <value>Dynamic Wallpaper</value>
   </data>
+  <data name="Chat" xml:space="preserve">
+    <value>Chat with Weixin</value>
+  </data>
+  <data name="Issue" xml:space="preserve">
+    <value>Issue with Github</value>
+  </data>
+  <data name="Log" xml:space="preserve">
+    <value>Progress</value>
+  </data>
   <data name="Open" xml:space="preserve">
     <value>Double Click</value>
   </data>
@@ -144,11 +153,17 @@
   <data name="Refresh" xml:space="preserve">
     <value>Refresh</value>
   </data>
+  <data name="Reward" xml:space="preserve">
+    <value>Reward with aliPay</value>
+  </data>
   <data name="Setting" xml:space="preserve">
     <value>Setting</value>
   </data>
   <data name="SettingFormTitle" xml:space="preserve">
     <value>Wallpaper Setting</value>
+  </data>
+  <data name="Support" xml:space="preserve">
+    <value>Help</value>
   </data>
   <data name="TreasureChest" xml:space="preserve">
     <value>Treasure Chest</value>

@@ -58,8 +58,14 @@ namespace DynamicWallpaper
 
         internal Image GetImage(string path)
         {
+            //var rPath = $"{_icoResourcePath}{path}";
+            return new Bitmap(GetImageStream(path));
+        }
+
+        internal Stream GetImageStream(string path)
+        {
             var rPath = $"{_icoResourcePath}{path}";
-            return new Bitmap(GetResource(rPath));
+            return GetResource(rPath);
         }
 
         public Image ExitImg => GetImage("exit.ico");
@@ -90,6 +96,8 @@ namespace DynamicWallpaper
 
 
         public Image LoadingImg => GetImage("loading.png");
+
+        public Icon MainImg => new(GetImageStream("main.ico"));
 
     }
 }

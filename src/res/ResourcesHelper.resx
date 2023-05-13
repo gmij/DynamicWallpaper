@@ -120,6 +120,15 @@
   <data name="ApplicationName" xml:space="preserve">
     <value>动态壁纸</value>
   </data>
+  <data name="Chat" xml:space="preserve">
+    <value>交流群</value>
+  </data>
+  <data name="Issue" xml:space="preserve">
+    <value>我有想法</value>
+  </data>
+  <data name="Log" xml:space="preserve">
+    <value>挖宝进度</value>
+  </data>
   <data name="Open" xml:space="preserve">
     <value>双击打开</value>
   </data>
@@ -144,11 +153,17 @@
   <data name="Refresh" xml:space="preserve">
     <value>刷新</value>
   </data>
+  <data name="Reward" xml:space="preserve">
+    <value>打赏</value>
+  </data>
   <data name="Setting" xml:space="preserve">
     <value>设置</value>
   </data>
   <data name="SettingFormTitle" xml:space="preserve">
     <value>动态壁纸设置</value>
+  </data>
+  <data name="Support" xml:space="preserve">
+    <value>帮助</value>
   </data>
   <data name="TreasureChest" xml:space="preserve">
     <value>开宝箱</value>
