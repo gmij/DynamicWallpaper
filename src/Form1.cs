@@ -1,5 +1,6 @@
 using DynamicWallpaper.Impl;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace DynamicWallpaper
 {
@@ -13,7 +14,7 @@ namespace DynamicWallpaper
         private OpsPanel opsPanel;
 
 
-        public SettingForm(WallpaperManager paperManager, ResourcesHelper rh, IEnumerable<INetworkPaperProvider> paperProviders, ILogger<SettingForm> logger)
+        public SettingForm(WallpaperManager paperManager, ResourcesHelper rh, IEnumerable<INetworkPaperProvider> paperProviders, ILogger<SettingForm> logger, ProgressLog log)
         {
             InitializeComponent();
 
@@ -21,7 +22,7 @@ namespace DynamicWallpaper
 
             opsPanel = new OpsPanel(paperManager.Monitors);
 
-
+            InitLocalize();
 
 
             this.Controls.Add(opsPanel);
@@ -82,6 +83,23 @@ namespace DynamicWallpaper
             }
         }
 
+        private void InitLocalize()
+        {
+            tabPage1.Text = ResourcesHelper.GetString("PaperPool");
+            tabPage2.Text = ResourcesHelper.GetString("TreasureChest");
+            Text = ResourcesHelper.GetString("SettingFormTitle");
+
+            Icon = ResourcesHelper.Instance.MainImg;
+
+            tabPage3.Text = ResourcesHelper.GetString("Support");
+            linkLabel1.Text = ResourcesHelper.GetString("Issue");
+            label2.Text = ResourcesHelper.GetString("Reward");
+            label1.Text = ResourcesHelper.GetString("Chat");
+
+            tabPage4.Text = ResourcesHelper.GetString("Log");
+
+        }
+
         private void AddBox_PreviewLoading(object? sender, int e)
         {
             for (int i = 0; i < e; i++)
@@ -97,7 +115,7 @@ namespace DynamicWallpaper
             {
 
                 var count = flowLayoutPanel1.Controls.Count;
-                for(var end = count -1; end> -1; end--)
+                for (var end = count - 1; end > -1; end--)
                 {
                     if (flowLayoutPanel1.Controls[end] is WallpaperLoadingPanel loadingPanel)
                     {
@@ -149,11 +167,6 @@ namespace DynamicWallpaper
         internal void Center()
         {
             this.CenterToScreen();
-        }
-
-        private void DownWallpaper(object? sender, EventArgs e)
-        {
-            paperManager.GetInternetWallpaper();
         }
 
         private async void DelPic(WallpaperPreview preview)
@@ -215,6 +228,9 @@ namespace DynamicWallpaper
             }
         }
 
-
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo("https://github.com/gmij/DynamicWallpaper/issues") { UseShellExecute = true });
+        }
     }
 }
