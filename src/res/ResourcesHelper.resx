@@ -132,6 +132,9 @@
   <data name="Ops.Delete" xml:space="preserve">
     <value>删除</value>
   </data>
+  <data name="Ops.LockScreen" xml:space="preserve">
+    <value>锁屏</value>
+  </data>
   <data name="PaperPool" xml:space="preserve">
     <value>壁纸池</value>
   </data>

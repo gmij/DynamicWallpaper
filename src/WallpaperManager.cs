@@ -1,4 +1,5 @@
-﻿using IDesktopWallpaperWrapper;
+﻿using DynamicWallpaper.Tools;
+using IDesktopWallpaperWrapper;
 using Microsoft.Extensions.Logging;
 using System.Management;
 
@@ -61,6 +62,10 @@ namespace DynamicWallpaper
                     _logger.LogInformation("定时更换壁纸");
                     // 更换壁纸
                     ChangeWallpaper();
+
+                    //  更换锁屏
+                    SetLockScreenImage();
+
                     _logger.LogInformation("================================");
 
                     // 每隔1小时调用一次更换壁纸
@@ -75,7 +80,7 @@ namespace DynamicWallpaper
 
         internal void Refresh()
         {
-            Task.Run(() => ChangeWallpaper());
+            Task.Run(() => { ChangeWallpaper(); SetLockScreenImage(); });
         }
 
         internal async void GetInternetWallpaper()
@@ -140,11 +145,7 @@ namespace DynamicWallpaper
             if (_wallPaperPool.IsEmpty)
             {
                 _logger.LogDebug("壁纸池为空");
-                var handler = WallpaperPoolEmpty;
-                if (handler != null)
-                {
-                    handler.Invoke(null, new EventArgs());
-                }
+                WallpaperPoolEmpty?.Invoke(null, new EventArgs());
                 return;
             }
             
@@ -157,6 +158,20 @@ namespace DynamicWallpaper
                 _desktopWallpaper.SetWallpaper(monitorId, newPaper);
                 _logger.LogDebug("{0}已更换壁纸{1}", monitorId, newPaper);
             }
+        }
+
+        /// <summary>
+        ///     设置锁屏壁纸
+        /// </summary>
+        /// <param name="imagePath"></param>
+        public void SetLockScreenImage(string imagePath = "")
+        {
+            if (string.IsNullOrEmpty(imagePath))
+            {
+                var currImage = RegeditHelper.GetLockScreenImage();
+                imagePath = _wallPaperPool.Renew(currImage);
+            }
+            RegeditHelper.SetLockScreenImage(imagePath);
         }
 
         /// <summary>

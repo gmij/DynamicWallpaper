@@ -66,6 +66,12 @@ namespace DynamicWallpaper
                 }
             });
 
+            EventBus.Subscribe("SetLockScreen", args =>
+            {
+                var e = args.GetData<WallpaperPreviewPanel.WallpaperOpsEventArgs>();
+                paperManager.SetLockScreenImage(e.FilePath);
+            });
+
 
             //this.paperManager.WallpaperChanged += WhenWallpaperChanged;
 

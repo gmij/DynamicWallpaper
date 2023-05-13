@@ -1,6 +1,7 @@
 ﻿using DynamicWallpaper.Tools;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace DynamicWallpaper
 {
@@ -119,6 +120,7 @@ namespace DynamicWallpaper
 
             //  托盘图标右键菜单中，添加一个刷新菜单，
             _notifyIcon.ContextMenuStrip.Items.Add(ResourcesHelper.GetString("Refresh"), rh?.RefreshImg, (s, e) => Refresh());
+
         }
 
         private static void Refresh()

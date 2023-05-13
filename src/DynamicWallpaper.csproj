@@ -29,7 +29,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NLog.Extensions.Logging" Version="5.2.3" />
     <PackageReference Include="System.Management" Version="7.0.1" />
-    <PackageReference Include="System.Resources.ResourceManager" Version="4.3.0" />
+    <PackageReference Include="WiX.Toolset" Version="3.9.1208" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,11 +43,6 @@
       <DependentUpon>ResourcesHelper.en-US.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Update="res\ResourcesHelper.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ResourcesHelper.resx</DependentUpon>
     </Compile>
   </ItemGroup>
 
@@ -68,5 +63,55 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+<!-- 以下为MSI生成块  --><!--
+
+
+    <Target Name="build Wxs File"  BeforeTargets="BuildMsi">
+
+		<Exec Command="$(WIX)\heat project $(MSBuildProjectFullPath) -pog:Binaries -ag -out project.wxs"></Exec>
+		
+	</Target>
+
+    <Target Name="BuildMsi" AfterTargets="Build">
+
+    <Exec Command="&quot;$(WIX)\light.exe&quot; -ext &quot;$(WIX)\WixUIExtension.dll&quot; -out &quot;$(TargetDir)$(TargetName).msi&quot; -pdbout &quot;$(TargetDir)$(TargetName).wixpdb&quot; &quot;$(ProjectDir)Installer\Product.wxs&quot;" />
+
+  </Target>
+
+    <ItemGroup>
+
+    <WixExtension Include="WixUIExtension">
+
+      <HintPath>$(WIX)bin\WixUIExtension.dll</HintPath>
+
+      <Name>WixUIExtension</Name>
+
+    </WixExtension>
+
+  </ItemGroup>
+
+    <PropertyGroup>
+
+    <Wix>..\wixToolset</Wix>
+
+  </PropertyGroup>
+
+    <ItemGroup>
+
+    <None Include="Installer\Product.wxs" />
+
+  </ItemGroup>
+
+    <ItemGroup>
+
+    --><!--<PackageReference Include="WiX.Toolset" Version="3.11.2" />--><!--
+
+  </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Installer\" />
+    </ItemGroup>-->
+
 
 </Project>

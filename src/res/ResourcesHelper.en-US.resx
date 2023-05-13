@@ -132,6 +132,9 @@
   <data name="Ops.Delete" xml:space="preserve">
     <value>Delete</value>
   </data>
+  <data name="Ops.LockScreen" xml:space="preserve">
+    <value>Lock Screen</value>
+  </data>
   <data name="PaperPool" xml:space="preserve">
     <value>Local Wallpaper</value>
   </data>

@@ -147,8 +147,13 @@ namespace DynamicWallpaper.Impl
         {
             if (!IsEmpty)
             {
-                var list = previews.Where(p => p.Path != excludePath).ToArray();
-                var poolSize = list.Count();
+                WallpaperPreview[] list = null;
+                if (!string.IsNullOrEmpty(excludePath))
+                {
+                    list = previews.Where(p => p.Path != excludePath).ToArray();
+                }
+                list ??= previews.ToArray();
+                var poolSize = list.Length;
                 if (poolSize == 0)
                 {
                     return string.Empty;

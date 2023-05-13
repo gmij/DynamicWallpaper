@@ -29,6 +29,7 @@ namespace DynamicWallpaper
 
             EventBus.Register("DelWallpaper");
             EventBus.Register("SetWallpaper");
+            EventBus.Register("SetLockScreen");
 
         }
 
@@ -108,6 +109,8 @@ namespace DynamicWallpaper
             var delTxt = ResourcesHelper.GetString("Ops.Delete");
             var applyTxt = ResourcesHelper.GetString("Ops.Apply");
 
+            var screenTxt = ResourcesHelper.GetString("Ops.LockScreen");
+
             // 创建一个菜单项
             var deleteItem = new ToolStripMenuItem(delTxt);
 
@@ -129,6 +132,23 @@ namespace DynamicWallpaper
 
             // 把菜单项添加到菜单中
             menu.Items.Add(deleteItem);
+
+            // 创建一个锁屏菜单项
+            var lockScreenItem = new ToolStripMenuItem($"{applyTxt}{screenTxt}");
+            menu.Items.Add(lockScreenItem);
+
+            // 为菜单项添加点击事件
+            lockScreenItem.Click += (sender, args) =>
+            {
+                var wallpaper = ((WallpaperPreviewPanel)Parent.Parent)?.Wallpaper;
+                if (wallpaper == null)
+                {
+                    return;
+                }
+                // 在此处添加删除逻辑
+                //DelWallpaperEvent?.Invoke(this, new WallpaperOpsEventArgs(wallpaper.Path));
+                EventBus.Publish("SetLockScreen", new CustomEventArgs(new WallpaperOpsEventArgs(wallpaper.Path)));
+            };
 
             foreach (var monitor in monitors)
             {

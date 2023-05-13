@@ -7,7 +7,7 @@
         /// </summary>
         /// <param name="excludePath">排除当前的壁纸</param>
         /// <returns></returns>
-        string Renew(string excludePath);
+        string Renew(string excludePath = "");
 
         /// <summary>
         /// 壁纸池是否为空
