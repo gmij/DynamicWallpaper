@@ -25,7 +25,8 @@ namespace DynamicWallpaper
         }
 
 
-        public string? Path { get; set; }
+        public string? Path { get; set; } 
+
         public Image? Image { get; set; }
 
     }

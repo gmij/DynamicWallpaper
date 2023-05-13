@@ -103,7 +103,6 @@ namespace DynamicWallpaper
             };
         }
 
-
         private void BuildMoreOptsMenu(Control icon)
         {
             var delTxt = ResourcesHelper.GetString("Ops.Delete");
@@ -118,7 +117,7 @@ namespace DynamicWallpaper
             deleteItem.Click += (sender, args) =>
             {
                 var wallpaper = ((WallpaperPreviewPanel)Parent.Parent)?.Wallpaper;
-                if (wallpaper == null)
+                if (wallpaper == null || string.IsNullOrEmpty(wallpaper.Path))
                 {
                     return;
                 }
@@ -141,7 +140,7 @@ namespace DynamicWallpaper
             lockScreenItem.Click += (sender, args) =>
             {
                 var wallpaper = ((WallpaperPreviewPanel)Parent.Parent)?.Wallpaper;
-                if (wallpaper == null)
+                if (wallpaper == null || string.IsNullOrEmpty(wallpaper.Path))
                 {
                     return;
                 }
@@ -156,7 +155,7 @@ namespace DynamicWallpaper
                 setItem.Click += (sender, args) =>
                 {
                     var wallpaper = ((WallpaperPreviewPanel)Parent.Parent)?.Wallpaper;
-                    if (wallpaper == null)
+                    if (wallpaper == null || string.IsNullOrEmpty(wallpaper.Path))
                     {
                         return;
                     }
