@@ -43,6 +43,7 @@ namespace DynamicWallpaper
             services.AddSingleton<WallpaperSetting>();
             services.AddSingleton<IWallPaperPool, LocalWallpaperPool>();
 
+            services.AddSingleton<ProgressLog>();
             services.AddSingleton<WoodenBox>();
             services.AddSingleton<IronBox>();
             services.AddSingleton<INetworkPaperProvider, BingDailyWallpaper>();

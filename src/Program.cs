@@ -1,5 +1,6 @@
 ﻿using DynamicWallpaper.Tools;
 using Microsoft.Extensions.Logging;
+using NLog.Windows.Forms;
 using System.Diagnostics;
 using System.Globalization;
 
@@ -84,6 +85,7 @@ namespace DynamicWallpaper
                 //  创建设置窗体
                 //  处理GetService返回空引用
                 _settingForm = ServiceLocator.GetService<SettingForm>();
+                RichTextBoxTarget.ReInitializeAllTextboxes(_settingForm);
                 _settingForm?.ShowDialog();
             }
         }
@@ -95,7 +97,7 @@ namespace DynamicWallpaper
             // 1. 创建一个NotifyIcon对象  
             _notifyIcon = new NotifyIcon();
             // 2. 托盘图标
-            _notifyIcon.Icon = new Icon(SystemIcons.Application, 40, 40);
+            _notifyIcon.Icon = ResourcesHelper.Instance.MainImg;
             // 3. 托盘鼠标悬停时显示的文本
             _notifyIcon.Text = ResourcesHelper.GetString("ApplicationName");
 
@@ -128,8 +130,7 @@ namespace DynamicWallpaper
             _manager?.Refresh();
         }
 
-        private static void MutexApp(string appName)
-        {
+        private static void MutexApp(string appName)        {
             // 使用Mutex，加入进程控制，只能启动一个应用，启动新的时候，直接退出。下面的代码为Coplit自动生成
             // 1. 创建一个Mutex对象
             _mutex = new Mutex(true, appName, out bool createdNew);
