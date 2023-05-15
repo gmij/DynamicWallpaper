@@ -7,8 +7,10 @@
   <ItemGroup>
     <ProjectReference Include="..\src\DynamicWallpaper.csproj" />
   </ItemGroup>
-
-	<PropertyGroup>
-		<DebugType>none</DebugType>
-	</PropertyGroup>
+  <PropertyGroup>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <OutputPath>..\bin\msi\</OutputPath>
+  </PropertyGroup>
 </Project>
