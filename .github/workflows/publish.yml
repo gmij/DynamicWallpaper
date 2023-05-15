@@ -23,9 +23,6 @@ jobs:
 
     - name: Setup wix
       run: dotnet tool install --global wix --version 4.0.0 
-      
-    - name: Check wix Version
-      run: wix --version
 
 
     - name: Publish app
