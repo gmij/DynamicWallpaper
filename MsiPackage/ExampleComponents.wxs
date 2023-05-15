@@ -2,25 +2,25 @@
 	<Fragment>
 		<ComponentGroup Id="ExampleComponents" Directory="INSTALLFOLDER">
 			<Component>
-				<File Source="$(DynamicWallpaper.ProjectDir)bin\Release\publish\DynamicWallpaper.exe" />
+				<File Source="$(DynamicWallpaper.ProjectDir)..\bin\Release\publish\DynamicWallpaper.exe" />
 			</Component>
 			<Component>
-				<File Source="$(DynamicWallpaper.ProjectDir)bin\Release\publish\nlog.config" />
+				<File Source="$(DynamicWallpaper.ProjectDir)..\bin\Release\publish\nlog.config" />
 			</Component>
 			<Component>
-				<File Source="$(DynamicWallpaper.ProjectDir)bin\Release\publish\PenImc_cor3.dll" />
+				<File Source="$(DynamicWallpaper.ProjectDir)..\bin\Release\publish\PenImc_cor3.dll" />
 			</Component>
 			<Component>
-				<File Source="$(DynamicWallpaper.ProjectDir)bin\Release\publish\PresentationNative_cor3.dll" />
+				<File Source="$(DynamicWallpaper.ProjectDir)..\bin\Release\publish\PresentationNative_cor3.dll" />
 			</Component>
 			<Component>
-				<File Source="$(DynamicWallpaper.ProjectDir)bin\Release\publish\vcruntime140_cor3.dll" />
+				<File Source="$(DynamicWallpaper.ProjectDir)..\bin\Release\publish\vcruntime140_cor3.dll" />
 			</Component>
 			<Component>
-				<File Source="$(DynamicWallpaper.ProjectDir)bin\Release\publish\wpfgfx_cor3.dll" />
+				<File Source="$(DynamicWallpaper.ProjectDir)..\bin\Release\publish\wpfgfx_cor3.dll" />
 			</Component>
 			<Component>
-				<File Source="$(DynamicWallpaper.ProjectDir)bin\Release\publish\D3DCompiler_47_cor3.dll" />
+				<File Source="$(DynamicWallpaper.ProjectDir)..\bin\Release\publish\D3DCompiler_47_cor3.dll" />
 			</Component>
 		</ComponentGroup>
 	</Fragment>
