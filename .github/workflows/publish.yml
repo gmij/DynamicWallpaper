@@ -31,7 +31,7 @@ jobs:
         
     - name: Create MSI installer
       run: |
-        dotnet build $env.wixProject_Name -c Release
+        msbuild $env.wixProject_Name /t:Release
         dir *.msi -r
         pwd
         
