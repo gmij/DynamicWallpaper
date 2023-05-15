@@ -35,7 +35,9 @@ jobs:
     - name: Create MSI installer
       run: |
         dotnet build $env.wixProject_Name -o ../${{ env.msi_dir }}
-        Get-ChildItem -Path . -Filter *.msi -Recurse
+        dir *.msi -r
+        pwd
+        
         
     - name: Zip files
       run: |
