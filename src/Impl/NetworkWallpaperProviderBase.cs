@@ -37,6 +37,8 @@ namespace DynamicWallpaper.Impl
             this.logger = logger;
 
             EventBus.Register("DownFail");
+
+            EventBus.Register("Box.Ready");
             EventBus.Register("Box.Open");
             EventBus.Register("Box.Load");
             EventBus.Register("Box.Success");

@@ -232,5 +232,10 @@ namespace DynamicWallpaper
         {
             Process.Start(new ProcessStartInfo("https://github.com/gmij/DynamicWallpaper/issues") { UseShellExecute = true });
         }
+
+        private void toolStripStatusLabel1_DoubleClick(object sender, EventArgs e)
+        {
+            tabControl1.SelectedTab = tabPage4;
+        }
     }
 }

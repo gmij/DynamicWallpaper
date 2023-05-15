@@ -31,6 +31,7 @@
             timer = new Timer(ResetBox, null, Timeout.Infinite, Timeout.Infinite);
             labelTimer = new Timer(LabelTimerStart, null, Timeout.Infinite, Timeout.Infinite);
             OpenHandler = openHandler;
+            EventBus.Publish("Box.Ready", new CustomEventArgs(provider));
         }
 
         private void LabelTimerStart(object? state)
@@ -50,6 +51,8 @@
                 label.Text = ResourcesHelper.GetString("Open");
             
             labelTimer?.Change(Timeout.Infinite, Timeout.Infinite);
+
+            EventBus.Publish("Box.Ready", new CustomEventArgs(provider));
         }
 
         void InitializeComponent()

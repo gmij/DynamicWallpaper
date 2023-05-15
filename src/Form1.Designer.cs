@@ -44,6 +44,8 @@ namespace DynamicWallpaper
             label1 = new Label();
             pictureBox2 = new PictureBox();
             pictureBox1 = new PictureBox();
+            statusStrip1 = new StatusStrip();
+            toolStripStatusLabel1 = new ToolStripStatusLabel();
             tabPage1.SuspendLayout();
             tabControl1.SuspendLayout();
             tabPage2.SuspendLayout();
@@ -51,6 +53,7 @@ namespace DynamicWallpaper
             tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            statusStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // tabPage1
@@ -192,6 +195,23 @@ namespace DynamicWallpaper
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
             // 
+            // statusStrip1
+            // 
+            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel1 });
+            statusStrip1.Location = new Point(0, 389);
+            statusStrip1.Name = "statusStrip1";
+            statusStrip1.Size = new Size(724, 22);
+            statusStrip1.SizingGrip = false;
+            statusStrip1.TabIndex = 1;
+            statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripStatusLabel1
+            // 
+            toolStripStatusLabel1.DoubleClickEnabled = true;
+            toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            toolStripStatusLabel1.Size = new Size(0, 17);
+            toolStripStatusLabel1.DoubleClick += toolStripStatusLabel1_DoubleClick;
+            // 
             // SettingForm
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
@@ -199,6 +219,7 @@ namespace DynamicWallpaper
             AutoScroll = true;
             AutoSize = true;
             ClientSize = new Size(724, 411);
+            Controls.Add(statusStrip1);
             Controls.Add(tabControl1);
             DoubleBuffered = true;
             FormBorderStyle = FormBorderStyle.FixedSingle;
@@ -215,7 +236,10 @@ namespace DynamicWallpaper
             tabPage3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            statusStrip1.ResumeLayout(false);
+            statusStrip1.PerformLayout();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -233,5 +257,7 @@ namespace DynamicWallpaper
         private PictureBox pictureBox1;
         private TabPage tabPage4;
         private RichTextBox richTextBox1;
+        private StatusStrip statusStrip1;
+        private ToolStripStatusLabel toolStripStatusLabel1;
     }
 }
