@@ -47,7 +47,7 @@ jobs:
       with:
         upload_url: ${{ github.event.release.upload_url }}
         asset_path: ${{ env.publish_dir }}/DynamicWallpaper.zip
-        asset_name: DynamicWallpaper.zip
+        asset_name: DynamicWallpaper.portable.zip
         asset_content_type: application/zip
     - name: Upload MSI installer
       uses: actions/upload-release-asset@v1
