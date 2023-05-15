@@ -34,7 +34,7 @@ jobs:
         
     - name: Create MSI installer
       run: |
-        dotnet build $env.wixProject_Name -o ../${{ env.msi_dir }}
+        dotnet build $env.wixProject_Name
         dir *.msi -r
         pwd
         
