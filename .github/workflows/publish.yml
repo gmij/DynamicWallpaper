@@ -11,9 +11,9 @@ jobs:
     env:
       Solution_Name: DynamicWallpaper.sln 
       Project_Name: src/DynamicWallpaper.csproj
+      wixProject_Name: MsiPackage/DynamicWallpaper.Setup.wixproj
       publish_dir: bin/release/publish
-      msi_dir: bin/release/msi
-      wixtool_dir: C:\wixtoolset\
+      msi_dir: bin/msi
       
 
     steps:
@@ -21,18 +21,17 @@ jobs:
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1.0.2
 
+    - name: Setup wix
+      run: dotnet tool install --global wix --version 4.0.0 & wix --version
+
 
     - name: Publish app
       run: dotnet publish $env:Project_Name -c Release -r win-x86 -p:PublishReadyToRun=true -p:SelfContained=true -p:PublishSingleFile=true -p:PublishDir=../${{ env.publish_dir }}
-    - name: Install wixtoolset
-      run: |
-        Invoke-WebRequest -Uri 'https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/wix311-binaries.zip' -OutFile 'wix311-binaries.zip'
-        Expand-Archive -Path 'wix311-binaries.zip' -DestinationPath ${{ env.wixtool_dir }}
+
         
     - name: Create MSI installer
       run: |
-        ${{ env.wixtool_dir }}/candle $env:msi_dir/DynamicWallpaper.wxs
-        ${{ env.wixtool_dir }}/light $env:msi_dir/DynamicWallpaper.wixobj -o $env:msi_dir/DynamicWallpaper.msi
+        dotnet build $env.wixProject_Name -o ${{ env.msi_dir }}
     - name: Zip files
       run: |
         Compress-Archive -Path ${{ env.publish_dir }}/* -DestinationPath ${{ env.publish_dir }}/DynamicWallpaper.zip
@@ -51,6 +50,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ${{ env.msi_dir }}/DynamicWallpaper.msi
-        asset_name: DynamicWallpaper.msi
+        asset_path: ${{ env.msi_dir }}/DynamicWallpaper.Setup.msi
+        asset_name: DynamicWallpaper.Setup.msi
         asset_content_type: application/octet-stream
