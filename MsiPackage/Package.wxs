@@ -1,6 +1,6 @@
 ﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <Package Name="DynamicWallpaper" Manufacturer="Gmij.Win" Version="1.0.0.0" UpgradeCode="119ff464-160e-4056-ab04-3c6c6ebd419b">
-    <MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeError)" />
+    <MajorUpgrade DowngradeErrorMessage="!(DowngradeError)" />
     <MediaTemplate EmbedCab="yes" />
     <Feature Id="Main">
       <ComponentGroupRef Id="ExampleComponents" />
