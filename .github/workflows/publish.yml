@@ -30,7 +30,7 @@ jobs:
 
         
     - name: Create MSI installer
-      run: msbuild MsiPackage/DynamicWallpaper.Setup.wixproj /t:Release
+      run: msbuild MsiPackage/DynamicWallpaper.Setup.wixproj 
         
         
     - name: Zip files
