@@ -22,7 +22,10 @@ jobs:
       uses: microsoft/setup-msbuild@v1.0.2
 
     - name: Setup wix
-      run: dotnet tool install --global wix --version 4.0.0 & wix --version
+      run: dotnet tool install --global wix --version 4.0.0 
+      
+    - name: Check wix Version
+      run: wix --version
 
 
     - name: Publish app
