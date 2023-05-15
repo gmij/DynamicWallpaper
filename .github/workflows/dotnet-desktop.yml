@@ -73,6 +73,10 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.x
+        
+    # Install wix
+    - name: Install wix
+      run: dotnet tool install --global wix --version 4.0.0
 
     # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
@@ -92,9 +96,6 @@ jobs:
       run: msbuild $env:Solution_Name /t:rebuild /p:Configuration=$env:Configuration /m
       env:
         Configuration: ${{ matrix.configuration }}
-
-    - name: Package Test
-      run: msbuild $env:Msi_Proj /t:rebuild /p:Configuration=Debug /m
 
 
     # Decode the base 64 encoded pfx and save the Signing_Certificate
