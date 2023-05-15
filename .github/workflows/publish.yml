@@ -34,7 +34,9 @@ jobs:
         
     - name: Create MSI installer
       run: |
-        dotnet build $env.wixProject_Name -o ${{ env.msi_dir }}
+        dotnet build $env.wixProject_Name -o ../${{ env.msi_dir }}
+        dir ../bin/
+        dir ../${{ env.msi_dir }}
     - name: Zip files
       run: |
         Compress-Archive -Path ${{ env.publish_dir }}/* -DestinationPath ${{ env.publish_dir }}/DynamicWallpaper.zip
