@@ -10,7 +10,4 @@
   <PropertyGroup>
     <DebugType>none</DebugType>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
-    <OutputPath>..\bin\msi\</OutputPath>
-  </PropertyGroup>
 </Project>

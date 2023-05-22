@@ -1,4 +1,4 @@
-﻿<?define ProductVersion = "!(bind.fileVersion[DynamicWallpaper.exe])" ?>
+﻿<?define ProductVersion = "1.0.0.0" ?>
 
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <Package Name="DynamicWallpaper" Manufacturer="Gmij.Win" Version="$(var.ProductVersion)" UpgradeCode="119ff464-160e-4056-ab04-3c6c6ebd419b">

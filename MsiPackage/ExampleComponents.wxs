@@ -1,26 +1,28 @@
+<?define DynamicWallpaperPath = "$(DynamicWallpaper.ProjectDir)bin\release\publish\"?>
+
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
 	<Fragment>
 		<ComponentGroup Id="ExampleComponents" Directory="INSTALLFOLDER">
 			<Component>
-				<File Source="$(DynamicWallpaper.ProjectDir)bin\Release\publish\DynamicWallpaper.exe" />
+				<File Source="$(var.DynamicWallpaperPath)DynamicWallpaper.exe" />
 			</Component>
 			<Component>
-				<File Source="$(DynamicWallpaper.ProjectDir)bin\Release\publish\nlog.config" />
+				<File Source="$(var.DynamicWallpaperPath)nlog.config" />
 			</Component>
 			<Component>
-				<File Source="$(DynamicWallpaper.ProjectDir)bin\Release\publish\PenImc_cor3.dll" />
+				<File Source="$(var.DynamicWallpaperPath)PenImc_cor3.dll" />
 			</Component>
 			<Component>
-				<File Source="$(DynamicWallpaper.ProjectDir)bin\Release\publish\PresentationNative_cor3.dll" />
+				<File Source="$(var.DynamicWallpaperPath)PresentationNative_cor3.dll" />
 			</Component>
 			<Component>
-				<File Source="$(DynamicWallpaper.ProjectDir)bin\Release\publish\vcruntime140_cor3.dll" />
+				<File Source="$(var.DynamicWallpaperPath)vcruntime140_cor3.dll" />
 			</Component>
 			<Component>
-				<File Source="$(DynamicWallpaper.ProjectDir)bin\Release\publish\wpfgfx_cor3.dll" />
+				<File Source="$(var.DynamicWallpaperPath)wpfgfx_cor3.dll" />
 			</Component>
 			<Component>
-				<File Source="$(DynamicWallpaper.ProjectDir)bin\Release\publish\D3DCompiler_47_cor3.dll" />
+				<File Source="$(var.DynamicWallpaperPath)D3DCompiler_47_cor3.dll" />
 			</Component>
 		</ComponentGroup>
 	</Fragment>
