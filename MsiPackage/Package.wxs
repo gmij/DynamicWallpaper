@@ -1,9 +1,15 @@
-﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
-  <Package Name="DynamicWallpaper" Manufacturer="Gmij.Win" Version="1.0.0.0" UpgradeCode="119ff464-160e-4056-ab04-3c6c6ebd419b">
+﻿<?define ProductVersion = "!(bind.fileVersion[DynamicWallpaper.exe])" ?>
+
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="DynamicWallpaper" Manufacturer="Gmij.Win" Version="$(var.ProductVersion)" UpgradeCode="119ff464-160e-4056-ab04-3c6c6ebd419b">
     <MajorUpgrade DowngradeErrorMessage="!(DowngradeError)" />
     <MediaTemplate EmbedCab="yes" />
     <Feature Id="Main">
       <ComponentGroupRef Id="ExampleComponents" />
     </Feature>
+    <CustomAction Id="LaunchApplication" Directory="INSTALLFOLDER" ExeCommand="[INSTALLFOLDER]DynamicWallpaper.exe" Execute="immediate" Return="asyncNoWait" />
+    <InstallExecuteSequence>
+      <Custom Action="LaunchApplication" After="InstallFinalize" />
+    </InstallExecuteSequence>
   </Package>
 </Wix>
