@@ -30,10 +30,7 @@ jobs:
 
         
     - name: Create MSI installer
-      run: |
-        dotnet build $env.wixProject_Name
-        dir *.msi -r
-        pwd
+      run: dotnet build MsiPackage/DynamicWallpaper.Setup.wixproj -o ${{ env.msi_dir }}
         
         
     - name: Zip files
