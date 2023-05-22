@@ -8,8 +8,8 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <StartupObject>DynamicWallpaper.Program</StartupObject>
+	  <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
   </PropertyGroup>
-
 
   <ItemGroup>
     <Compile Remove="DynamicWallpaper.LocalServices\**" />
@@ -45,22 +45,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="res\ResourcesHelper.en-US.Designer.cs">
-      <DependentUpon>ResourcesHelper.en-US.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="res\ResourcesHelper.en-US.resx">
+    <EmbeddedResource Update="res\*.resx">
       <SubType>Designer</SubType>
-      <LastGenOutput>ResourcesHelper.en-US.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="res\ResourcesHelper.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ResourcesHelper.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 
@@ -69,55 +56,5 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
-<!-- 以下为MSI生成块  --><!--
-
-
-    <Target Name="build Wxs File"  BeforeTargets="BuildMsi">
-
-		<Exec Command="$(WIX)\heat project $(MSBuildProjectFullPath) -pog:Binaries -ag -out project.wxs"></Exec>
-		
-	</Target>
-
-    <Target Name="BuildMsi" AfterTargets="Build">
-
-    <Exec Command="&quot;$(WIX)\light.exe&quot; -ext &quot;$(WIX)\WixUIExtension.dll&quot; -out &quot;$(TargetDir)$(TargetName).msi&quot; -pdbout &quot;$(TargetDir)$(TargetName).wixpdb&quot; &quot;$(ProjectDir)Installer\Product.wxs&quot;" />
-
-  </Target>
-
-    <ItemGroup>
-
-    <WixExtension Include="WixUIExtension">
-
-      <HintPath>$(WIX)bin\WixUIExtension.dll</HintPath>
-
-      <Name>WixUIExtension</Name>
-
-    </WixExtension>
-
-  </ItemGroup>
-
-    <PropertyGroup>
-
-    <Wix>..\wixToolset</Wix>
-
-  </PropertyGroup>
-
-    <ItemGroup>
-
-    <None Include="Installer\Product.wxs" />
-
-  </ItemGroup>
-
-    <ItemGroup>
-
-    --><!--<PackageReference Include="WiX.Toolset" Version="3.11.2" />--><!--
-
-  </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Installer\" />
-    </ItemGroup>-->
-
 
 </Project>
