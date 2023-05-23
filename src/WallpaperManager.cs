@@ -34,7 +34,7 @@ namespace DynamicWallpaper
 
             GetMonitors();
 
-            
+            EventBus.Register("AutoRefresh");
         }
 
 
@@ -60,6 +60,7 @@ namespace DynamicWallpaper
                 while (true)
                 {
                     _logger.LogInformation("定时更换壁纸");
+                    EventBus.Publish("AutoRefresh", new CustomEventArgs(DateTime.Now));
                     // 更换壁纸
                     ChangeWallpaper();
 

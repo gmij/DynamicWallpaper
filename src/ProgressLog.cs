@@ -15,6 +15,13 @@ namespace DynamicWallpaper
             EventBus.Subscribe("Box.Lost", OnBoxLost);
             EventBus.Subscribe("Box.Exists", OnBoxExists);
             EventBus.Subscribe("Box.Success", OnBoxSuccess);
+
+            EventBus.Subscribe("AutoRefresh", OnTimerRun);
+        }
+
+        private void OnTimerRun(CustomEventArgs arg)
+        {
+            LogInfo(arg, p => $"又到了更换新壁纸的时间啦!~~~~");
         }
 
         private void LogInfo(CustomEventArgs arg, Func<INetworkPaperProvider, string> msgAction)
@@ -35,7 +42,7 @@ namespace DynamicWallpaper
         }
 
         private void OnBoxLoad(CustomEventArgs arg) {
-            LogInfo(arg, p => $"在{p.ProviderName}家发现1个宝箱，搬回家喽 ~~~");
+            LogInfo(arg, p => $"在{p.ProviderName}家发现{p.Num}个宝箱，搬回家喽 ~~~");
         }
 
         private void OnBoxFail(CustomEventArgs arg)

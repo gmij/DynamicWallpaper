@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace DynamicWallpaper.Impl
 {
@@ -10,7 +9,7 @@ namespace DynamicWallpaper.Impl
             this.box = box;
         }
 
-        public override string ProviderName => "必应每日一图";
+        public override string ProviderName => "Bing";
 
         private WoodenBox box;
 
@@ -20,7 +19,7 @@ namespace DynamicWallpaper.Impl
         {
             
             // 从必应获取图片
-            string url = $"https://global.bing.com/HPImageArchive.aspx?format=js&idx=0&n={box.Num}&pid=hp&FORM=BEHPTB&uhd=1&uhdwidth=3840&uhdheight=2160&setmkt=zh-CN&setlang=en";
+            string url = $"https://global.bing.com/HPImageArchive.aspx?format=js&idx=0&n={this.RandomNumer}&pid=hp&FORM=BEHPTB&uhd=1&uhdwidth=3840&uhdheight=2160&setmkt=zh-CN&setlang=en";
 
             var bing = await LoadUrl<Bing>(url);
 

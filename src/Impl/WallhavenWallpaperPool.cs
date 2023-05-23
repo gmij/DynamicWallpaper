@@ -31,7 +31,7 @@ namespace DynamicWallpaper.Impl
 
             if (results != null && results.Data != null && results.Data.Count > 0)
             {
-                var topImage = results.Data.Take(box.Num);
+                var topImage = results.Data.Take(this.RandomNumer);
                 topImage.AsParallel().ForAll(x => SaveToCache(x.Path, x.Id));
                 return true;
             }

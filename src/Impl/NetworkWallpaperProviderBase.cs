@@ -30,6 +30,16 @@ namespace DynamicWallpaper.Impl
         public abstract string ProviderName { get; }
         public abstract IBox DefaultBox { get; }
 
+
+        public int Num => RandomNumer;
+
+        public int RandomNumer { 
+            get
+            {
+                return new Random().Next(0, DefaultBox.Num);
+            } 
+        }
+
         public NetworkWallpaperProviderBase(WallpaperSetting setting, ILogger<NetworkWallpaperProviderBase> logger) {
             client = new HttpClient();
             client.Timeout = TimeSpan.FromSeconds(30);

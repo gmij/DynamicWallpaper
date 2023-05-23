@@ -23,7 +23,7 @@ namespace DynamicWallpaper
 
     }
 
-    public abstract class BaseBox : IBox
+    public class BaseBox : IBox
     {
 
         private readonly string closeImgName = "box.png";
@@ -45,10 +45,62 @@ namespace DynamicWallpaper
 
         public Image OpenBox => rh.GetImage(openImgName);
 
-        public abstract TimeSpan ResetTime { get; }
+        public virtual TimeSpan ResetTime { get; }
         public int Count { get; set; } = 0;
         public virtual int Num { get; set; } = 3;
     }
+
+
+    public class BoxOption
+    {
+        public int Count { get; set; }
+
+        public int Num { get; set; }
+
+        public TimeSpan ResetTime { get; set; }
+
+        public bool AutoOpen { get; set; }
+
+        public string Color { get; set; }
+    }
+
+
+    public class BoxBuilder
+    {
+        private readonly ResourcesHelper rh;
+
+        public BoxBuilder()
+        {
+            rh = ResourcesHelper.Instance;
+        }
+
+        public BoxBuilder AddProvider(INetworkPaperProvider provider)
+        {
+            this.Provider = provider;
+            return this;
+        }
+
+        public BoxBuilder AddOptions(BoxOption opt)
+        {
+            Opt = opt;
+            return this;
+        }
+
+        public IBox Build()
+        {
+            if (Opt == null)
+                throw new ArgumentNullException(nameof(Opt));
+            if (Provider == null)
+                throw new ArgumentNullException(nameof(Provider));
+            var k = new BaseBox(Opt.Color, rh);
+            
+            return k;
+        }
+
+        public BoxOption? Opt { get; private set; }
+        public INetworkPaperProvider? Provider { get; private set; }
+    }
+
 
 
     public class WoodenBox : BaseBox

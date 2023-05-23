@@ -39,7 +39,7 @@ namespace DynamicWallpaper.Impl
         public override async Task<bool> DownLoadWallPaper()
         {
             string apiKey = "35011350-04a87bff3b45e5d929d805228";
-            string uri = $"https://pixabay.com/api/?key={apiKey}&image_type=photo&per_page={box.Num}&order=latest&lang=zh";
+            string uri = $"https://pixabay.com/api/?key={apiKey}&image_type=photo&per_page={this.RandomNumer}&order=latest&lang=zh";
 
             var images = await LoadUrl<PixabayResponse>(uri);
 

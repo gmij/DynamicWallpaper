@@ -1,4 +1,6 @@
 ﻿using Microsoft.Win32;
+using System.Security;
+using System.Security.AccessControl;
 
 namespace DynamicWallpaper.Tools
 {
@@ -50,7 +52,7 @@ namespace DynamicWallpaper.Tools
 
         private static void OpenRegKey(string path, Action<RegistryKey> callback, bool root = false)
         {
-            var reg = (root ? Registry.LocalMachine: Registry.CurrentUser).CreateSubKey(path, true);
+            var reg = (root ? Registry.LocalMachine: Registry.CurrentUser).CreateSubKey(path);
             if (reg != null)
             {
                 callback(reg);

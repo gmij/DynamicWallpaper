@@ -49,6 +49,8 @@
         string ProviderName { get; }
 
         IBox DefaultBox { get; }
+
+        int Num { get; }
                 
     }
 }
