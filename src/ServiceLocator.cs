@@ -36,7 +36,7 @@ namespace DynamicWallpaper
             // 添加多语言支持
             services.AddLocalization(options => options.ResourcesPath = "res");
 
-            services.AddSingleton<ResourcesHelper>();
+            services.AddSingleton<Tools.ResourcesHelper>();
             services.AddSingleton<DesktopWallpaper>();
             services.AddSingleton<SettingForm>();
             services.AddSingleton<WallpaperManager>();

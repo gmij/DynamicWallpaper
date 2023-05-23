@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
-using System.Globalization;
 using System.Reflection;
 
-namespace DynamicWallpaper
+namespace DynamicWallpaper.Tools
 {
     public class ResourcesHelper
     {
@@ -28,19 +27,14 @@ namespace DynamicWallpaper
 
         public static string GetString(string name)
         {
-            var service = ServiceLocator.GetService<IStringLocalizer<ResourcesHelper>>();
-            return service.GetString($"{name}");
+            return LocalizerCache.GetString(name);
         }
 
-        public static string GetString<T>(string name)
-        {
-            var service = ServiceLocator.GetService<IStringLocalizer<T>>();
-            return service.GetString($"{name}");
-        }
 
         private Stream GetResource(string path)
         {
-            if (_assembly != null) {
+            if (_assembly != null)
+            {
                 var stream = _assembly.GetManifestResourceStream(path);
                 if (stream != null)
                 {

@@ -1,4 +1,6 @@
-﻿namespace DynamicWallpaper
+﻿using DynamicWallpaper.Tools;
+
+namespace DynamicWallpaper
 {
     public interface IBox
     {

@@ -1,4 +1,5 @@
-﻿using static DynamicWallpaper.WallpaperPreviewPanel;
+﻿using DynamicWallpaper.Tools;
+using static DynamicWallpaper.WallpaperPreviewPanel;
 
 namespace DynamicWallpaper
 {

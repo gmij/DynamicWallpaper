@@ -1,4 +1,5 @@
 using DynamicWallpaper.Impl;
+using DynamicWallpaper.Tools;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
@@ -23,6 +24,8 @@ namespace DynamicWallpaper
             opsPanel = new OpsPanel(paperManager.Monitors);
 
             InitLocalize();
+
+            EventBus.Subscribe("SwitchLang", args => InitLocalize());
 
 
             this.Controls.Add(opsPanel);
@@ -97,7 +100,6 @@ namespace DynamicWallpaper
             label1.Text = ResourcesHelper.GetString("Chat");
 
             tabPage4.Text = ResourcesHelper.GetString("Log");
-
         }
 
         private void AddBox_PreviewLoading(object? sender, int e)

@@ -168,6 +168,9 @@
   <data name="TreasureChest" xml:space="preserve">
     <value>开宝箱</value>
   </data>
+  <data name="Ui.Lang" xml:space="preserve">
+    <value>Use English</value>
+  </data>
   <data name="Wait" xml:space="preserve">
     <value>稍等片刻~~</value>
   </data>

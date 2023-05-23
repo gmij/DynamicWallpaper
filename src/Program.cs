@@ -123,7 +123,48 @@ namespace DynamicWallpaper
             //  托盘图标右键菜单中，添加一个刷新菜单，
             _notifyIcon.ContextMenuStrip.Items.Add(ResourcesHelper.GetString("Refresh"), rh?.RefreshImg, (s, e) => Refresh());
 
+            EventBus.Register("SwitchLang");
+            // 添加一个语言菜单
+            var languageItem = new ToolStripMenuItem
+            {
+                Text = ResourcesHelper.GetString("Ui.Lang"),
+            };
+            languageItem.Click += (s, e) =>
+            {
+                // 切换语言
+                if (CultureInfo.CurrentCulture.Name == "en-US")
+                {
+                    CultureInfo.CurrentCulture = new CultureInfo("zh-CN");
+                    CultureInfo.CurrentUICulture = new CultureInfo("zh-CN");
+                }
+                else
+                {
+                    CultureInfo.CurrentCulture = new CultureInfo("en-US");
+                    CultureInfo.CurrentUICulture = new CultureInfo("en-US");
+                }
+
+                LocalizerCache.SwitchLang(CultureInfo.CurrentCulture.Name);
+                // 刷新界面
+                EventBus.Publish("SwitchLang", new CustomEventArgs());
+            };
+            EventBus.Subscribe("SwitchLang", args => SwitchNotifyIconUi());
+            _notifyIcon.ContextMenuStrip.Items.Add(languageItem);
         }
+
+
+        private static void SwitchNotifyIconUi()
+        {
+            if (_notifyIcon != null)
+            {
+                _notifyIcon.Text = ResourcesHelper.GetString("ApplicationName");
+                _notifyIcon.ContextMenuStrip.Items[0].Text = ResourcesHelper.GetString("Quit");
+                _notifyIcon.ContextMenuStrip.Items[1].Text = ResourcesHelper.GetString("Setting");
+                _notifyIcon.ContextMenuStrip.Items[2].Text = ResourcesHelper.GetString("Refresh");
+                _notifyIcon.ContextMenuStrip.Items[3].Text = ResourcesHelper.GetString("Ui.Lang");
+            }
+        }
+
+     
 
         private static void Refresh()
         {

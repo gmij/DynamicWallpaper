@@ -2,6 +2,7 @@
 {
     using System;
     using System.Threading;
+    using DynamicWallpaper.Tools;
 
     /// <summary>
     /// 宝箱面板
@@ -32,6 +33,10 @@
             labelTimer = new Timer(LabelTimerStart, null, Timeout.Infinite, Timeout.Infinite);
             OpenHandler = openHandler;
             EventBus.Publish("Box.Ready", new CustomEventArgs(provider));
+
+            EventBus.Subscribe("SwitchLang", args => {
+                label.Text = ResourcesHelper.GetString("Open");
+            });
         }
 
         private void LabelTimerStart(object? state)
@@ -39,6 +44,8 @@
             labelTime = labelTime.Subtract(TimeSpan.FromSeconds(1));
             label.Text = labelTime.ToString();
         }
+
+        
 
         private void ResetBox(object? state)
         {
