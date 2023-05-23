@@ -26,7 +26,7 @@ jobs:
 
 
     - name: Publish app
-      run: dotnet publish $env:Project_Name -c Release -r win-x86 -p:PublishReadyToRun=true -p:SelfContained=true -p:PublishSingleFile=true -p:PublishDir=../${{ env.publish_dir }}
+      run: dotnet publish $env:Project_Name -c Release -p:PublishReadyToRun=true -p:SelfContained=true -p:PublishSingleFile=true -p:PublishDir=../${{ env.publish_dir }}
 
         
     - name: Create MSI installer
