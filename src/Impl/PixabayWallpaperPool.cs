@@ -23,6 +23,8 @@ namespace DynamicWallpaper.Impl
         public PixabayWallpaperPool(WallpaperSetting setting, IronBox box, ILogger<NetworkWallpaperProviderBase> logger):base(setting, logger)
         {
             this.box = box;
+
+            ResetNum();
         }
 
         public bool IsEmpty { get; private set; } = true;
@@ -39,7 +41,7 @@ namespace DynamicWallpaper.Impl
         public override async Task<bool> DownLoadWallPaper()
         {
             string apiKey = "35011350-04a87bff3b45e5d929d805228";
-            string uri = $"https://pixabay.com/api/?key={apiKey}&image_type=photo&per_page={this.RandomNumer}&order=latest&lang=zh";
+            string uri = $"https://pixabay.com/api/?key={apiKey}&image_type=photo&per_page={DefaultBox.Num}&order=latest&lang=zh";
 
             var images = await LoadUrl<PixabayResponse>(uri);
 
@@ -47,11 +49,14 @@ namespace DynamicWallpaper.Impl
             {
                 throw new Exception("No images found.");
             }
+            else
+            {
+                var topImage = images.Hits.Take(this.Num);
 
-            images.Hits.AsParallel().ForAll(x => SaveToCache(x.LargeImageURL, x.Id));
-
-            return true;
-  
+                topImage.AsParallel().ForAll(x => SaveToCache(x.LargeImageURL, x.Id));
+                ResetNum();
+                return true;
+            }
         }
     }
 }

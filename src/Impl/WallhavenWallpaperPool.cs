@@ -12,6 +12,8 @@ namespace DynamicWallpaper.Impl
         public WallhavenWallpaperPool(WallpaperSetting setting, IronBox box, ILogger<NetworkWallpaperProviderBase> logger) : base(setting, logger)
         {
             this.box = box;
+
+            ResetNum();
         }
 
         public override string ProviderName => "Wallhaven";
@@ -31,8 +33,9 @@ namespace DynamicWallpaper.Impl
 
             if (results != null && results.Data != null && results.Data.Count > 0)
             {
-                var topImage = results.Data.Take(this.RandomNumer);
+                var topImage = results.Data.Take(this.Num);
                 topImage.AsParallel().ForAll(x => SaveToCache(x.Path, x.Id));
+                ResetNum();
                 return true;
             }
             else
@@ -46,7 +49,7 @@ namespace DynamicWallpaper.Impl
         private string BuildUri()
         {
             UriBuilder builder = new UriBuilder(baseUri);
-            builder.Query = $"sorting=random&atleast=1920x1080&apikey={apiKey}&page=1&per_page={box.Num}";
+            builder.Query = $"sorting=random&atleast=1920x1080&apikey={apiKey}&page=1&per_page={DefaultBox.Num}";
 
             return builder.Uri.ToString();
         }
