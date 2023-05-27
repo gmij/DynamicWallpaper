@@ -17,12 +17,11 @@ namespace DynamicWallpaper
             EventBus.Subscribe("Box.Success", OnBoxSuccess);
 
             EventBus.Subscribe("AutoRefresh", OnTimerRun);
+
+            EventBus.Subscribe("DeleteOldFile", OnDeleteOldFiles);
+
         }
 
-        private void OnTimerRun(CustomEventArgs arg)
-        {
-            LogInfo(arg, p => $"又到了更换新壁纸的时间啦!~~~~");
-        }
 
         private void LogInfo(CustomEventArgs arg, Func<INetworkPaperProvider, string> msgAction)
         {
@@ -33,16 +32,27 @@ namespace DynamicWallpaper
             }
         }
 
+
+        private void OnDeleteOldFiles(CustomEventArgs obj)
+        {
+            _logger.LogInformation($"家里的宝贝太多啦({obj.GetData<string>()})，清仓大甩卖啦~~~~");
+        }
+
+        private void OnTimerRun(CustomEventArgs arg)
+        {
+            _logger.LogInformation($"又到了更换新壁纸的时间啦!~~~~");
+        }
+
         private void OnBoxReady(CustomEventArgs arg) {
-            LogInfo(arg, p => $"听说{p.ProviderName}家有{p.DefaultBox.Num}个宝箱，我们去寻找吧 ~~~");
+            LogInfo(arg, p => $"听说{p.ProviderName}家有{p.Num}个宝箱，我们去寻找吧 ~~~");
         }
 
         private void OnBoxOpen(CustomEventArgs arg) {
-            LogInfo(arg, p => $"出发去{p.ProviderName}家喽 ~~~");
+            LogInfo(arg, p => $"出发去{p.ProviderName}家喽 {p.Num}~~~");
         }
 
         private void OnBoxLoad(CustomEventArgs arg) {
-            LogInfo(arg, p => $"在{p.ProviderName}家发现{p.Num}个宝箱，搬回家喽 ~~~");
+            LogInfo(arg, p => $"在{p.ProviderName}家发现1个宝箱，搬回家喽 ~~~");
         }
 
         private void OnBoxFail(CustomEventArgs arg)
@@ -57,7 +67,7 @@ namespace DynamicWallpaper
 
         private void OnBoxExists(CustomEventArgs arg)
         {
-            LogInfo(arg, p => $"哇，{p.ProviderName}家宝箱挖出1个宝贝，可是我已经有了 ~~~");
+            LogInfo(arg, p => $"哇，{p.ProviderName}家宝箱挖出的宝贝，可惜我已经有了 ~~~");
         }
 
         private void OnBoxSuccess(CustomEventArgs arg)

@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.FileSystemGlobbing;
-using Microsoft.Extensions.Logging;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
-using Timer = System.Threading.Timer;
+﻿using Microsoft.Extensions.Logging;
 
 namespace DynamicWallpaper.Impl
 {
@@ -27,6 +24,7 @@ namespace DynamicWallpaper.Impl
             var files = Directory.GetFiles(cachePath, "*", SearchOption.AllDirectories);
             previews = new List<WallpaperPreview>();
             EventBus.Register("WallPaperChanged");
+            EventBus.Register("DeleteOldFile");
             LoadImages(files);
             this.logger = logger;
             watcher = new FileSystemWatcher(cachePath);
@@ -95,43 +93,70 @@ namespace DynamicWallpaper.Impl
                         break;
                 }
             }
+            if (item != null)
+                EventBus.Publish("WallPaperChanged", new CustomEventArgs(new WallpaperChangedEventArgs(item, e.ChangeType)));
 
-            EventBus.Publish("WallPaperChanged", new CustomEventArgs(new WallpaperChangedEventArgs(item, e.ChangeType)));
-
-            //WallPaperChanged?.Invoke(this, new WallpaperChangedEventArgs(item, e.ChangeType));
+            CleanDisk();
         }
+
+
+        private void CleanDisk()
+        {
+            var files = Directory.GetFiles(cachePath, "*", SearchOption.AllDirectories);
+            if (files.Length > 100)
+            {
+                var orderFiles = files.OrderByDescending(f => File.GetCreationTime(f));
+                var delFiles = orderFiles.Skip(100);
+                EventBus.Publish("DeleteOldFile", new CustomEventArgs($"{delFiles.Count()}/{files.Length}"));
+                delFiles.AsParallel().ForAll(f =>
+                {
+                    File.Delete(f);
+                });
+            }
+        }
+
 
         private void LoadImages(string[] files)
         {
             lock (locker)
             {
                 previews.Clear();
-                foreach (var file in files)
+                files.AsParallel().ForAll(p =>
                 {
-                    if (File.Exists(file))
+                    if (File.Exists(p))
                     {
-                        previews.Add(LoadImage(file));
+                        previews.Add(LoadImage(p));
                     }
-                }
+                });
             }
         }
 
         private WallpaperPreview LoadImage(string file)
         {
+
             // 切换一下线程，让之前的写文件句柄得到释放。
             Thread.Sleep(5);
+            var fixedSize = WallpaperSetting.PreviewImgSize;
             // 以下代码为Coplit 自动生成，用于解决Image.FromFile的句柄占用问题
             using var stream = new FileStream(file, FileMode.Open, FileAccess.Read);
-            var bitmap = new Bitmap(stream);
+            using var bitmap = new Bitmap(stream);
+            int originalWidth = bitmap.Width;
+            int originalHeight = bitmap.Height;
+            float ratio = Math.Min((float)fixedSize.Width / originalWidth, (float)fixedSize.Height / originalHeight);
+            int newWidth = (int)(originalWidth * ratio);
+            int newHeight = (int)(originalHeight * ratio);
+            using var result = new Bitmap(newWidth, newHeight);
+            using var graphics = Graphics.FromImage(result);
+            graphics.DrawImage(bitmap, new Rectangle(0, 0, newWidth, newHeight));
+
             // 在这里可以对bitmap进行进一步处理
             var preview = new WallpaperPreview
             {
                 Path = file,
-                Image = (Image)bitmap.Clone()
+                Image = (Image)result.Clone()
             };
-            // 释放bitmap占用的内存
-            bitmap.Dispose();
             return preview;
+
         }
 
         public bool IsEmpty => !previews.Any();
