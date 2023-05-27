@@ -31,20 +31,25 @@ namespace DynamicWallpaper.Impl
         public abstract IBox DefaultBox { get; }
 
 
-        public int Num => RandomNumer;
+        private int _randomNum;
 
-        public int RandomNumer { 
-            get
-            {
-                return new Random().Next(0, DefaultBox.Num);
-            } 
+        public int Num => _randomNum;
+
+        protected void ResetNum()
+        {
+            _randomNum = new Random().Next(1, DefaultBox.Num);
         }
 
+        
+
         public NetworkWallpaperProviderBase(WallpaperSetting setting, ILogger<NetworkWallpaperProviderBase> logger) {
-            client = new HttpClient();
-            client.Timeout = TimeSpan.FromSeconds(30);
+            client = new HttpClient
+            {
+                Timeout = TimeSpan.FromSeconds(30)
+            };
             this.setting = setting;
             this.logger = logger;
+
 
             EventBus.Register("DownFail");
 

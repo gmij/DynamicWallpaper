@@ -47,7 +47,7 @@ namespace DynamicWallpaper
 
         public virtual TimeSpan ResetTime { get; }
         public int Count { get; set; } = 0;
-        public virtual int Num { get; set; } = 3;
+        public virtual int Num { get; set; } = 5;
     }
 
 
@@ -122,6 +122,6 @@ namespace DynamicWallpaper
         {
         }
 
-        public override TimeSpan ResetTime => TimeSpan.FromMinutes(10);
+        public override TimeSpan ResetTime => TimeSpan.FromMinutes(1);
     }
 }

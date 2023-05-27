@@ -54,10 +54,11 @@
                 pic.MouseDoubleClick += Box_MouseDoubleClick;
                 pic.Image = box.CloseBox;
             }
-            if (label != null) 
-                label.Text = ResourcesHelper.GetString("Open");
             
             labelTimer?.Change(Timeout.Infinite, Timeout.Infinite);
+
+            if (label != null)
+                label.Text = ResourcesHelper.GetString("Open");
 
             EventBus.Publish("Box.Ready", new CustomEventArgs(provider));
         }
@@ -99,7 +100,7 @@
             if (pic != null)
             {
                 pic.Image = box.OpenBox;
-                OpenHandler?.Invoke(this, box.Num);
+                OpenHandler?.Invoke(this, provider.Num);
                 pic.MouseDoubleClick -= Box_MouseDoubleClick;
             }
             if (label != null)
