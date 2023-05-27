@@ -1,5 +1,5 @@
-using DynamicWallpaper.Impl;
 using DynamicWallpaper.Tools;
+using DynamicWallpaper.TreasureChest;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
@@ -12,10 +12,11 @@ namespace DynamicWallpaper
     {
 
         private readonly WallpaperManager paperManager;
+        private readonly IEnumerable<ITreasureChest> treasures;
         private OpsPanel opsPanel;
 
 
-        public SettingForm(WallpaperManager paperManager, ResourcesHelper rh, IEnumerable<INetworkPaperProvider> paperProviders, ILogger<SettingForm> logger, ProgressLog log)
+        public SettingForm(WallpaperManager paperManager, ResourcesHelper rh, IEnumerable<ITreasureChest> treasures, IEnumerable<INetworkPaperProvider> paperProviders, ILogger<SettingForm> logger, ProgressLog log)
         {
             InitializeComponent();
 
@@ -31,7 +32,7 @@ namespace DynamicWallpaper
             this.Controls.Add(opsPanel);
 
             this.paperManager = paperManager;
-
+            this.treasures = treasures;
             EventBus.Subscribe("WallPaperChanged", WhenWallpaperChanged);
 
             EventBus.Subscribe("WallPaperChanged", args =>
@@ -76,13 +77,19 @@ namespace DynamicWallpaper
                 paperManager.SetLockScreenImage(e.FilePath);
             });
 
+            EventBus.Subscribe("Box.Random", AddBox_PreviewLoading);
+
 
             //this.paperManager.WallpaperChanged += WhenWallpaperChanged;
 
             InitPreviewImages();
-            foreach (var provider in paperProviders)
+            //foreach (var provider in paperProviders)
+            //{
+            //    flowLayoutPanel2.Controls.Add(new TreasureChestPanel(provider, AddBox_PreviewLoading));
+            //}
+            foreach (var provider in treasures)
             {
-                flowLayoutPanel2.Controls.Add(new TreasureChestPanel(provider, AddBox_PreviewLoading));
+                flowLayoutPanel2.Controls.Add(provider.Panel);
             }
         }
 
@@ -102,11 +109,13 @@ namespace DynamicWallpaper
             tabPage4.Text = ResourcesHelper.GetString("Log");
         }
 
-        private void AddBox_PreviewLoading(object? sender, int e)
+        private async void AddBox_PreviewLoading(CustomEventArgs e)
         {
-            for (int i = 0; i < e; i++)
+            var data = e.GetData<int>();
+            for (int i = 0; i < data; i++)
             {
-                flowLayoutPanel1.Controls.Add(new WallpaperLoadingPanel());
+                await ControlInvokeAsync(() => flowLayoutPanel1.Controls.Add(new WallpaperLoadingPanel()));
+                
             }
         }
 

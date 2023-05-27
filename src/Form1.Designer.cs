@@ -62,7 +62,7 @@ namespace DynamicWallpaper
             tabPage1.Location = new Point(4, 26);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(716, 381);
+            tabPage1.Size = new Size(716, 359);
             tabPage1.TabIndex = 0;
             tabPage1.UseVisualStyleBackColor = true;
             // 
@@ -74,7 +74,7 @@ namespace DynamicWallpaper
             flowLayoutPanel1.Location = new Point(3, 3);
             flowLayoutPanel1.Margin = new Padding(6);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(710, 375);
+            flowLayoutPanel1.Size = new Size(710, 353);
             flowLayoutPanel1.TabIndex = 0;
             // 
             // tabControl1
@@ -87,7 +87,7 @@ namespace DynamicWallpaper
             tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(724, 411);
+            tabControl1.Size = new Size(724, 389);
             tabControl1.TabIndex = 0;
             // 
             // tabPage2
@@ -219,8 +219,8 @@ namespace DynamicWallpaper
             AutoScroll = true;
             AutoSize = true;
             ClientSize = new Size(724, 411);
-            Controls.Add(statusStrip1);
             Controls.Add(tabControl1);
+            Controls.Add(statusStrip1);
             DoubleBuffered = true;
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;

@@ -1,7 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using DynamicWallpaper.TreasureChest;
+using Microsoft.Extensions.Logging;
+
 
 namespace DynamicWallpaper
 {
+
+
     internal class ProgressLog
     {
         private readonly ILogger<ProgressLog> _logger;
@@ -15,6 +19,8 @@ namespace DynamicWallpaper
             EventBus.Subscribe("Box.Lost", OnBoxLost);
             EventBus.Subscribe("Box.Exists", OnBoxExists);
             EventBus.Subscribe("Box.Success", OnBoxSuccess);
+            EventBus.Subscribe("Box.Finish", OnBoxFinish);
+            EventBus.Subscribe("Box.Random", OnBoxRandom);
 
             EventBus.Subscribe("AutoRefresh", OnTimerRun);
 
@@ -22,20 +28,28 @@ namespace DynamicWallpaper
 
         }
 
-
-        private void LogInfo(CustomEventArgs arg, Func<INetworkPaperProvider, string> msgAction)
+        private void OnBoxRandom(CustomEventArgs arg)
         {
-            var data = arg.GetData<INetworkPaperProvider>();
+            _logger.LogInformation($"    带上({arg.GetData<int>()})个小伙伴，冲啊~~~");
+        }
+
+        private void LogInfo(CustomEventArgs arg, Func<INetworkProvider, string> msgAction)
+        {
+            var data = arg.GetData<INetworkProvider>();
             if (data != null)
             {
                 _logger.LogInformation(msgAction(data));
             }
         }
 
+        private void OnBoxFinish(CustomEventArgs arg)
+        {
+            LogInfo(arg, p => $"从{p.ProviderName}家里挖宝结束...");
+        }
 
         private void OnDeleteOldFiles(CustomEventArgs obj)
         {
-            _logger.LogInformation($"家里的宝贝太多啦({obj.GetData<string>()})，清仓大甩卖啦~~~~");
+            _logger.LogInformation($"    家里的宝贝太多啦({obj.GetData<string>()})，清仓大甩卖啦~~~~");
         }
 
         private void OnTimerRun(CustomEventArgs arg)
@@ -44,35 +58,35 @@ namespace DynamicWallpaper
         }
 
         private void OnBoxReady(CustomEventArgs arg) {
-            LogInfo(arg, p => $"听说{p.ProviderName}家有{p.Num}个宝箱，我们去寻找吧 ~~~");
+            LogInfo(arg, p => $"听说{p.ProviderName}家有宝箱，我们去寻找吧 ~~~");
         }
 
         private void OnBoxOpen(CustomEventArgs arg) {
-            LogInfo(arg, p => $"出发去{p.ProviderName}家喽 {p.Num}~~~");
+            LogInfo(arg, p => $"出发去{p.ProviderName}家喽~~~");
         }
 
         private void OnBoxLoad(CustomEventArgs arg) {
-            LogInfo(arg, p => $"在{p.ProviderName}家发现1个宝箱，搬回家喽 ~~~");
+            LogInfo(arg, p => $"    在{p.ProviderName}家发现1个宝箱，搬回家喽 ~~~");
         }
 
         private void OnBoxFail(CustomEventArgs arg)
         {
-            LogInfo(arg, p => $"e.. 去往{p.ProviderName}家的路怎么被人挖断了 ~~~");
+            LogInfo(arg, p => $"    e.. 去往{p.ProviderName}家的路怎么被人挖断了 ~~~");
         }
 
         private void OnBoxLost(CustomEventArgs arg)
         {
-            LogInfo(arg, p => $"遇到江湖大盗，从{p.ProviderName}家挖出来的宝箱丢了 ~~~");
+            LogInfo(arg, p => $"    遇到江湖大盗，从{p.ProviderName}家挖出来的宝箱丢了 ~~~");
         }
 
         private void OnBoxExists(CustomEventArgs arg)
         {
-            LogInfo(arg, p => $"哇，{p.ProviderName}家宝箱挖出的宝贝，可惜我已经有了 ~~~");
+            LogInfo(arg, p => $"    哇，{p.ProviderName}家宝箱挖出的宝贝，可惜我已经有了 ~~~");
         }
 
         private void OnBoxSuccess(CustomEventArgs arg)
         {
-            LogInfo(arg, p => $"哇，{p.ProviderName}家宝箱挖出1个宝贝，收藏了 ~~~");
+            LogInfo(arg, p => $"    哇，{p.ProviderName}家宝箱挖出1个宝贝，收藏了 ~~~");
         }
     }
 }

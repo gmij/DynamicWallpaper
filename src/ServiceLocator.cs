@@ -1,4 +1,5 @@
 ﻿using DynamicWallpaper.Impl;
+using DynamicWallpaper.TreasureChest;
 using IDesktopWallpaperWrapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,11 +45,21 @@ namespace DynamicWallpaper
             services.AddSingleton<IWallPaperPool, LocalWallpaperPool>();
 
             services.AddSingleton<ProgressLog>();
-            services.AddSingleton<WoodenBox>();
-            services.AddSingleton<IronBox>();
-            services.AddSingleton<INetworkPaperProvider, BingDailyWallpaper>();
-            services.AddSingleton<INetworkPaperProvider, PixabayWallpaperPool>();
-            services.AddSingleton<INetworkPaperProvider, WallhavenWallpaperPool>();
+            //services.AddSingleton<WoodenBox>();
+            //services.AddSingleton<IronBox>();
+            //services.AddSingleton<INetworkPaperProvider, BingDailyWallpaper>();
+            //services.AddSingleton<INetworkPaperProvider, PixabayWallpaperPool>();
+            //services.AddSingleton<INetworkPaperProvider, WallhavenWallpaperPool>();
+
+
+
+            _serviceProvider = services.BuildServiceProvider();
+
+
+            services.AddSingleton<ITreasureChest>(TreasureChestBuilderFactory.CreateTreasureChest4Bing());
+            services.AddSingleton<ITreasureChest>(TreasureChestBuilderFactory.CreateTreasureChest4Pixabay());
+            services.AddSingleton<ITreasureChest>(TreasureChestBuilderFactory.CreateTreasureChest4Wallhaven());
+
             _serviceProvider = services.BuildServiceProvider();
         }
 
