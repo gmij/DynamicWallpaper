@@ -43,10 +43,9 @@ namespace DynamicWallpaper.TreasureChest
                 Timeout = TimeSpan.FromSeconds(30)
             };
 
-            RegisterEvent();
         }
 
-        private void RegisterEvent()
+        private static void RegisterEvent()
         {
             EventBus.Register("DownFail");
             EventBus.Register("Box.Ready");
@@ -120,7 +119,7 @@ namespace DynamicWallpaper.TreasureChest
 
         public async Task<bool> DownLoadWallPaper(IBoxOptions opt)
         {
-            var num = new Random().Next(0, opt.RandomHarvest);
+            var num = new Random().Next(1, opt.RandomHarvest);
             EventBus.Publish("Box.Random", new CustomEventArgs(num));
             var r = await DownLoadWallPaper(opt, num);
             Task.WaitAll();

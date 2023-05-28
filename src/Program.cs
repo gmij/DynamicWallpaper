@@ -49,6 +49,11 @@ namespace DynamicWallpaper
             _mutex?.ReleaseMutex();
         }
 
+        private static void RegisterEvent()
+        {
+            EventBus.Register("SwitchLang");
+        }
+
         private static void Application_ApplicationExit(object? sender, EventArgs e)
         {
             var log = ServiceLocator.GetService<ILogger<Program>>();
@@ -123,7 +128,6 @@ namespace DynamicWallpaper
             //  托盘图标右键菜单中，添加一个刷新菜单，
             _notifyIcon.ContextMenuStrip.Items.Add(ResourcesHelper.GetString("Refresh"), rh?.RefreshImg, (s, e) => Refresh());
 
-            EventBus.Register("SwitchLang");
             // 添加一个语言菜单
             var languageItem = new ToolStripMenuItem
             {

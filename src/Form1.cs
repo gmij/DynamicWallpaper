@@ -12,7 +12,7 @@ namespace DynamicWallpaper
     {
 
         private readonly WallpaperManager paperManager;
-        private readonly IEnumerable<ITreasureChest> treasures;
+        //private readonly IEnumerable<ITreasureChest> treasures;
         private OpsPanel opsPanel;
 
 
@@ -32,7 +32,7 @@ namespace DynamicWallpaper
             this.Controls.Add(opsPanel);
 
             this.paperManager = paperManager;
-            this.treasures = treasures;
+            //this.treasures = treasures;
             EventBus.Subscribe("WallPaperChanged", WhenWallpaperChanged);
 
             EventBus.Subscribe("WallPaperChanged", args =>

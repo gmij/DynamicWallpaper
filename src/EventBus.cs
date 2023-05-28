@@ -1,5 +1,7 @@
 ﻿// 当前这个类，完全由Cursor进行编码及优化。
 
+using System.Reflection;
+
 namespace DynamicWallpaper
 {
     public class CustomEventArgs : EventArgs
@@ -23,6 +25,8 @@ namespace DynamicWallpaper
         }
     }
 
+
+
     /// <summary>
     /// 事件总线，用于在应用程序中传递事件和处理程序。
     /// </summary>
@@ -33,6 +37,21 @@ namespace DynamicWallpaper
 
         // 最多允许3个任务并行
         private static readonly int maxConcurrentTasks = 3;
+
+        static EventBus()
+        {
+            //  扫描当前程序集中，所有的类，找到RegisterEvent的静态无参数的方法，然后调用它
+            //  用于确保所有的事件在订阅和发布前，都已被注册
+            var methods = Assembly.GetExecutingAssembly().GetTypes()
+                .SelectMany(t => t.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
+                    .Where(m => m.Name == "RegisterEvent" && m.GetParameters().Length == 0));
+            
+            foreach (var m in methods)
+            {
+                m.Invoke(null, null);
+            }
+        }
+
 
         /// <summary>
         /// 注册事件。
@@ -87,7 +106,7 @@ namespace DynamicWallpaper
             for (int i = 0; i < tasks.Length; i++)
             {
                 //  把i的值，过渡给变量，防止后续线程未执行，而i的值受循环影响变化，
-                var index = i;          
+                var index = i;
                 // 等待信号量
                 await semaphore.WaitAsync();
 
