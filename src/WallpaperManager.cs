@@ -10,7 +10,7 @@ namespace DynamicWallpaper
 
         private readonly DesktopWallpaper _desktopWallpaper;
         private readonly IWallPaperPool _wallPaperPool;
-        private readonly IEnumerable<INetworkPaperProvider> paperProviders;
+        //private readonly IEnumerable<INetworkPaperProvider> paperProviders;
         protected readonly ILogger _logger;
         protected readonly int _refreshTime;
 
@@ -19,14 +19,13 @@ namespace DynamicWallpaper
 
         //private FileSystemWatcher _watcher;
 
-        public WallpaperManager(ILogger<WallpaperManager> logger, IWallPaperPool wallPaperPool, IEnumerable<INetworkPaperProvider> paperProviders, DesktopWallpaper wallpaper, WallpaperSetting setting)
+        public WallpaperManager(ILogger<WallpaperManager> logger, IWallPaperPool wallPaperPool, DesktopWallpaper wallpaper, WallpaperSetting setting)
         {
             this._logger = logger;
             _wallPaperPool = wallPaperPool;
 
 
-
-            this.paperProviders = paperProviders;
+            //this.paperProviders = paperProviders;
             _desktopWallpaper = wallpaper;
             _refreshTime = setting.RefreshTime;
 
@@ -34,8 +33,38 @@ namespace DynamicWallpaper
 
             GetMonitors();
 
+
+            EventBus.Subscribe("LovePaper", LovePaper);
+            EventBus.Subscribe("BrokenPaper", BrokenPaper);
+            EventBus.Subscribe("NoLovePaper", NoLovePaper);
+        }
+
+        private void NoLovePaper(CustomEventArgs obj)
+        {
+            var path = obj.GetData<WallpaperPreview>()?.Path;
+            if (!string.IsNullOrEmpty(path))
+                FavoriteWallpaperStorage.Remove(path);
+        }
+
+        private void BrokenPaper(CustomEventArgs obj)
+        {
+            var path = obj.GetData<WallpaperPreview>()?.Path;
+            if (!string.IsNullOrEmpty(path))
+                DeleteWallpaper(path);
+        }
+
+        private void LovePaper(CustomEventArgs obj)
+        {
+            var path = obj.GetData<WallpaperPreview>()?.Path;
+            if (!string.IsNullOrEmpty(path))
+                FavoriteWallpaperStorage.Add(path);
+        }
+
+        private static void RegisterEvent()
+        {
             EventBus.Register("AutoRefresh");
         }
+
 
 
         public void DeleteWallpaper(string path)
@@ -75,7 +104,6 @@ namespace DynamicWallpaper
             });
         }
 
-        internal IDictionary<string, INetworkPaperProvider> Providers => paperProviders.ToDictionary(x => x.ProviderName);
 
         internal IDictionary<string, string> Monitors => _monitors;
 
@@ -84,10 +112,6 @@ namespace DynamicWallpaper
             Task.Run(() => { ChangeWallpaper(); SetLockScreenImage(); });
         }
 
-        internal async void GetInternetWallpaper()
-        {
-            await Task.WhenAll(paperProviders.Select(provider => provider.DownLoadWallPaper()));
-        }
 
 
         private void GetMonitors()

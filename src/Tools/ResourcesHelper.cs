@@ -93,5 +93,6 @@ namespace DynamicWallpaper.Tools
 
         public Icon MainImg => new(GetImageStream("main.ico"));
 
+        public Image LovedImg => GetImage("loved.png");
     }
 }

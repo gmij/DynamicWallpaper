@@ -9,11 +9,9 @@ namespace DynamicWallpaper
     internal class OpsPanel: DoubleBufferPanel
     {
         private readonly IDictionary<string, string> monitors;
-        //public EventHandler<WallpaperOpsEventArgs> SetWallpaperEvent { get; set; }
-
-        //public EventHandler<WallpaperOpsEventArgs> DelWallpaperEvent { get; set; }
-
+        
         private PictureBox moreBtn;
+        private DoubleBufferPictureBox loveIcon;
 
         public OpsPanel(IDictionary<string, string> monitors) { 
             
@@ -28,10 +26,41 @@ namespace DynamicWallpaper
 
             BuildMoreOptsMenu(moreBtn);
 
+
+        }
+
+        private static void RegisterEvent()
+        {
             EventBus.Register("DelWallpaper");
             EventBus.Register("SetWallpaper");
             EventBus.Register("SetLockScreen");
 
+            EventBus.Register("LovePaper");
+            EventBus.Register("NoLovePaper");
+            EventBus.Register("BrokenPaper");
+        }
+
+        protected override void OnParentChanged(EventArgs e)
+        {
+            base.OnParentChanged(e);
+            try
+            {
+                var dataItem = DataItem;
+                if (dataItem == null || string.IsNullOrEmpty(dataItem.Path)) return;
+                if (FavoriteWallpaperStorage.Contains(dataItem.Path))
+                {
+                    loveIcon.Image = ResourcesHelper.Instance.LovedImg;
+                    loveIcon.Click -= Love_Click;
+                    loveIcon.Click += Loved_Click;
+                }
+                else
+                {
+                    loveIcon.Image = ResourcesHelper.Instance.LoveImg;
+                    loveIcon.Click -= Loved_Click;
+                    loveIcon.Click += Love_Click;
+                }
+            }
+            catch { }
         }
 
         private void InitComponent()
@@ -56,22 +85,24 @@ namespace DynamicWallpaper
                 FlowDirection = FlowDirection.LeftToRight,
                 BackColor = Color.Transparent,
             };
-            
 
-            var love = new DoubleBufferPictureBox
+
+            loveIcon = new DoubleBufferPictureBox
             {
                 Image = ResourcesHelper.Instance.LoveImg,
                 BackColor = Color.Transparent,
             };
+            loveIcon.Click += Love_Click;
             var broken = new DoubleBufferPictureBox
             {
                 Image = ResourcesHelper.Instance.BrokenImg,
                 BackColor = Color.Transparent,
             };
+            broken.Click += Broken_Click;
 
-            love.Size = broken.Size = new Size(40, 40);
+            loveIcon.Size = broken.Size = new Size(40, 40);
 
-            centerPanel.Controls.Add(love);
+            centerPanel.Controls.Add(loveIcon);
             centerPanel.Controls.Add(broken);
             centerPanel.AutoSizeMode = AutoSizeMode.GrowAndShrink;
 
@@ -104,6 +135,35 @@ namespace DynamicWallpaper
             };
         }
 
+        private void Loved_Click(object? sender, EventArgs e)
+        {
+            loveIcon.Image = ResourcesHelper.Instance.LoveImg;
+            loveIcon.Click -= Loved_Click;
+            loveIcon.Click += Love_Click;
+            EventBus.Publish("NoLovePaper", new CustomEventArgs(DataItem));
+        }
+
+        private void Broken_Click(object? sender, EventArgs e)
+        {
+            EventBus.Publish("BrokenPaper", new CustomEventArgs(DataItem));
+        }
+
+        private void Love_Click(object? sender, EventArgs e)
+        {
+            loveIcon.Image = ResourcesHelper.Instance.LovedImg;
+            loveIcon.Click -= Love_Click;
+            loveIcon.Click += Loved_Click;
+            EventBus.Publish("LovePaper", new CustomEventArgs(DataItem));
+        }
+
+        private WallpaperPreview DataItem
+        {
+            get
+            {
+                return ((WallpaperPreviewPanel)Parent?.Parent)?.Wallpaper ;
+            }
+        }
+
         private void BuildMoreOptsMenu(Control icon)
         {
             var delTxt = ResourcesHelper.GetString("Ops.Delete");
@@ -117,13 +177,12 @@ namespace DynamicWallpaper
             // 为菜单项添加点击事件
             deleteItem.Click += (sender, args) =>
             {
-                var wallpaper = ((WallpaperPreviewPanel)Parent.Parent)?.Wallpaper;
+                var wallpaper = DataItem;
                 if (wallpaper == null || string.IsNullOrEmpty(wallpaper.Path))
                 {
                     return;
                 }
                 // 在此处添加删除逻辑
-                //DelWallpaperEvent?.Invoke(this, new WallpaperOpsEventArgs(wallpaper.Path));
                 EventBus.Publish("DelWallpaper", new CustomEventArgs(new WallpaperOpsEventArgs(wallpaper.Path)));
             };
 
@@ -140,13 +199,12 @@ namespace DynamicWallpaper
             // 为菜单项添加点击事件
             lockScreenItem.Click += (sender, args) =>
             {
-                var wallpaper = ((WallpaperPreviewPanel)Parent.Parent)?.Wallpaper;
+                var wallpaper = DataItem;
                 if (wallpaper == null || string.IsNullOrEmpty(wallpaper.Path))
                 {
                     return;
                 }
                 // 在此处添加删除逻辑
-                //DelWallpaperEvent?.Invoke(this, new WallpaperOpsEventArgs(wallpaper.Path));
                 EventBus.Publish("SetLockScreen", new CustomEventArgs(new WallpaperOpsEventArgs(wallpaper.Path)));
             };
 
@@ -155,13 +213,12 @@ namespace DynamicWallpaper
                 var setItem = new ToolStripMenuItem($"{applyTxt}{monitor.Key}");
                 setItem.Click += (sender, args) =>
                 {
-                    var wallpaper = ((WallpaperPreviewPanel)Parent.Parent)?.Wallpaper;
+                    var wallpaper = DataItem;
                     if (wallpaper == null || string.IsNullOrEmpty(wallpaper.Path))
                     {
                         return;
                     }
                     // 在此处添加设置逻辑
-                    //SetWallpaperEvent?.Invoke(this, new WallpaperOpsEventArgs(wallpaper.Path, monitor.Value));
                     EventBus.Publish("SetWallpaper", new CustomEventArgs(new WallpaperOpsEventArgs(wallpaper.Path, monitor.Value)));
                 };
                 menu.Items.Add(setItem);
