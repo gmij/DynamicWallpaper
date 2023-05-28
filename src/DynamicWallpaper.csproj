@@ -8,7 +8,18 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <StartupObject>DynamicWallpaper.Program</StartupObject>
-	  <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+	  <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
+	  <!-- 日常要维护的版本号 -->
+	  <Version>0.5</Version>
+	  <!-- -->
+	  
+	  <Authors>Gmij.win</Authors>
+	  <Company>$(Authors)</Company>
+	  <PackageProjectUrl>https://$(Authors)</PackageProjectUrl>
+	  <RepositoryUrl>https://github.com/gmij/DynamicWallpaper</RepositoryUrl>
+	  <AssemblyVersion>$(Version)</AssemblyVersion>
+	  <Copyright>$(Authors)</Copyright>
+	  <FileVersion>$(Version)</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
