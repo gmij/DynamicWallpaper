@@ -1,4 +1,4 @@
-﻿<?define ProductVersion = "1.0.0.0" ?>
+﻿<?define ProductVersion = "1.0.1.0" ?>
 
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <Package Name="DynamicWallpaper" Manufacturer="Gmij.Win" Version="$(var.ProductVersion)" UpgradeCode="119ff464-160e-4056-ab04-3c6c6ebd419b">
@@ -8,8 +8,10 @@
       <ComponentGroupRef Id="ExampleComponents" />
     </Feature>
     <CustomAction Id="LaunchApplication" Directory="INSTALLFOLDER" ExeCommand="[INSTALLFOLDER]DynamicWallpaper.exe" Execute="immediate" Return="asyncNoWait" />
+
     <InstallExecuteSequence>
       <Custom Action="LaunchApplication" After="InstallFinalize" />
     </InstallExecuteSequence>
+	  
   </Package>
 </Wix>

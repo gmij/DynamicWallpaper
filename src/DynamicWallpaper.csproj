@@ -20,6 +20,7 @@
 	  <AssemblyVersion>$(Version)</AssemblyVersion>
 	  <Copyright>$(Authors)</Copyright>
 	  <FileVersion>$(Version)</FileVersion>
+	  <ApplicationIcon>main.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,6 +39,20 @@
     <Compile Remove="Impl\NetworkWallpaperProviderBase.cs" />
     <Compile Remove="Impl\PixabayWallpaperPool.cs" />
     <Compile Remove="Impl\WallhavenWallpaperPool.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="main.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="main.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="libs\DynamicWallpaper.Command.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 

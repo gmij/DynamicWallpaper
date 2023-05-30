@@ -54,18 +54,29 @@ namespace DynamicWallpaper.Tools
             }
             catch(UnauthorizedAccessException)
             {
-                ProcessStartInfo startInfo = new ProcessStartInfo();
-                startInfo.CreateNoWindow = true;
-                startInfo.UseShellExecute = true;
-                startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                startInfo.WorkingDirectory = WallpaperSetting.LocalPath;
-                startInfo.FileName = @"DynamicWallpaper.Command.exe";
-                startInfo.Arguments = imagePath;
-                startInfo.Verb = "runas";
+                ProcessStartInfo startInfo = new()
+                {
+                    CreateNoWindow = true,
+                    UseShellExecute = true,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+#if DEBUG
+
+                    WorkingDirectory = Path.Combine( WallpaperSetting.LocalPath, "libs"),
+#else
+                    WorkingDirectory = WallpaperSetting.LocalPath,
+#endif
+                    FileName = @"DynamicWallpaper.Command.exe",
+                    Arguments = imagePath,
+                    Verb = "runas"
+                };
                 Process.Start(startInfo);
 
                 if (!force)
+                {
+                    //  休眠2秒，等待注册表写入完成
+                    Thread.Sleep(2000);
                     SetLockScreenImage(imagePath, true);
+                }
             }
             
         }

@@ -1,12 +1,12 @@
-<?define DynamicWallpaperPath = "$(DynamicWallpaper.ProjectDir)..\bin\release\publish\"?>
+<?define DynamicWallpaperPath = "$(SolutionDir)bin\release\publish\"?>
 
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
 	<Fragment>
 		<ComponentGroup Id="ExampleComponents" Directory="INSTALLFOLDER">
-			<Component>
-				<File Source="$(var.DynamicWallpaperPath)DynamicWallpaper.exe" />
+			<Component NeverOverwrite="no" UninstallWhenSuperseded="yes">
+				<File Source="$(var.DynamicWallpaperPath)DynamicWallpaper.exe"  />
 			</Component>
-			<Component>
+			<Component NeverOverwrite="no">
 				<File Source="$(var.DynamicWallpaperPath)nlog.config" />
 			</Component>
 			<Component>
@@ -24,8 +24,8 @@
 			<Component>
 				<File Source="$(var.DynamicWallpaperPath)D3DCompiler_47_cor3.dll" />
 			</Component>
-			<Component>
-				<File Source="$(var.DynamicWallpaperPath)DynamicWallpaper.Command.exe" />
+			<Component NeverOverwrite="no" UninstallWhenSuperseded="yes">
+				<File Source="$(var.DynamicWallpaperPath)libs\DynamicWallpaper.Command.exe" />
 			</Component>
 		</ComponentGroup>
 	</Fragment>

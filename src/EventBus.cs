@@ -111,7 +111,7 @@ namespace DynamicWallpaper
                 await semaphore.WaitAsync();
 
                 // 创建一个Task并将其存储在数组中
-                tasks[i] = Task.Run(async () =>
+                tasks[i] = Task.Run(() =>
                 {
                     try
                     {

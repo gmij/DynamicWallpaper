@@ -29,8 +29,8 @@ jobs:
     - name: Publish app
       run: dotnet publish $env:Project_Name -c Release -p:PublishReadyToRun=true -p:SelfContained=true -p:PublishSingleFile=true -p:PublishDir=../${{ env.publish_dir }}
 
-    - name: Publish Cmd
-      run: dotnet publish $env:CmdProject_Name -c Release -p:PublishReadyToRun=true -p:SelfContained=true -p:PublishTrimmed=true -p:PublishSingleFile=true -p:PublishDir=../${{ env.publish_dir }}
+#    - name: Publish Cmd
+#      run: dotnet publish $env:CmdProject_Name -c Release -p:PublishReadyToRun=true -p:SelfContained=true -p:PublishTrimmed=true -p:PublishSingleFile=true -p:PublishDir=../${{ env.publish_dir }}
         
     - name: Create MSI installer
       run: dotnet build MsiPackage/DynamicWallpaper.Setup.wixproj -o ${{ env.msi_dir }}
