@@ -11,7 +11,7 @@ jobs:
     env:
       Solution_Name: DynamicWallpaper.sln 
       Project_Name: src/DynamicWallpaper.csproj
-      CmdProject_Name: DynamicWallpaper.Cmd/DynamicWallpaper.Cmd.csproj
+      CmdProject_Name: DynamicWallpaper.Cmd/DynamicWallpaper.Command.csproj
       wixProject_Name: MsiPackage/DynamicWallpaper.Setup.wixproj
       publish_dir: bin/release/publish
       msi_dir: bin/msi
