@@ -1,4 +1,4 @@
-<?define DynamicWallpaperPath = "$(DynamicWallpaper.ProjectDir)..\bin\release\publish\"?>
+<?define DynamicWallpaperPath = "$(ProjectDir)..\bin\release\publish\"?>
 
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
 	<Fragment>
