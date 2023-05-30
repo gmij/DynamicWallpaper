@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using System.Diagnostics;
 using System.Security;
 using System.Security.AccessControl;
 
@@ -40,14 +41,33 @@ namespace DynamicWallpaper.Tools
             return currImagePath;
         }
 
-        internal static void SetLockScreenImage(string imagePath)
+        internal static void SetLockScreenImage(string imagePath, bool force = false)
         {
-            OpenRegKey(LockScreen, reg => {
-                reg.SetValue("LockScreenImagePath", imagePath);
-                //reg.SetValue("LockScreenImageUrl", imagePath);
-                reg.SetValue("LockScreenImageStatus", 1, RegistryValueKind.DWord);
-                reg.Flush();
-            }, true);
+            try
+            {
+                OpenRegKey(LockScreen, reg => {
+                    reg.SetValue("LockScreenImagePath", imagePath);
+                    //reg.SetValue("LockScreenImageUrl", imagePath);
+                    reg.SetValue("LockScreenImageStatus", 1, RegistryValueKind.DWord);
+                    reg.Flush();
+                }, true);
+            }
+            catch(UnauthorizedAccessException)
+            {
+                ProcessStartInfo startInfo = new ProcessStartInfo();
+                startInfo.CreateNoWindow = true;
+                startInfo.UseShellExecute = true;
+                startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                startInfo.WorkingDirectory = WallpaperSetting.LocalPath;
+                startInfo.FileName = @"DynamicWallpaper.Command.exe";
+                startInfo.Arguments = imagePath;
+                startInfo.Verb = "runas";
+                Process.Start(startInfo);
+
+                if (!force)
+                    SetLockScreenImage(imagePath, true);
+            }
+            
         }
 
         private static void OpenRegKey(string path, Action<RegistryKey> callback, bool root = false)

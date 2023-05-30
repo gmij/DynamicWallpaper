@@ -24,10 +24,8 @@
 			<Component>
 				<File Source="$(var.DynamicWallpaperPath)D3DCompiler_47_cor3.dll" />
 			</Component>
-			<Component Id="RegistryComponent" Guid="119ff464-160e-4056-ab04-3c6c6ebd419b">
-				<RegistryKey Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" ForceCreateOnInstall="yes">
-					<Permission User="Users" ChangePermission="yes" GenericAll="yes" />
-				</RegistryKey>
+			<Component>
+				<File Source="$(var.DynamicWallpaperPath)DynamicWallpaper.Command.exe" />
 			</Component>
 		</ComponentGroup>
 	</Fragment>
