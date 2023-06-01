@@ -3,5 +3,12 @@
     <StandardDirectory Id="ProgramFiles6432Folder">
       <Directory Id="INSTALLFOLDER" Name="!(bind.Property.ProductName)" />
     </StandardDirectory>
+	  <StandardDirectory Id="DesktopFolder">
+		  <Component Id="DesktopShortcut">
+			  <Shortcut Id="DesktopShortcut" Name="!(bind.Property.ProductName)" Description="!(bind.Property.ProductName)" Target="[INSTALLFOLDER]DynamicWallpaper.exe" WorkingDirectory="INSTALLFOLDER" />
+			  <RemoveFolder Id="DesktopFolder" On="uninstall" />
+			  <RegistryValue Root="HKCU" Key="Software\Microsoft\DynamicWallpaper" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+		  </Component>
+	  </StandardDirectory>
   </Fragment>
 </Wix>

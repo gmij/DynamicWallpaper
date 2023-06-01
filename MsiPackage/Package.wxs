@@ -6,6 +6,7 @@
     <MediaTemplate EmbedCab="yes" />
     <Feature Id="Main">
       <ComponentGroupRef Id="ExampleComponents" />
+      <ComponentRef Id="DesktopShortcut" />
     </Feature>
     <CustomAction Id="LaunchApplication" Directory="INSTALLFOLDER" ExeCommand="[INSTALLFOLDER]DynamicWallpaper.exe" Execute="immediate" Return="asyncNoWait" />
 

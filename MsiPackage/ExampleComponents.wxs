@@ -5,6 +5,7 @@
 		<ComponentGroup Id="ExampleComponents" Directory="INSTALLFOLDER">
 			<Component NeverOverwrite="no" UninstallWhenSuperseded="yes">
 				<File Source="$(var.DynamicWallpaperPath)DynamicWallpaper.exe"  />
+
 			</Component>
 			<Component NeverOverwrite="no">
 				<File Source="$(var.DynamicWallpaperPath)nlog.config" />
