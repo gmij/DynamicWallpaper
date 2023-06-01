@@ -24,6 +24,8 @@
 
         private BoxStyle? _style;
         public BoxStyle Style => _style ??= new BoxStyle(Appearance);
+
+        public ITreasureChest? TreasureChest { get; set; } 
     }
 
 
@@ -72,6 +74,7 @@
     class WallhavenBoxOptions : DefaultBoxOptions
     {
         public override TimeSpan ResetTime { get; set; } = TimeSpan.FromHours(4);
+
         public override int MaxCount { get; set; } = 3;
         public override int RandomHarvest { get; set; } = 5;
 

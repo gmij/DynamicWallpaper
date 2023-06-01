@@ -1,4 +1,5 @@
 ﻿using DynamicWallpaper.Impl;
+using DynamicWallpaper.Plus;
 using DynamicWallpaper.TreasureChest;
 using IDesktopWallpaperWrapper;
 using Microsoft.Extensions.Configuration;
@@ -45,6 +46,7 @@ namespace DynamicWallpaper
             services.AddSingleton<IWallPaperPool, LocalWallpaperPool>();
 
             services.AddSingleton<ProgressLog>();
+            services.AddSingleton(new AutoOpen());
             //services.AddSingleton<WoodenBox>();
             //services.AddSingleton<IronBox>();
             //services.AddSingleton<INetworkPaperProvider, BingDailyWallpaper>();

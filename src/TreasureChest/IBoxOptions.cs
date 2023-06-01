@@ -34,7 +34,7 @@ namespace DynamicWallpaper.TreasureChest
         /// <summary>
         /// 箱子外观
         /// </summary>
-        BoxAppearance Appearance { get;  }
+        BoxAppearance Appearance { get; }
 
         /// <summary>
         /// 箱子的来源信息
@@ -50,7 +50,11 @@ namespace DynamicWallpaper.TreasureChest
         string ApiKey { get; }
 
         BoxStyle Style { get; }
-
+        
+        /// <summary>
+        /// 宝箱
+        /// </summary>
+        ITreasureChest? TreasureChest { get; set; }
     }
 
     /// <summary>

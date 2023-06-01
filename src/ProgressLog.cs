@@ -22,10 +22,17 @@ namespace DynamicWallpaper
             EventBus.Subscribe("Box.Finish", OnBoxFinish);
             EventBus.Subscribe("Box.Random", OnBoxRandom);
 
+            EventBus.Subscribe("Box.AutoOpen", OnBoxAutoOpen);
+
             EventBus.Subscribe("AutoRefresh", OnTimerRun);
 
             EventBus.Subscribe("DeleteOldFile", OnDeleteOldFiles);
 
+        }
+
+        private void OnBoxAutoOpen(CustomEventArgs args)
+        {
+            _logger.LogInformation($"    {args.GetData<IBoxOptions>()?.TreasureChest?.Provider.ProviderName}家的宝箱快要被人抢走啦！~~~冲啊~~");
         }
 
         private void OnBoxRandom(CustomEventArgs arg)
@@ -58,7 +65,7 @@ namespace DynamicWallpaper
         }
 
         private void OnBoxReady(CustomEventArgs arg) {
-            LogInfo(arg, p => $"听说{p.ProviderName}家有宝箱，我们去寻找吧 ~~~");
+            _logger.LogInformation($"听说{arg.GetData<IBoxOptions>()?.TreasureChest.Provider.ProviderName}家有宝箱，我们去寻找吧 ~~~");
         }
 
         private void OnBoxOpen(CustomEventArgs arg) {

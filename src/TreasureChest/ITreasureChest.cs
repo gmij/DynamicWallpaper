@@ -12,5 +12,6 @@
 
         Control Panel { get; }
 
+        void Open();
     }
 }

@@ -29,6 +29,11 @@
             labelTimer = new Timer(LabelTimerStart, null, Timeout.Infinite, Timeout.Infinite);
         }
 
+        internal void Open()
+        {
+            this.Box_MouseDoubleClick(null, null);
+        }
+
 
         private void LabelTimerStart(object? state)
         {
@@ -92,6 +97,7 @@
         private void Box_MouseDoubleClick(object? sender, MouseEventArgs e)
         {
             
+            BoxOpt.LastOpenTime = DateTime.Now;
             if (pic != null)
             {
                 pic.Image = BoxOpt.Style.OpenBox;

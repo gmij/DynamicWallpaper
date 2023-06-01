@@ -13,6 +13,7 @@
         {
             _panel = panel;
             _boxBehavior = boxBehavior;
+            _boxBehavior.TreasureChest = this;
             _provider = provider;
         }
 
@@ -22,6 +23,13 @@
 
         public Control Panel => _panel;
 
-        // Implement the ITreasureChest interface methods here.
+        public void Open()
+        {
+            var chest = _panel as TreasureChestPanel;
+            if (chest != null)
+            {
+                chest.Open();
+            }
+        }
     }
 }
