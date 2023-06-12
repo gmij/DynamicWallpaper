@@ -117,18 +117,31 @@ namespace DynamicWallpaper.TreasureChest
 
         }
 
-        public async Task<bool> DownLoadWallPaper(IBoxOptions opt)
+        protected async Task<bool> DownLoadWallPaper<T, U>(IBoxOptions opt) where T : IProviderData<U> where U: class, IProviderDataItem
         {
             var num = new Random().Next(1, opt.RandomHarvest);
             EventBus.Publish("Box.Random", new CustomEventArgs(num));
-            var r = await DownLoadWallPaper(opt, num);
-            Task.WaitAll();
-            EventBus.Publish("Box.Finish", new CustomEventArgs(this));
-            return r;
-            
+            //var r = await DownLoadWallPaper(opt, num);
+            var images = await LoadUrl<T>(opt.ListUrl);
+
+            if (images == null || images.Images == null || !images.Images.Any())
+            {
+                throw new Exception("No images found.");
+            }
+            else
+            {
+                var topImage = images.Images.Take(num);
+
+                Parallel.ForEach(topImage, async x => await SaveToCache(x.Url, x.Id));
+
+                Task.WaitAll();
+                EventBus.Publish("Box.Finish", new CustomEventArgs(this));
+                return true;
+            }
+                        
         }
 
-        protected abstract Task<bool> DownLoadWallPaper(IBoxOptions opt, int num);
+        public abstract Task<bool> DownLoadWallPaper(IBoxOptions opt);
 
 
     }

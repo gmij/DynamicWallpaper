@@ -1,36 +1,33 @@
-﻿namespace DynamicWallpaper.TreasureChest.Impl
+﻿using Newtonsoft.Json;
+
+namespace DynamicWallpaper.TreasureChest.Impl
 {
     internal class BingProvider : NetworkProviderBase
     {
 
         public override string ProviderName => "Bing";
 
-        protected override async Task<bool> DownLoadWallPaper(IBoxOptions opt, int num)
+        public override async Task<bool> DownLoadWallPaper(IBoxOptions opt)
         {
-            var bing = await LoadUrl<Bing>(opt.ListUrl);
-
-            if (bing == null || bing.images == null || !bing.images.Any())
-            {
-                throw new Exception("No images found.");
-            }
-
-            Parallel.ForEach(bing.images, async img => await SaveToCache($"{opt.ItemBaseUrl}{img.url}", img.title));
-            //bing.images.AsParallel().ForAll(img => SaveToCache($"{opt.ItemBaseUrl}{img.url}", img.title));
-            return true;
+            return await DownLoadWallPaper<Bing, BingImage>(opt);
         }
 
-        private class Bing
+        private class Bing : IProviderData<BingImage>
         {
-            public List<BingImage>? images;
+            //public List<BingImage>? images;
+            [JsonProperty("images")]
+            public IList<BingImage> Images { get; set; }
         }
 
         // 必应的 json 数据转换成类模型
-        private class BingImage
+        private class BingImage: IProviderDataItem
         {
-            public string fullstartdate { get; set; } = string.Empty;
-            public string url { get; set; } = string.Empty;
-            public string urlbase { get; set; } = string.Empty;
-            public string title { get; set; } = string.Empty;
+
+            [JsonProperty("url")]
+            public string Url { get; set; }
+
+            [JsonProperty("title")]
+            public string Id { get; set; }
         }
     }
 }

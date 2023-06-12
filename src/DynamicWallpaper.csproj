@@ -10,7 +10,7 @@
     <StartupObject>DynamicWallpaper.Program</StartupObject>
 	  <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
 	  <!-- 日常要维护的版本号 -->
-	  <Version>0.5</Version>
+	  <Version>0.7</Version>
 	  <!-- -->
 	  
 	  <Authors>Gmij.win</Authors>

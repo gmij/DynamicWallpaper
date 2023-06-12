@@ -5,17 +5,20 @@ namespace DynamicWallpaper.TreasureChest.Impl
     internal class PixabayProvider : NetworkProviderBase
     {
 
-        public class PixabayResponse
+        public class PixabayResponse: IProviderData<PixabayImage>
         {
+
             [JsonProperty("hits")]
-            public List<PixabayImage>? Hits { get; set; }
+            public IList<PixabayImage> Images { get; set; }
         }
 
-        public class PixabayImage
+        public class PixabayImage: IProviderDataItem
         {
             public string Id { get; set; }
             public string? PreviewUrl { get; set; }
-            public string LargeImageURL { get; set; }
+
+            [JsonProperty("LargeImageURL")]
+            public string Url { get; set; }
         }
 
 
@@ -27,27 +30,10 @@ namespace DynamicWallpaper.TreasureChest.Impl
         /// </summary>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        protected override async Task<bool> DownLoadWallPaper(IBoxOptions opt, int num)
+        public override async Task<bool> DownLoadWallPaper(IBoxOptions opt)
         {
-            var images = await LoadUrl<PixabayResponse>(opt.ListUrl);
-
-            if (images == null || images.Hits == null || !images.Hits.Any())
-            {
-                throw new Exception("No images found.");
-            }
-            else
-            {
-                var topImage = images.Hits.Take(num);
-
-                //foreach (var item in topImage)
-                //{
-                //    await SaveToCache(item.LargeImageURL, item.Id);
-                //}
-                Parallel.ForEach(topImage, async x => await SaveToCache(x.LargeImageURL, x.Id));
-                //topImage.AsParallel().ForAll(x => SaveToCache(x.LargeImageURL, x.Id)) ;
-                
-                return true;
-            }
+            return await DownLoadWallPaper<PixabayResponse, PixabayImage>(opt);
+           
         }
     }
 }
