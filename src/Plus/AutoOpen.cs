@@ -8,7 +8,6 @@ namespace DynamicWallpaper.Plus
         public AutoOpen()
         {
             EventBus.Subscribe("Box.Ready", OpenTreasureChest);
-            
         }
 
         private static void RegisterEvent()
@@ -20,8 +19,13 @@ namespace DynamicWallpaper.Plus
         {
             EventBus.Publish("Box.AutoOpen", args);
             var ops = args.GetData<IBoxOptions>();
+            if (ops == null)
+                return; 
+            if (!ops.AutoOpen)
+                return;
             var chest = ops?.TreasureChest;
-            chest?.Open();
+            if (chest != null )
+                chest?.Open();
         }
     }
 }
