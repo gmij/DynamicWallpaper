@@ -14,7 +14,7 @@
 
         public abstract string SourceRemark { get; }
 
-        public DateTime LastOpenTime { get; set; }
+        public DateTime? LastOpenTime { get; set; }
 
         public abstract string ListUrl { get; }
 
@@ -85,5 +85,21 @@
         public override string ApiKey => "V6aP1MzDUsF9kl7kdGIck9Qx5zPIuzry";
 
         public override BoxAppearance Appearance => BoxAppearance.blue;
+    }
+
+    class DefaultOptions : DefaultBoxOptions
+    {
+        public override TimeSpan ResetTime { get; set; } = TimeSpan.FromMinutes(1);
+
+        public override int MaxCount { get; set; } = 3;
+        public override int RandomHarvest { get; set; } = 5;
+
+        public override string SourceRemark { get => "images from Gmij.win"; }
+
+        public override string ListUrl => $"https://dw.gmij.win/preview/index.json";
+
+        public override string ItemBaseUrl => "https://dw.gmij.win/";
+
+
     }
 }

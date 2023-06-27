@@ -1,6 +1,7 @@
 ﻿using DynamicWallpaper.Tools;
 using IDesktopWallpaperWrapper;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel;
 using System.Management;
 
 namespace DynamicWallpaper
@@ -63,12 +64,15 @@ namespace DynamicWallpaper
         private static void RegisterEvent()
         {
             EventBus.Register("AutoRefresh");
+            EventBus.Register("SetLockScreenImageFailed");
         }
 
 
 
-        public void DeleteWallpaper(string path)
+        public void DeleteWallpaper(string? path)
         {
+            if (string.IsNullOrEmpty(path))
+                return;
             _wallPaperPool.Delete(path);
         }
 
@@ -132,8 +136,8 @@ namespace DynamicWallpaper
             foreach (ManagementObject obj in searcher.Get())
             {
                 // 获取设备实例路径和描述信息
-                string instancePath = obj["__RELPATH"]?.ToString();
-                string deviceDescription = obj["Description"]?.ToString();
+                string? instancePath = obj["__RELPATH"]?.ToString();
+                string? deviceDescription = obj["Description"]?.ToString();
                 if (!string.IsNullOrEmpty(deviceDescription) && !string.IsNullOrEmpty(instancePath))
                 {
                     //  把WMIC取得的设备实例路径进行数据处理，并和IDW上的数据进行匹配
@@ -175,13 +179,13 @@ namespace DynamicWallpaper
             }
             
             var monitorIds = _desktopWallpaper.GetAllMonitorIDs();
-            _logger.LogDebug("当前共{0}显示器", monitorIds.Length);
+            _logger.LogDebug($"当前共{monitorIds.Length}显示器");
             foreach (var monitorId in monitorIds)
             {
                 var currPaper = _desktopWallpaper.GetWallpaper(monitorId);
                 var newPaper = _wallPaperPool.Renew(currPaper);
                 _desktopWallpaper.SetWallpaper(monitorId, newPaper);
-                _logger.LogDebug("{0}已更换壁纸{1}", monitorId, newPaper);
+                _logger.LogDebug($"{monitorId}已更换壁纸{newPaper}");
             }
         }
 
@@ -189,14 +193,21 @@ namespace DynamicWallpaper
         ///     设置锁屏壁纸
         /// </summary>
         /// <param name="imagePath"></param>
-        public void SetLockScreenImage(string imagePath = "")
+        public void SetLockScreenImage(string imagePath = "", bool force = false)
         {
             if (string.IsNullOrEmpty(imagePath))
             {
                 var currImage = RegeditHelper.GetLockScreenImage();
                 imagePath = _wallPaperPool.Renew(currImage);
             }
-            RegeditHelper.SetLockScreenImage(imagePath);
+            try
+            {
+                RegeditHelper.SetLockScreenImage(imagePath, force);
+            }
+            catch (Win32Exception ex)
+            {
+                EventBus.Publish("SetLockScreenImageFailed", new CustomEventArgs(ex));
+            }
         }
 
         /// <summary>
@@ -204,10 +215,15 @@ namespace DynamicWallpaper
         /// </summary>
         /// <param name="filePath"></param>
         /// <param name="monitorId"></param>
-        public void ChangeWallpaper(string filePath, string monitorId)
+        public void ChangeWallpaper(string filePath, string? monitorId)
         {
+            if (string.IsNullOrEmpty(monitorId))
+            {
+                ChangeWallpaper(filePath);
+                return;
+            }
             _desktopWallpaper.SetWallpaper(monitorId, filePath);
-            _logger.LogDebug("{0}已更换壁纸{1}", monitorId, filePath);
+            _logger.LogDebug($"{monitorId}已更换壁纸{filePath}");
         }
 
         /// <summary>
@@ -217,11 +233,11 @@ namespace DynamicWallpaper
         public void ChangeWallpaper(string filePath)
         {
             var monitorIds = _desktopWallpaper.GetAllMonitorIDs();
-            _logger.LogDebug("当前共{0}显示器", monitorIds.Length);
+            _logger.LogDebug($"当前共{monitorIds.Length}显示器");
             foreach (var monitorId in monitorIds)
             {
                 _desktopWallpaper.SetWallpaper(monitorId, filePath);
-                _logger.LogDebug("{0}已更换壁纸{1}", monitorId, filePath);
+                _logger.LogDebug($"{monitorId}已更换壁纸{filePath}");
             }
         }
     }

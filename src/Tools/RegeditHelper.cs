@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Security;
 using System.Security.AccessControl;
@@ -16,8 +17,9 @@ namespace DynamicWallpaper.Tools
         {
             //  加入注册表自启动项，以下代码为Copilit生成
             //  1. 创建一个RegistryKey对象
-            OpenRegKey(StartUp, reg => { 
-                reg.SetValue(appName, Application.ExecutablePath); 
+            OpenRegKey(StartUp, reg =>
+            {
+                reg.SetValue(appName, Application.ExecutablePath);
             });
 
             //  对任务管理器中禁用启动项进行处理，以下代码为Copilit生成
@@ -35,8 +37,9 @@ namespace DynamicWallpaper.Tools
         internal static string GetLockScreenImage()
         {
             var currImagePath = string.Empty;
-            OpenRegKey(LockScreen, reg => { 
-                currImagePath = reg.GetValue("LockScreenImagePath") as string; 
+            OpenRegKey(LockScreen, reg =>
+            {
+                currImagePath = reg.GetValue("LockScreenImagePath") as string;
             });
             return currImagePath;
         }
@@ -45,15 +48,18 @@ namespace DynamicWallpaper.Tools
         {
             try
             {
-                OpenRegKey(LockScreen, reg => {
+                OpenRegKey(LockScreen, reg =>
+                {
                     reg.SetValue("LockScreenImagePath", imagePath);
                     //reg.SetValue("LockScreenImageUrl", imagePath);
                     reg.SetValue("LockScreenImageStatus", 1, RegistryValueKind.DWord);
                     reg.Flush();
                 }, true);
             }
-            catch(UnauthorizedAccessException)
+            catch (UnauthorizedAccessException)
             {
+                if (!force)
+                    return;
                 ProcessStartInfo startInfo = new()
                 {
                     CreateNoWindow = true,
@@ -61,7 +67,7 @@ namespace DynamicWallpaper.Tools
                     WindowStyle = ProcessWindowStyle.Hidden,
 #if DEBUG
 
-                    WorkingDirectory = Path.Combine( WallpaperSetting.LocalPath, "libs"),
+                    WorkingDirectory = Path.Combine(WallpaperSetting.LocalPath, "libs"),
 #else
                     WorkingDirectory = WallpaperSetting.LocalPath,
 #endif
@@ -69,26 +75,25 @@ namespace DynamicWallpaper.Tools
                     Arguments = imagePath,
                     Verb = "runas"
                 };
+
                 Process.Start(startInfo);
 
-                if (!force)
-                {
-                    //  休眠2秒，等待注册表写入完成
-                    Thread.Sleep(2000);
-                    SetLockScreenImage(imagePath, true);
-                }
+
+                //  休眠2秒，等待注册表写入完成
+                Thread.Sleep(2000);
+                SetLockScreenImage(imagePath, true);
             }
-            
+
         }
 
         private static void OpenRegKey(string path, Action<RegistryKey> callback, bool root = false)
         {
-            var reg = (root ? Registry.LocalMachine: Registry.CurrentUser).CreateSubKey(path);
+            var reg = (root ? Registry.LocalMachine : Registry.CurrentUser).CreateSubKey(path);
             if (reg != null)
             {
                 callback(reg);
             }
-            reg?.Close ();
+            reg?.Close();
         }
 
 

@@ -14,9 +14,9 @@
     /// </summary>
     internal class TreasureChestBuilder
     {
-        private TreasureChestPanel _panel;
-        private IBoxOptions _boxBehavior;
-        private INetworkProvider _provider;
+        private TreasureChestPanel? _panel;
+        private IBoxOptions? _boxBehavior;
+        private INetworkProvider? _provider;
 
         public TreasureChestBuilder AddPanel(TreasureChestPanel panel)
         {
@@ -45,6 +45,8 @@
 
         public ITreasureChest Build()
         {
+            if (_boxBehavior == null || _panel == null || _provider == null)
+                throw new NullReferenceException();
 
             _panel.InitializeComponent(_boxBehavior);
             _panel.OpenHandler += (sender, opt) =>
@@ -87,6 +89,15 @@
             builder.AddPanel(new TreasureChestPanel());
             builder.AddBoxBehavior(new Impl.WallhavenBoxOptions());
             builder.AddProvider(new Impl.WallhavenProvider());
+            return builder.Build();
+        }
+
+        public static ITreasureChest CreateTreasureChest4Github()
+        {
+            var builder = new TreasureChestBuilder();
+            builder.AddPanel(new TreasureChestPanel());
+            builder.AddBoxBehavior(new Impl.DefaultOptions());
+            builder.AddProvider(new Impl.DefaultProvider());
             return builder.Build();
         }
     }

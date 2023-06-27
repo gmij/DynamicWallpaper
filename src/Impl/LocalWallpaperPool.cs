@@ -145,7 +145,8 @@ namespace DynamicWallpaper.Impl
             Thread.Sleep(5);
             var fixedSize = WallpaperSetting.PreviewImgSize;
             // 以下代码为Coplit 自动生成，用于解决Image.FromFile的句柄占用问题
-            using var stream = new FileStream(file, FileMode.Open, FileAccess.Read);
+
+            using var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read);
             using var bitmap = new Bitmap(stream);
             int originalWidth = bitmap.Width;
             int originalHeight = bitmap.Height;
@@ -158,7 +159,7 @@ namespace DynamicWallpaper.Impl
 
             // 在这里可以对bitmap进行进一步处理
             var preview = new WallpaperPreview
-            {
+            { 
                 Path = file,
                 Image = (Image)result.Clone()
             };
@@ -179,7 +180,7 @@ namespace DynamicWallpaper.Impl
         {
             if (!IsEmpty)
             {
-                WallpaperPreview[] list = null;
+                WallpaperPreview[]? list = null;
                 if (!string.IsNullOrEmpty(excludePath))
                 {
                     list = previews.Where(p => p.Path != excludePath).ToArray();
