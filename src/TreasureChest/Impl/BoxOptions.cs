@@ -88,7 +88,7 @@
 
     class DefaultOptions : DefaultBoxOptions
     {
-        public override TimeSpan ResetTime { get; set; } = TimeSpan.FromMinutes(1);
+        public override TimeSpan ResetTime { get; set; } = TimeSpan.FromMinutes(3);
 
         public override int MaxCount { get; set; } = 3;
         public override int RandomHarvest { get; set; } = 5;
