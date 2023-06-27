@@ -31,7 +31,6 @@
 
     internal class BingBoxOptions : DefaultBoxOptions
     {
-        public override bool AutoOpen { get; set; } = true;
 
         public override TimeSpan ResetTime { get; set; } = TimeSpan.FromDays(1);
         public override int MaxCount { get; set; } = 1;
@@ -99,6 +98,8 @@
         public override string ListUrl => $"https://dw.gmij.win/preview/index.json";
 
         public override string ItemBaseUrl => "https://dw.gmij.win/";
+
+        public override bool AutoOpen { get; set; } = true;
 
 
     }
