@@ -34,7 +34,7 @@ namespace DynamicWallpaper
             ServiceLocator.Initialize();
 
             _manager = ServiceLocator.GetService<WallpaperManager>();
-            _manager.Start();
+            _manager?.Start();
 
             CreateNotifyIcon();
 
@@ -111,7 +111,7 @@ namespace DynamicWallpaper
             // 5. 托盘菜单
             _notifyIcon.ContextMenuStrip = new ContextMenuStrip();
 
-            var rh = ServiceLocator.GetService<ResourcesHelper>();
+            var rh = ResourcesHelper.Instance; // ServiceLocator.GetService<ResourcesHelper>();
 
             _notifyIcon.ContextMenuStrip.Items.Add(ResourcesHelper.GetString("Quit"), rh?.ExitImg, (s, e) =>
             {

@@ -22,8 +22,11 @@ namespace DynamicWallpaper.TreasureChest
 
     internal abstract class NetworkProviderBase : INetworkProvider
     {
-        private Lazy<WallpaperSetting> setting = new(() => ServiceLocator.GetService<WallpaperSetting>(), LazyThreadSafetyMode.ExecutionAndPublication);
-        private Lazy<ILogger<NetworkProviderBase>> logger = new(() => ServiceLocator.GetService<ILogger<NetworkProviderBase>>(), LazyThreadSafetyMode.ExecutionAndPublication);
+#pragma warning disable CS8603 // 可能返回 null 引用。
+        private readonly Lazy<WallpaperSetting> setting = new(() => ServiceLocator.GetService<WallpaperSetting>(), LazyThreadSafetyMode.ExecutionAndPublication);
+
+        private readonly Lazy<ILogger<NetworkProviderBase>> logger = new(() => ServiceLocator.GetService<ILogger<NetworkProviderBase>>(), LazyThreadSafetyMode.ExecutionAndPublication);
+#pragma warning restore CS8603 // 可能返回 null 引用。
         protected HttpClient client;
 
         private string? _cachePath;
@@ -59,7 +62,7 @@ namespace DynamicWallpaper.TreasureChest
             EventBus.Register("Box.Finish");
         }
 
-        protected async Task<T> LoadUrl<T>(string url)
+        protected async Task<T?> LoadUrl<T>(string url)
         {
             try
             {
@@ -70,7 +73,12 @@ namespace DynamicWallpaper.TreasureChest
                 if (response.IsSuccessStatusCode)
                 {
                     string responseBody = await response.Content.ReadAsStringAsync();
-                    return JsonConvert.DeserializeObject<T>(responseBody);
+                    var result = JsonConvert.DeserializeObject<T>(responseBody);
+                    if (result == null)
+                    {
+                        Logger.LogWarning("加载壁纸清单时，返回的json反序列化出来是空的");
+                    }
+                    return result;
                 }
             }
             catch (Exception ex)
@@ -114,10 +122,9 @@ namespace DynamicWallpaper.TreasureChest
                 EventBus.Publish("Box.Lost", new CustomEventArgs(this));
             }
 
-
         }
 
-        protected async Task<bool> DownLoadWallPaper<T, U>(IBoxOptions opt) where T : IProviderData<U> where U: class, IProviderDataItem
+        protected virtual async Task<bool> DownLoadWallPaper<T, U>(IBoxOptions opt) where T : IProviderData<U> where U: class, IProviderDataItem
         {
             var num = new Random().Next(1, opt.RandomHarvest);
             EventBus.Publish("Box.Random", new CustomEventArgs(num));
@@ -138,7 +145,6 @@ namespace DynamicWallpaper.TreasureChest
                 EventBus.Publish("Box.Finish", new CustomEventArgs(this));
                 return true;
             }
-                        
         }
 
         public abstract Task<bool> DownLoadWallPaper(IBoxOptions opt);

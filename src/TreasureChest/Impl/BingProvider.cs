@@ -11,7 +11,7 @@ namespace DynamicWallpaper.TreasureChest.Impl
         {
             return await DownLoadWallPaper<Bing, BingImage>(opt);
         }
-
+#pragma warning disable CS8618
         private class Bing : IProviderData<BingImage>
         {
             //public List<BingImage>? images;
@@ -29,5 +29,6 @@ namespace DynamicWallpaper.TreasureChest.Impl
             [JsonProperty("title")]
             public string Id { get; set; }
         }
+#pragma warning restore CS8618
     }
 }

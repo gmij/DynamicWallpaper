@@ -30,7 +30,7 @@ namespace DynamicWallpaper
         private readonly string openImgName = "open_box.png";
         private readonly ResourcesHelper rh;
 
-        public BaseBox(string color, ResourcesHelper rh)
+        public BaseBox(string? color, ResourcesHelper rh)
         {
             if (!string.IsNullOrEmpty(color))
             {
@@ -61,7 +61,7 @@ namespace DynamicWallpaper
 
         public bool AutoOpen { get; set; }
 
-        public string Color { get; set; }
+        public string? Color { get; set; }
     }
 
 

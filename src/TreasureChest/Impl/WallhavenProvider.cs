@@ -4,7 +4,7 @@ namespace DynamicWallpaper.TreasureChest.Impl
 {
     internal class WallhavenProvider : NetworkProviderBase
     {
-
+#pragma warning disable CS8618
         private class WallhavenResponse: IProviderData<WallhavenImage>
         {
             [JsonProperty("data")]
@@ -18,6 +18,7 @@ namespace DynamicWallpaper.TreasureChest.Impl
             [JsonProperty("path")]
             public string Url { get; set; }
         }
+#pragma warning restore CS8618
 
         public override string ProviderName => "Wallhaven";
 

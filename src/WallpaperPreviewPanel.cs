@@ -23,6 +23,8 @@ namespace DynamicWallpaper
             if (wallpaper.Image == null) 
                 throw new ArgumentNullException(nameof(wallpaper.Image));
 
+            pic = new PictureBox();
+
             InitComponent(wallpaper.Image);
             this.Wallpaper = wallpaper;
         }
@@ -33,12 +35,11 @@ namespace DynamicWallpaper
 
             this.BorderStyle = BorderStyle.FixedSingle;
 
-            pic = new PictureBox
-            {
-                Dock = DockStyle.Fill,
-                SizeMode = PictureBoxSizeMode.Zoom,
-                Image = img
-            };
+
+            pic.Dock = DockStyle.Fill;
+            pic.SizeMode = PictureBoxSizeMode.Zoom;
+            pic.Image = img;
+
 
             pic.MouseEnter += (sender, e) => {
                 this.OnMouseEnter(e);
@@ -63,13 +64,13 @@ namespace DynamicWallpaper
                 FilePath = filePath;
             }
 
-            public WallpaperOpsEventArgs(string filePath, string monitorId):this(filePath)
+            public WallpaperOpsEventArgs(string filePath, string? monitorId):this(filePath)
             {
                 MonitorId = monitorId;
             }
 
             public string FilePath { get; }
-            public string MonitorId { get; }
+            public string? MonitorId { get; }
         }
     }
 

@@ -19,7 +19,7 @@ namespace DynamicWallpaper
         {
         }
 
-        public CustomEventArgs(object data)
+        public CustomEventArgs(object? data)
         {
             Data = data;
         }

@@ -4,7 +4,7 @@ namespace DynamicWallpaper.TreasureChest.Impl
 {
     internal class PixabayProvider : NetworkProviderBase
     {
-
+#pragma warning disable CS8618
         public class PixabayResponse: IProviderData<PixabayImage>
         {
 
@@ -20,7 +20,7 @@ namespace DynamicWallpaper.TreasureChest.Impl
             [JsonProperty("LargeImageURL")]
             public string Url { get; set; }
         }
-
+#pragma warning restore CS8618
 
         public override string ProviderName => "Pixabay";
 

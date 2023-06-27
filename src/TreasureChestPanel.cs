@@ -15,9 +15,9 @@
         private IBoxOptions BoxOpt => boxOptions ?? throw new NullReferenceException();
 
         private PictureBox? pic;
-        private Label? label;
-        private Timer? timer;
-        private Timer? labelTimer;
+        private readonly Label label;
+        private readonly Timer timer;
+        private readonly Timer labelTimer;
         private TimeSpan labelTime;
 
 
@@ -25,6 +25,7 @@
 
         public TreasureChestPanel()
         {
+            label = new Label();
             timer = new Timer(ResetBox, null, Timeout.Infinite, Timeout.Infinite);
             labelTimer = new Timer(LabelTimerStart, null, Timeout.Infinite, Timeout.Infinite);
         }
@@ -83,18 +84,16 @@
                 Size = new Size(250, 30),
                 BackColor = Color.FromArgb(120, Color.Gray)
             };
-            label = new Label
-            {
-                Dock = DockStyle.Right,
-                Text = ResourcesHelper.GetString("Open"),
-                BackColor = Color.Transparent,
-                AutoSize = true,
-            };
+            
+            label.Dock = DockStyle.Right;
+            label.Text = ResourcesHelper.GetString("Open");
+            label.BackColor = Color.Transparent;
+            label.AutoSize = true;
             bottomPanel.Controls.Add(label);
             this.Controls.Add(bottomPanel);
         }
 
-        private void Box_MouseDoubleClick(object? sender, MouseEventArgs e)
+        private void Box_MouseDoubleClick(object? sender, MouseEventArgs? e)
         {
             
             BoxOpt.LastOpenTime = DateTime.Now;

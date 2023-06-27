@@ -12,7 +12,7 @@ namespace DynamicWallpaper
     internal static class ServiceLocator
     {
 
-        private static IServiceProvider _serviceProvider;
+        private static IServiceProvider? _serviceProvider;
 
         public static void Initialize()
         {
@@ -61,13 +61,18 @@ namespace DynamicWallpaper
             services.AddSingleton<ITreasureChest>(TreasureChestBuilderFactory.CreateTreasureChest4Bing());
             services.AddSingleton<ITreasureChest>(TreasureChestBuilderFactory.CreateTreasureChest4Pixabay());
             services.AddSingleton<ITreasureChest>(TreasureChestBuilderFactory.CreateTreasureChest4Wallhaven());
+            services.AddSingleton<ITreasureChest>(TreasureChestBuilderFactory.CreateTreasureChest4Github());
 
             _serviceProvider = services.BuildServiceProvider();
         }
 
-        public static T GetService<T>()
+        public static T? GetService<T>()
         {
-            return _serviceProvider.GetService<T>();
+            var t = typeof(T);
+            
+            if (_serviceProvider != null)
+                return _serviceProvider.GetService<T>();
+            return default;
         }
 
     }

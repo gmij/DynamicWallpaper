@@ -12,7 +12,7 @@ namespace DynamicWallpaper
             }
         }
 
-        private static string GetLocalHashId(string path)
+        private static string GetLocalHashId(string? path)
         {
             // 把wallpaper中的path做hash，生成唯一值，存放在Id属性中，以下代码为Cursor生成
 

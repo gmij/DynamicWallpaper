@@ -22,6 +22,9 @@ namespace DynamicWallpaper
 
             this.monitors = monitors;
 
+            loveIcon = new DoubleBufferPictureBox();
+            moreBtn = new DoubleBufferPictureBox();
+
             InitComponent();
 
             BuildMoreOptsMenu(moreBtn);
@@ -87,11 +90,9 @@ namespace DynamicWallpaper
             };
 
 
-            loveIcon = new DoubleBufferPictureBox
-            {
-                Image = ResourcesHelper.Instance.LoveImg,
-                BackColor = Color.Transparent,
-            };
+            loveIcon.Image = ResourcesHelper.Instance.LoveImg;
+            loveIcon.BackColor = Color.Transparent;
+
             loveIcon.Click += Love_Click;
             var broken = new DoubleBufferPictureBox
             {
@@ -116,13 +117,11 @@ namespace DynamicWallpaper
             this.Controls.Add(flowPanel);
 
             // 在控件右上角，显示一个图标
-            moreBtn = new DoubleBufferPictureBox
-            {
-                Image = ResourcesHelper.Instance.MoreImg,
-                SizeMode = PictureBoxSizeMode.Zoom,
-                Width = 15,
-                Height = 15,
-            };
+            moreBtn.Image = ResourcesHelper.Instance.MoreImg;
+            moreBtn.SizeMode = PictureBoxSizeMode.Zoom;
+            moreBtn.Width = 15;
+            moreBtn.Height = 15;
+
             //  把图标定位在右上角
             moreBtn.Location = new Point(this.Width - moreBtn.Width - 5, 5);
 
@@ -156,13 +155,7 @@ namespace DynamicWallpaper
             EventBus.Publish("LovePaper", new CustomEventArgs(DataItem));
         }
 
-        private WallpaperPreview DataItem
-        {
-            get
-            {
-                return ((WallpaperPreviewPanel)Parent?.Parent)?.Wallpaper ;
-            }
-        }
+        private WallpaperPreview? DataItem => (Parent?.Parent as WallpaperPreviewPanel)?.Wallpaper;
 
         private void BuildMoreOptsMenu(Control icon)
         {
@@ -204,7 +197,6 @@ namespace DynamicWallpaper
                 {
                     return;
                 }
-                // 在此处添加删除逻辑
                 EventBus.Publish("SetLockScreen", new CustomEventArgs(new WallpaperOpsEventArgs(wallpaper.Path)));
             };
 
@@ -218,7 +210,6 @@ namespace DynamicWallpaper
                     {
                         return;
                     }
-                    // 在此处添加设置逻辑
                     EventBus.Publish("SetWallpaper", new CustomEventArgs(new WallpaperOpsEventArgs(wallpaper.Path, monitor.Value)));
                 };
                 menu.Items.Add(setItem);

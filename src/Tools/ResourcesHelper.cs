@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System.Reflection;
 
 namespace DynamicWallpaper.Tools
@@ -8,12 +7,13 @@ namespace DynamicWallpaper.Tools
     {
         private Assembly _assembly;
         private string _icoResourcePath = "DynamicWallpaper.ico.";
-        private ILogger<ResourcesHelper> logger;
+        private readonly ILogger<ResourcesHelper>? logger;
 
-        public ResourcesHelper(ILogger<ResourcesHelper> logger)
+        private ResourcesHelper(ILogger<ResourcesHelper>? logger)
         {
             _assembly = Assembly.GetExecutingAssembly();
-            this.logger = logger;
+            if (logger != null)
+                this.logger = logger;
         }
 
 
@@ -45,7 +45,7 @@ namespace DynamicWallpaper.Tools
             }
             else
             {
-                logger.LogError($"无效的资源路径:{path}");
+                logger?.LogError($"无效的资源路径:{path}");
                 throw new ArgumentNullException("path");
             }
         }

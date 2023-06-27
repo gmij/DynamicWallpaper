@@ -22,12 +22,19 @@ namespace DynamicWallpaper
             EventBus.Subscribe("Box.Finish", OnBoxFinish);
             EventBus.Subscribe("Box.Random", OnBoxRandom);
 
+            EventBus.Subscribe("SetLockScreenImageFailed", OnSetScreenFail);
+
             EventBus.Subscribe("Box.AutoOpen", OnBoxAutoOpen);
 
             EventBus.Subscribe("AutoRefresh", OnTimerRun);
 
             EventBus.Subscribe("DeleteOldFile", OnDeleteOldFiles);
 
+        }
+
+        private void OnSetScreenFail(CustomEventArgs args)
+        {
+            _logger.LogInformation("设置锁屏壁纸需要管理员权限！~~");
         }
 
         private void OnBoxAutoOpen(CustomEventArgs args)
@@ -65,7 +72,7 @@ namespace DynamicWallpaper
         }
 
         private void OnBoxReady(CustomEventArgs arg) {
-            _logger.LogInformation($"听说{arg.GetData<IBoxOptions>()?.TreasureChest.Provider.ProviderName}家有宝箱，我们去寻找吧 ~~~");
+            _logger.LogInformation($"听说{arg.GetData<IBoxOptions>()?.TreasureChest?.Provider.ProviderName}家有宝箱，我们去寻找吧 ~~~");
         }
 
         private void OnBoxOpen(CustomEventArgs arg) {

@@ -16,7 +16,7 @@ namespace DynamicWallpaper
         private OpsPanel opsPanel;
 
 
-        public SettingForm(WallpaperManager paperManager, ResourcesHelper rh, IEnumerable<ITreasureChest> treasures, IEnumerable<INetworkPaperProvider> paperProviders, ILogger<SettingForm> logger, ProgressLog log)
+        public SettingForm(WallpaperManager paperManager, IEnumerable<ITreasureChest> treasures, ILogger<SettingForm> logger, ProgressLog log)
         {
             InitializeComponent();
 
@@ -55,26 +55,31 @@ namespace DynamicWallpaper
 
             EventBus.Subscribe("DelWallpaper", e =>
             {
-                paperManager.DeleteWallpaper(e.GetData<WallpaperPreviewPanel.WallpaperOpsEventArgs>().FilePath);
+                if (e!= null)
+                    paperManager.DeleteWallpaper(e.GetData<WallpaperPreviewPanel.WallpaperOpsEventArgs>()?.FilePath);
             });
 
             EventBus.Subscribe("SetWallpaper", args =>
             {
                 var e = args.GetData<WallpaperPreviewPanel.WallpaperOpsEventArgs>();
-                if (e.MonitorId == "all")
+                if (e != null)
                 {
-                    paperManager.ChangeWallpaper(e.FilePath);
-                }
-                else
-                {
-                    paperManager.ChangeWallpaper(e.FilePath, e.MonitorId);
+                    if (e.MonitorId == "all")
+                    {
+                        paperManager.ChangeWallpaper(e.FilePath);
+                    }
+                    else
+                    {
+                        paperManager.ChangeWallpaper(e.FilePath, e.MonitorId);
+                    }
                 }
             });
 
             EventBus.Subscribe("SetLockScreen", args =>
             {
                 var e = args.GetData<WallpaperPreviewPanel.WallpaperOpsEventArgs>();
-                paperManager.SetLockScreenImage(e.FilePath);
+                if (e != null)
+                    paperManager.SetLockScreenImage(e.FilePath, true);
             });
 
             EventBus.Subscribe("Box.Random", AddBox_PreviewLoading);

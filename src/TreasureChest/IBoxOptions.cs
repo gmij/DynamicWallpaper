@@ -41,7 +41,7 @@ namespace DynamicWallpaper.TreasureChest
         /// </summary>
         string SourceRemark { get; }
 
-        DateTime LastOpenTime { get; set; }
+        DateTime? LastOpenTime { get; set; }
 
         string ListUrl { get; }
 

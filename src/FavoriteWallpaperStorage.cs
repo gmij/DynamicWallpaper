@@ -16,7 +16,9 @@ namespace DynamicWallpaper
             {
                 using var fileStream = File.OpenRead(_filePath);
                 BinaryFormatter formatter = new();
-                _favorites = formatter.Deserialize(fileStream) as HashSet<string>;
+#pragma warning disable SYSLIB0011
+                _favorites = (HashSet<string>)formatter.Deserialize(fileStream);
+#pragma warning restore SYSLIB0011
             }
         }
 
@@ -50,7 +52,9 @@ namespace DynamicWallpaper
         {
             using var fileStream = File.OpenWrite(_filePath);
             BinaryFormatter formatter = new();
+            #pragma warning disable SYSLIB0011
             formatter.Serialize(fileStream, _favorites);
+            #pragma warning restore SYSLIB0011
         }
     }
 }
