@@ -57,7 +57,7 @@
                 label.Text = ResourcesHelper.GetString("Open");
 
             //currentNum = boxOptions.RandomHarvest;
-            EventBus.Publish("Box.Ready", new CustomEventArgs(BoxOpt));
+            EventBus.Publish(EventName.BoxReady, new CustomEventArgs(BoxOpt));
         }
 
         internal void InitializeComponent(IBoxOptions opt)

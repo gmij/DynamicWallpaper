@@ -26,16 +26,16 @@ namespace DynamicWallpaper
 
             InitLocalize();
 
-            EventBus.Subscribe("SwitchLang", args => InitLocalize());
+            EventBus.Subscribe(EventName.SwitchLang, args => InitLocalize());
 
 
             this.Controls.Add(opsPanel);
 
             this.paperManager = paperManager;
             //this.treasures = treasures;
-            EventBus.Subscribe("WallPaperChanged", WhenWallpaperChanged);
+            EventBus.Subscribe(EventName.WallPaperChanged, WhenWallpaperChanged);
 
-            EventBus.Subscribe("WallPaperChanged", args =>
+            EventBus.Subscribe(EventName.WallPaperChanged, args =>
             {
                 //  用于版本，下载失败或存在同名资源时，消除Loading图标
                 if (args is ResourceExistsEventArgs)
@@ -45,7 +45,7 @@ namespace DynamicWallpaper
                 }
             });
 
-            EventBus.Subscribe("DownFail", args =>
+            EventBus.Subscribe(EventName.DownFail, args =>
             {
                 if (args is ResourceDownloadFailEventArgs arg)
                 {
@@ -53,13 +53,13 @@ namespace DynamicWallpaper
                 }
             });
 
-            EventBus.Subscribe("DelWallpaper", e =>
+            EventBus.Subscribe(EventName.DelWallpaper, e =>
             {
                 if (e!= null)
                     paperManager.DeleteWallpaper(e.GetData<WallpaperPreviewPanel.WallpaperOpsEventArgs>()?.FilePath);
             });
 
-            EventBus.Subscribe("SetWallpaper", args =>
+            EventBus.Subscribe(EventName.SetWallpaper, args =>
             {
                 var e = args.GetData<WallpaperPreviewPanel.WallpaperOpsEventArgs>();
                 if (e != null)
@@ -75,14 +75,14 @@ namespace DynamicWallpaper
                 }
             });
 
-            EventBus.Subscribe("SetLockScreen", args =>
+            EventBus.Subscribe(EventName.SetLockScreen, args =>
             {
                 var e = args.GetData<WallpaperPreviewPanel.WallpaperOpsEventArgs>();
                 if (e != null)
                     paperManager.SetLockScreenImage(e.FilePath, true);
             });
 
-            EventBus.Subscribe("Box.Random", AddBox_PreviewLoading);
+            EventBus.Subscribe(EventName.BoxRandom, AddBox_PreviewLoading);
 
 
             //this.paperManager.WallpaperChanged += WhenWallpaperChanged;

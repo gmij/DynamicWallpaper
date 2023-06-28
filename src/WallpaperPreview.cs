@@ -38,7 +38,7 @@ namespace DynamicWallpaper
         {
             return ratio switch
             {
-                > (decimal)1.1 => WallpaperOrientation.Horizontal,  //  宽比大于1.1，适合横屏
+                > (decimal)1.3 => WallpaperOrientation.Horizontal,  //  宽比大于1.1，适合横屏
                 < (decimal)0.7 => WallpaperOrientation.Vertical,    //  宽比小于0.7，适合竖屏
                 _ => WallpaperOrientation.Both,                     //  其他情况，两者都适合
             };

@@ -25,6 +25,38 @@ namespace DynamicWallpaper
         }
     }
 
+    public static class EventName
+    {
+        public static string BoxReady => "Box.Ready";
+        public static string BoxAutoOpen => "Box.AutoOpen";
+        public static string BoxOpen => "Box.Open";
+        public static string BoxLoad => "Box.Load";
+        public static string BoxFail => "Box.Fail";
+        public static string BoxLost => "Box.Lost";
+        public static string BoxExists => "Box.Exists";
+        public static string BoxSuccess => "Box.Success";
+        public static string BoxFinish => "Box.Finish";
+        public static string BoxRandom => "Box.Random";
+        public static string SetLockScreenImageFailed => "SetLockScreenImageFailed";
+        public static string AutoRefresh => "AutoRefresh";
+        public static string DeleteOldFile => "DeleteOldFile";
+        public static string SwitchLang => "SwitchLang";
+
+        public static string WallPaperChanged => "WallPaperChanged";
+
+        public static string DelWallpaper => "DelWallpaper";
+
+        public static string SetWallpaper => "SetWallpaper";
+
+        public static string SetLockScreen => "SetLockScreen";
+
+        public static string DownFail  => "DownFail";
+
+        public static string LovePaper => "LovePaper";
+        public static string NoLovePaper => "NoLovePaper";
+        public static string BrokenPaper => "BrokenPaper";
+    }
+
 
 
     /// <summary>

@@ -10,7 +10,7 @@
         {
             var num = new Random().Next(1, opt.RandomHarvest);
 
-            EventBus.Publish("Box.Random", new CustomEventArgs(num));
+            EventBus.Publish(EventName.BoxRandom, new CustomEventArgs(num));
 
             var prevTime = opt.LastOpenTime;
             if (!prevTime.HasValue || (prevTime.Value - DateTime.Now)> TimeSpan.FromMinutes(120) || listUrl == null)
@@ -31,7 +31,7 @@
 
                 Task.WaitAll();
                 opt.LastOpenTime = DateTime.Now;
-                EventBus.Publish("Box.Finish", new CustomEventArgs(this));
+                EventBus.Publish(EventName.BoxFinish, new CustomEventArgs(this));
                 return true;
             }
         }

@@ -7,17 +7,17 @@ namespace DynamicWallpaper.Plus
 
         public AutoOpen()
         {
-            EventBus.Subscribe("Box.Ready", OpenTreasureChest);
+            EventBus.Subscribe(EventName.BoxReady, OpenTreasureChest);
         }
 
         private static void RegisterEvent()
         {
-            EventBus.Register("Box.AutoOpen");
+            EventBus.Register(EventName.BoxAutoOpen);
         }
 
         private void OpenTreasureChest(CustomEventArgs args)
         {
-            EventBus.Publish("Box.AutoOpen", args);
+            EventBus.Publish(EventName.BoxAutoOpen, args);
             var ops = args.GetData<IBoxOptions>();
             if (ops == null)
                 return; 

@@ -35,9 +35,9 @@ namespace DynamicWallpaper
             GetMonitors();
 
 
-            EventBus.Subscribe("LovePaper", LovePaper);
-            EventBus.Subscribe("BrokenPaper", BrokenPaper);
-            EventBus.Subscribe("NoLovePaper", NoLovePaper);
+            EventBus.Subscribe(EventName.LovePaper, LovePaper);
+            EventBus.Subscribe(EventName.BrokenPaper, BrokenPaper);
+            EventBus.Subscribe(EventName.NoLovePaper, NoLovePaper);
         }
 
         private void NoLovePaper(CustomEventArgs obj)
@@ -63,8 +63,8 @@ namespace DynamicWallpaper
 
         private static void RegisterEvent()
         {
-            EventBus.Register("AutoRefresh");
-            EventBus.Register("SetLockScreenImageFailed");
+            EventBus.Register(EventName.AutoRefresh);
+            EventBus.Register(EventName.SetLockScreenImageFailed);
         }
 
 
@@ -93,7 +93,7 @@ namespace DynamicWallpaper
                 while (true)
                 {
                     _logger.LogInformation("定时更换壁纸");
-                    EventBus.Publish("AutoRefresh", new CustomEventArgs(DateTime.Now));
+                    EventBus.Publish(EventName.AutoRefresh, new CustomEventArgs(DateTime.Now));
                     // 更换壁纸
                     ChangeWallpaper();
 
@@ -221,7 +221,7 @@ namespace DynamicWallpaper
             }
             catch (Win32Exception ex)
             {
-                EventBus.Publish("SetLockScreenImageFailed", new CustomEventArgs(ex));
+                EventBus.Publish( EventName.SetLockScreenImageFailed, new CustomEventArgs(ex));
             }
         }
 

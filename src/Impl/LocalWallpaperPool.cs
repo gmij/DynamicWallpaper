@@ -32,8 +32,8 @@ namespace DynamicWallpaper.Impl
 
         private static void RegisterEvent()
         {
-            EventBus.Register("WallPaperChanged");
-            EventBus.Register("DeleteOldFile");
+            EventBus.Register(EventName.WallPaperChanged);
+            EventBus.Register(EventName.DeleteOldFile);
         }
 
         private void InitWatcher()
@@ -98,7 +98,7 @@ namespace DynamicWallpaper.Impl
                 }
             }
             if (item != null)
-                EventBus.Publish("WallPaperChanged", new CustomEventArgs(new WallpaperChangedEventArgs(item, e.ChangeType)));
+                EventBus.Publish(EventName.WallPaperChanged, new CustomEventArgs(new WallpaperChangedEventArgs(item, e.ChangeType)));
 
             CleanDisk();
         }
@@ -114,7 +114,7 @@ namespace DynamicWallpaper.Impl
                 var orderFiles = files.Where(f => !FavoriteWallpaperStorage.Contains(f)).OrderByDescending(f => File.GetCreationTime(f));
                 var delFiles = orderFiles.Skip(100 - FavoriteWallpaperStorage.Count);
 
-                EventBus.Publish("DeleteOldFile", new CustomEventArgs($"{delFiles.Count()}/{files.Length}"));
+                EventBus.Publish(EventName.DeleteOldFile, new CustomEventArgs($"{delFiles.Count()}/{files.Length}"));
                 delFiles.AsParallel().ForAll(f =>
                 {
                     File.Delete(f);

@@ -50,23 +50,23 @@ namespace DynamicWallpaper.TreasureChest
 
         private static void RegisterEvent()
         {
-            EventBus.Register("DownFail");
-            EventBus.Register("Box.Ready");
-            EventBus.Register("Box.Open");
-            EventBus.Register("Box.Load");
-            EventBus.Register("Box.Success");
-            EventBus.Register("Box.Fail");
-            EventBus.Register("Box.Lost");
-            EventBus.Register("Box.Exists");
-            EventBus.Register("Box.Random");
-            EventBus.Register("Box.Finish");
+            EventBus.Register(EventName.DownFail);
+            EventBus.Register(EventName.BoxReady);
+            EventBus.Register(EventName.BoxOpen);
+            EventBus.Register(EventName.BoxLoad);
+            EventBus.Register(EventName.BoxSuccess);
+            EventBus.Register(EventName.BoxFail);
+            EventBus.Register(EventName.BoxLost);
+            EventBus.Register(EventName.BoxExists);
+            EventBus.Register(EventName.BoxRandom);
+            EventBus.Register(EventName.BoxFinish);
         }
 
         protected async Task<T?> LoadUrl<T>(string url)
         {
             try
             {
-                EventBus.Publish("Box.Open", new CustomEventArgs(this));
+                EventBus.Publish(EventName.BoxOpen, new CustomEventArgs(this));
 
                 var response = await client.GetAsync(url);
 
@@ -84,8 +84,8 @@ namespace DynamicWallpaper.TreasureChest
             catch (Exception ex)
             {
                 Logger.LogError(ex, "加载壁纸清单失败");
-                EventBus.Publish("DownFail", new ResourceDownloadFailEventArgs(3));
-                EventBus.Publish("Box.Fail", new CustomEventArgs(this));
+                EventBus.Publish(EventName.DownFail, new ResourceDownloadFailEventArgs(3));
+                EventBus.Publish(EventName.BoxFail, new CustomEventArgs(this));
             }
             return default;
         }
@@ -98,8 +98,8 @@ namespace DynamicWallpaper.TreasureChest
             if (File.Exists(filePath))
             {
                 Logger.LogInformation("资源已存在，不重复下载: {0}", filePath);
-                EventBus.Publish("WallPaperChanged", new ResourceExistsEventArgs());
-                EventBus.Publish("Box.Exists", new CustomEventArgs(this));
+                EventBus.Publish(EventName.WallPaperChanged, new ResourceExistsEventArgs());
+                EventBus.Publish(EventName.BoxExists, new CustomEventArgs(this));
                 return;
             }
 
@@ -109,17 +109,17 @@ namespace DynamicWallpaper.TreasureChest
             }
             try
             {
-                EventBus.Publish("Box.Load", new CustomEventArgs(this));
+                EventBus.Publish(EventName.BoxLoad, new CustomEventArgs(this));
                 var fileBytes = await client.GetByteArrayAsync(url);
                 using var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
                 await stream.WriteAsync(fileBytes);
-                EventBus.Publish("Box.Success", new CustomEventArgs(this));
+                EventBus.Publish(EventName.BoxSuccess, new CustomEventArgs(this));
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex, "下载壁纸到磁盘失败");
-                EventBus.Publish("DownFail", new ResourceDownloadFailEventArgs(1));
-                EventBus.Publish("Box.Lost", new CustomEventArgs(this));
+                EventBus.Publish(EventName.DownFail, new ResourceDownloadFailEventArgs(1));
+                EventBus.Publish(EventName.BoxLost, new CustomEventArgs(this));
             }
 
         }
@@ -127,7 +127,7 @@ namespace DynamicWallpaper.TreasureChest
         protected virtual async Task<bool> DownLoadWallPaper<T, U>(IBoxOptions opt) where T : IProviderData<U> where U: class, IProviderDataItem
         {
             var num = new Random().Next(1, opt.RandomHarvest);
-            EventBus.Publish("Box.Random", new CustomEventArgs(num));
+            EventBus.Publish(EventName.BoxRandom, new CustomEventArgs(num));
             //var r = await DownLoadWallPaper(opt, num);
             var images = await LoadUrl<T>(opt.ListUrl);
 
@@ -142,7 +142,7 @@ namespace DynamicWallpaper.TreasureChest
                 Parallel.ForEach(topImage, async x => await SaveToCache(x.Url, x.Id));
 
                 Task.WaitAll();
-                EventBus.Publish("Box.Finish", new CustomEventArgs(this));
+                EventBus.Publish(EventName.BoxFinish, new CustomEventArgs(this));
                 return true;
             }
         }

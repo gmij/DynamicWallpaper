@@ -51,7 +51,7 @@ namespace DynamicWallpaper
 
         private static void RegisterEvent()
         {
-            EventBus.Register("SwitchLang");
+            EventBus.Register(EventName.SwitchLang);
         }
 
         private static void Application_ApplicationExit(object? sender, EventArgs e)
@@ -149,9 +149,9 @@ namespace DynamicWallpaper
 
                 LocalizerCache.SwitchLang(CultureInfo.CurrentCulture.Name);
                 // 刷新界面
-                EventBus.Publish("SwitchLang", new CustomEventArgs());
+                EventBus.Publish(EventName.SwitchLang, new CustomEventArgs());
             };
-            EventBus.Subscribe("SwitchLang", args => SwitchNotifyIconUi());
+            EventBus.Subscribe(EventName.SwitchLang, args => SwitchNotifyIconUi());
             _notifyIcon.ContextMenuStrip.Items.Add(languageItem);
         }
 

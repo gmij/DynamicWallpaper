@@ -8,27 +8,25 @@ namespace DynamicWallpaper
 
     internal class ProgressLog
     {
+
+
         private readonly ILogger<ProgressLog> _logger;
 
         public ProgressLog(ILogger<ProgressLog> logger) {
             _logger = logger;
-            EventBus.Subscribe("Box.Ready", OnBoxReady);
-            EventBus.Subscribe("Box.Open", OnBoxOpen);
-            EventBus.Subscribe("Box.Load", OnBoxLoad);
-            EventBus.Subscribe("Box.Fail", OnBoxFail);
-            EventBus.Subscribe("Box.Lost", OnBoxLost);
-            EventBus.Subscribe("Box.Exists", OnBoxExists);
-            EventBus.Subscribe("Box.Success", OnBoxSuccess);
-            EventBus.Subscribe("Box.Finish", OnBoxFinish);
-            EventBus.Subscribe("Box.Random", OnBoxRandom);
-
-            EventBus.Subscribe("SetLockScreenImageFailed", OnSetScreenFail);
-
-            EventBus.Subscribe("Box.AutoOpen", OnBoxAutoOpen);
-
-            EventBus.Subscribe("AutoRefresh", OnTimerRun);
-
-            EventBus.Subscribe("DeleteOldFile", OnDeleteOldFiles);
+            EventBus.Subscribe(EventName.BoxReady, OnBoxReady);
+            EventBus.Subscribe(EventName.BoxOpen, OnBoxOpen);
+            EventBus.Subscribe(EventName.BoxLoad, OnBoxLoad);
+            EventBus.Subscribe(EventName.BoxFail, OnBoxFail);
+            EventBus.Subscribe(EventName.BoxLost, OnBoxLost);
+            EventBus.Subscribe(EventName.BoxExists, OnBoxExists);
+            EventBus.Subscribe(EventName.BoxSuccess, OnBoxSuccess);
+            EventBus.Subscribe(EventName.BoxFinish, OnBoxFinish);
+            EventBus.Subscribe(EventName.BoxRandom, OnBoxRandom);
+            EventBus.Subscribe(EventName.SetLockScreenImageFailed, OnSetScreenFail);
+            EventBus.Subscribe(EventName.BoxAutoOpen, OnBoxAutoOpen);
+            EventBus.Subscribe(EventName.AutoRefresh, OnTimerRun);
+            EventBus.Subscribe(EventName.DeleteOldFile, OnDeleteOldFiles);
 
         }
 

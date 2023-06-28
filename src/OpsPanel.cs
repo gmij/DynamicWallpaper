@@ -34,13 +34,13 @@ namespace DynamicWallpaper
 
         private static void RegisterEvent()
         {
-            EventBus.Register("DelWallpaper");
-            EventBus.Register("SetWallpaper");
-            EventBus.Register("SetLockScreen");
+            EventBus.Register(EventName.DelWallpaper);
+            EventBus.Register(EventName.SetWallpaper);
+            EventBus.Register(EventName.SetLockScreen);
 
-            EventBus.Register("LovePaper");
-            EventBus.Register("NoLovePaper");
-            EventBus.Register("BrokenPaper");
+            EventBus.Register(EventName.LovePaper);
+            EventBus.Register(EventName.NoLovePaper);
+            EventBus.Register(EventName.BrokenPaper);
         }
 
         protected override void OnParentChanged(EventArgs e)
@@ -139,12 +139,12 @@ namespace DynamicWallpaper
             loveIcon.Image = ResourcesHelper.Instance.LoveImg;
             loveIcon.Click -= Loved_Click;
             loveIcon.Click += Love_Click;
-            EventBus.Publish("NoLovePaper", new CustomEventArgs(DataItem));
+            EventBus.Publish(EventName.NoLovePaper, new CustomEventArgs(DataItem));
         }
 
         private void Broken_Click(object? sender, EventArgs e)
         {
-            EventBus.Publish("BrokenPaper", new CustomEventArgs(DataItem));
+            EventBus.Publish(EventName.BrokenPaper, new CustomEventArgs(DataItem));
         }
 
         private void Love_Click(object? sender, EventArgs e)
@@ -152,7 +152,7 @@ namespace DynamicWallpaper
             loveIcon.Image = ResourcesHelper.Instance.LovedImg;
             loveIcon.Click -= Love_Click;
             loveIcon.Click += Loved_Click;
-            EventBus.Publish("LovePaper", new CustomEventArgs(DataItem));
+            EventBus.Publish(EventName.LovePaper, new CustomEventArgs(DataItem));
         }
 
         private WallpaperPreview? DataItem => (Parent?.Parent as WallpaperPreviewPanel)?.Wallpaper;
@@ -176,7 +176,7 @@ namespace DynamicWallpaper
                     return;
                 }
                 // 在此处添加删除逻辑
-                EventBus.Publish("DelWallpaper", new CustomEventArgs(new WallpaperOpsEventArgs(wallpaper.Path)));
+                EventBus.Publish(EventName.DelWallpaper, new CustomEventArgs(new WallpaperOpsEventArgs(wallpaper.Path)));
             };
 
             // 创建一个菜单
@@ -197,7 +197,7 @@ namespace DynamicWallpaper
                 {
                     return;
                 }
-                EventBus.Publish("SetLockScreen", new CustomEventArgs(new WallpaperOpsEventArgs(wallpaper.Path)));
+                EventBus.Publish(EventName.SetLockScreen, new CustomEventArgs(new WallpaperOpsEventArgs(wallpaper.Path)));
             };
 
             foreach (var monitor in monitors)
@@ -210,7 +210,7 @@ namespace DynamicWallpaper
                     {
                         return;
                     }
-                    EventBus.Publish("SetWallpaper", new CustomEventArgs(new WallpaperOpsEventArgs(wallpaper.Path, monitor.Value)));
+                    EventBus.Publish(EventName.SetLockScreen, new CustomEventArgs(new WallpaperOpsEventArgs(wallpaper.Path, monitor.Value)));
                 };
                 menu.Items.Add(setItem);
             }
