@@ -150,6 +150,7 @@ namespace DynamicWallpaper.Impl
             using var bitmap = new Bitmap(stream);
             int originalWidth = bitmap.Width;
             int originalHeight = bitmap.Height;
+            
             float ratio = Math.Min((float)fixedSize.Width / originalWidth, (float)fixedSize.Height / originalHeight);
             int newWidth = (int)(originalWidth * ratio);
             int newHeight = (int)(originalHeight * ratio);
@@ -159,9 +160,10 @@ namespace DynamicWallpaper.Impl
 
             // 在这里可以对bitmap进行进一步处理
             var preview = new WallpaperPreview
-            { 
+            {
                 Path = file,
-                Image = (Image)result.Clone()
+                Image = (Image)result.Clone(),
+                Ratio = Math.Round((decimal)originalWidth / originalHeight, 5)
             };
             return preview;
 
@@ -176,8 +178,11 @@ namespace DynamicWallpaper.Impl
             return previews;
         }
 
-        public string Renew(string excludePath)
+        public string Renew(string excludePath, decimal screenRatio)
         {
+
+            var wallOri = WallpaperPreview.CalcWallpaperOrientation(screenRatio);
+
             if (!IsEmpty)
             {
                 WallpaperPreview[]? list = null;
@@ -185,7 +190,8 @@ namespace DynamicWallpaper.Impl
                 {
                     list = previews.Where(p => p.Path != excludePath).ToArray();
                 }
-                list ??= previews.ToArray();
+                list ??= previews.Where(p => p.Orientation == wallOri || p.Orientation == WallpaperOrientation.Both).ToArray();
+
                 var poolSize = list.Length;
                 if (poolSize == 0)
                 {

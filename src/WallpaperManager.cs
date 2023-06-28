@@ -182,12 +182,27 @@ namespace DynamicWallpaper
             _logger.LogDebug($"当前共{monitorIds.Length}显示器");
             foreach (var monitorId in monitorIds)
             {
+                var rect = _desktopWallpaper.GetMonitorRECT(monitorId);
+                var screenRatio = GetMonitorRatio(monitorId);
+
                 var currPaper = _desktopWallpaper.GetWallpaper(monitorId);
-                var newPaper = _wallPaperPool.Renew(currPaper);
-                _desktopWallpaper.SetWallpaper(monitorId, newPaper);
-                _logger.LogDebug($"{monitorId}已更换壁纸{newPaper}");
+                var newPaper = _wallPaperPool.Renew(currPaper, screenRatio);
+                ChangeWallpaper(newPaper, monitorId);
             }
         }
+
+        private decimal GetMonitorRatio(string monitorId = "")
+        {
+            Rectangle rect;
+            if (!string.IsNullOrEmpty(monitorId))
+                rect = _desktopWallpaper.GetMonitorRECT(monitorId);
+            else
+            {
+                rect = Screen.PrimaryScreen.Bounds;
+            }
+            return Math.Round((decimal) rect.Width / rect.Height, 5);
+        }
+
 
         /// <summary>
         ///     设置锁屏壁纸
@@ -198,7 +213,7 @@ namespace DynamicWallpaper
             if (string.IsNullOrEmpty(imagePath))
             {
                 var currImage = RegeditHelper.GetLockScreenImage();
-                imagePath = _wallPaperPool.Renew(currImage);
+                imagePath = _wallPaperPool.Renew(currImage, GetMonitorRatio());
             }
             try
             {
@@ -217,11 +232,6 @@ namespace DynamicWallpaper
         /// <param name="monitorId"></param>
         public void ChangeWallpaper(string filePath, string? monitorId)
         {
-            if (string.IsNullOrEmpty(monitorId))
-            {
-                ChangeWallpaper(filePath);
-                return;
-            }
             _desktopWallpaper.SetWallpaper(monitorId, filePath);
             _logger.LogDebug($"{monitorId}已更换壁纸{filePath}");
         }
@@ -236,8 +246,7 @@ namespace DynamicWallpaper
             _logger.LogDebug($"当前共{monitorIds.Length}显示器");
             foreach (var monitorId in monitorIds)
             {
-                _desktopWallpaper.SetWallpaper(monitorId, filePath);
-                _logger.LogDebug($"{monitorId}已更换壁纸{filePath}");
+                ChangeWallpaper(filePath, monitorId);
             }
         }
     }
